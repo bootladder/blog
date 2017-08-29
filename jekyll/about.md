@@ -4,10 +4,9 @@ title: About
 permalink: /about/
 ---
 
-Just an un-edited documentation of technical tips.  
+    Just an un-edited documentation of technical tips.  
   
-My name is Steve Anderson, this is my site.
-
+    My name is Steve Anderson, this is my site.  
 I am interested in working with you!  
   
 I work onsite, travel, and remote.  I can literally jump into your project and start working.
