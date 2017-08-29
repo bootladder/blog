@@ -42,6 +42,9 @@ jekyll build, push the repo which includes the built site.
 
 Then on my production host I run git pull to pull the built site.
 Then docker-compose up serves the site.  
+  
+I don't even have to touch docker!  I just go to production host where the repo is, git pull, and since the volume is mapped, the changes show immediately.  
+
 There is coupling to the reverse proxy; a docker network.  
   
 
