@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="/blog/" rel="alternate" type="text/html" /><updated>2017-08-28T22:56:43-07:00</updated><id>/blog/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">How to test getopt</title><link href="/blog/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded.html" rel="alternate" type="text/html" title="How to test getopt" /><published>2017-06-20T00:00:00-07:00</published><updated>2017-06-20T00:00:00-07:00</updated><id>/blog/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded</id><content type="html" xml:base="/blog/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded.html">&lt;p&gt;I have a function with associated unit tests, called Parse_Bootloader_Commandline().
+  int Parse_Bootloader_Commandline(int argc, char * const argv[])&lt;br /&gt;
+It clearly takes in the argc and argv from main(), and parses it.&lt;/p&gt;
+
+&lt;p&gt;I had it working, and then I wanted to change the internals of that function, to use getopt.&lt;br /&gt;
+Interesting, I found that the unit tests were still applicable.  They had names eg.&lt;br /&gt;
+ParseCommandline_InvalidCommand_Returns0&lt;br /&gt;
+ParseCommandline_ValidLoadCommand_SetsCommandVariable&lt;/p&gt;
+
+&lt;p&gt;That’s cool!  I swapped out the internals and I know to some degree that the external users of this unit will be OK.&lt;/p&gt;
+
+&lt;p&gt;The new code that I swapped in, I had used before but did not have tests for it.  So I knew for example that my syntax for calling getopt was OK.&lt;br /&gt;
+I did have trouble compiling, because I was using -Werror and you probably know with crazy casts and use of const and pointers and arrays, you get warnings.  In my case the compiler didn’t like my use of const char * argv[].&lt;br /&gt;
+When I got the new code to compile, the above mentions tests FAILED !  Why???&lt;/p&gt;
+
+&lt;p&gt;I figured it was because I changed something with the types and casts to make the compiler happy.&lt;/p&gt;
+
+&lt;p&gt;I tried a bunch of things that didn’t make any difference.  Casting to (char **).&lt;/p&gt;
+
+&lt;p&gt;I then found out, that, getopt uses global variables that do not get reset !!!&lt;br /&gt;
+Now, obviously there were global variables because you have to use them, &lt;strong&gt;optarg&lt;/strong&gt;.&lt;br /&gt;
+But to me I had no idea there was another global variable,&lt;br /&gt;
+&lt;strong&gt;optind&lt;/strong&gt; ,&lt;br /&gt;
+and this is the argument index!  Starts at the beginning of the command line and when it gets to the end, that’s what makes the next getopt() call return EOF!&lt;/p&gt;
+
+&lt;p&gt;In my tests, getopt() was being called in each test!  Of course only the first test worked!&lt;/p&gt;
+
+&lt;p&gt;So obviously the solution is to put the following line in the TEST_START{} block or whatever you call it, it’s the code that runs before every test!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;optind = 0&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I literally added that one line and all my tests passed.  Crazy!&lt;/p&gt;</content><author><name></name></author><summary type="html">I have a function with associated unit tests, called Parse_Bootloader_Commandline(). int Parse_Bootloader_Commandline(int argc, char * const argv[]) It clearly takes in the argc and argv from main(), and parses it. I had it working, and then I wanted to change the internals of that function, to use getopt. Interesting, I found that the unit tests were still applicable. They had names eg. ParseCommandline_InvalidCommand_Returns0 ParseCommandline_ValidLoadCommand_SetsCommandVariable That’s cool! I swapped out the internals and I know to some degree that the external users of this unit will be OK.</summary></entry><entry><title type="html">How to make Linux Makefiles Work Good</title><link href="/blog/post/2017/05/22/How-to-Makefile-Linux-Good.html" rel="alternate" type="text/html" title="How to make Linux Makefiles Work Good" /><published>2017-05-22T00:00:00-07:00</published><updated>2017-05-22T00:00:00-07:00</updated><id>/blog/post/2017/05/22/How-to-Makefile-Linux-Good</id><content type="html" xml:base="/blog/post/2017/05/22/How-to-Makefile-Linux-Good.html">&lt;p&gt;I’m going to describe what I do for my current project.  I’m porting over my 5th project to this system so I gotta write it down haha.&lt;/p&gt;
+
+&lt;p&gt;Main Elements:&lt;br /&gt;
+VPATH:  You have to append every source directory in the VPATH.&lt;br /&gt;
+OBJS:  Then you list all the objects being compiled&lt;/p&gt;
+
+&lt;p&gt;Use a command like this:
+OBJS_PRODUCTION_CROSS = $(addprefix build/,$(PRODUCTION_OBJ_NAMES) $(PRODUCTION_TARGET_SPECIFIC_OBJ_NAMES) $(PRODUCTION_APP_OBJ_NAMES) $(ASFNAMES) )&lt;/p&gt;
+
+&lt;p&gt;To create a list of Target Object Paths.  These are the objects you want to build.  They’ll be in the /build directory.&lt;/p&gt;
+
+&lt;p&gt;The Make targets:  For building each object use a Make target like this:
+build/%.o : %.c
+  @echo Building file: $&amp;lt;
+  @echo Invoking: ARM/GNU C Compiler : 5.3.1
+  $(CROSS_C_COMPILER)  -x c -mthumb $(PROJECT_VERSION_NUMBER)  $(PROJECT_FLAGS) $(PROJECT_INCLUDES) $(PROJECT_COMMON_FLAGS)  -mlong-calls -g3 -Wall -Werror -m&lt;/p&gt;
+
+&lt;p&gt;This is why you made that list of the target objects before.  That’s a list of dependencies.  Every object is a dependency.&lt;br /&gt;
+The Make target covers all of these.&lt;br /&gt;
+The cool part is the dependency : %.c here.  This is where the VPATH is cool.
+No need to specify where any particular source file is.  The VPATH contains all the directories with source.&lt;/p&gt;
+
+&lt;p&gt;To build that source C file, all you need is the path to it so that’s all the VPATH does.&lt;br /&gt;
+The rest is just obvious compiler flags!&lt;/p&gt;
+
+&lt;p&gt;So what I”m doing is converting a Visual Studio generated makefile with all this Windows specific crap.&lt;br /&gt;
+Into a PORTABLE-ABLE MAKEFILE THAT I HAPPEN TO BE USING WITH LINUX.  Ahem.&lt;/p&gt;
+
+&lt;p&gt;Let’s create that PORTABLE-ABLE Makefile starter template, might as well.&lt;/p&gt;
+
+&lt;p&gt;To get incremental progress I’ll start with the all target and go from there.&lt;/p&gt;
+
+&lt;p&gt;First the all target:&lt;/p&gt;
+&lt;h1 id=&quot;all-target&quot;&gt;All Target&lt;/h1&gt;
+&lt;p&gt;all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)&lt;/p&gt;
+
+&lt;p&gt;$(OUTPUT_FILE_PATH): $(OBJS_PRODUCTION_CROSS) $(USER_OBJS) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
+  @echo Building target: $@
+  @echo Invoking: ARM/GNU Linker : 5.3.1
+  $(CROSS_C_COMPIL&lt;/p&gt;
+
+&lt;p&gt;What we see here is all will make the target with name specified by variable $(OUTPUT_FILE_PATH)&lt;br /&gt;
+To make that target, it depends on our production objects, libraries, a linker script, and whatever else.&lt;br /&gt;
+Let’s get that working.&lt;/p&gt;
+
+&lt;p&gt;#&lt;/p&gt;
+&lt;h1 id=&quot;generals&quot;&gt;GENERALS&lt;/h1&gt;
+&lt;p&gt;#
+#
+#&lt;/p&gt;
+
+&lt;p&gt;$(TARGET_OBJECT_BUILD_DIRECTORY)/%.o : %.c
+  @echo Building file: $&amp;lt;
+  @echo Invoking: C Compiler 
+  @echo $(COMPILER_COMMAND)
+  $(COMPILER_COMMAND)&lt;/p&gt;
+
+&lt;h1 id=&quot;all-target-1&quot;&gt;All Target&lt;/h1&gt;
+&lt;p&gt;all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)&lt;/p&gt;
+
+&lt;p&gt;$(OUTPUT_FILE_PATH): $(DEPENDENCIES_BEFORE_LINKING)
+  @echo Building target: $@&lt;/p&gt;
+
+&lt;p&gt;Works!&lt;/p&gt;
+
+&lt;p&gt;Now to use this, I need to create variables DEPENDENCIES_BEFORE_LINKING.
+These are the objects and libraries and stuff I need, linker script etc.
+If DEPENDENCIES_BEFORE_LINKING has the format described below, the provided make target works.&lt;/p&gt;
+
+&lt;p&gt;When the list DEPENDENCIES_BEFORE_LINKING includes .o object files inside the TARGET_OBJECT_BUILD_DIRECTORY,
+they will match the target.  The source file will be found from the VPATH.&lt;/p&gt;</content><author><name>Steven Anderson</name></author><summary type="html">I’m going to describe what I do for my current project. I’m porting over my 5th project to this system so I gotta write it down haha. Main Elements: VPATH: You have to append every source directory in the VPATH. OBJS: Then you list all the objects being compiled Use a command like this: OBJS_PRODUCTION_CROSS = $(addprefix build/,$(PRODUCTION_OBJ_NAMES) $(PRODUCTION_TARGET_SPECIFIC_OBJ_NAMES) $(PRODUCTION_APP_OBJ_NAMES) $(ASFNAMES) ) To create a list of Target Object Paths. These are the objects you want to build. They’ll be in the /build directory. The Make targets: For building each object use a Make target like this: build/%.o : %.c @echo Building file: $&amp;lt; @echo Invoking: ARM/GNU C Compiler : 5.3.1 $(CROSS_C_COMPILER) -x c -mthumb $(PROJECT_VERSION_NUMBER) $(PROJECT_FLAGS) $(PROJECT_INCLUDES) $(PROJECT_COMMON_FLAGS) -mlong-calls -g3 -Wall -Werror -m</summary></entry><entry><title type="html">How to test getopt</title><link href="/blog/guide/2017/05/19/how-to-test-getopt.html" rel="alternate" type="text/html" title="How to test getopt" /><published>2017-05-19T00:00:00-07:00</published><updated>2017-05-19T00:00:00-07:00</updated><id>/blog/guide/2017/05/19/how-to-test-getopt</id><content type="html" xml:base="/blog/guide/2017/05/19/how-to-test-getopt.html">&lt;p&gt;I have a function with associated unit tests, called Parse_Bootloader_Commandline().
+  int Parse_Bootloader_Commandline(int argc, char * const argv[])&lt;br /&gt;
+It clearly takes in the argc and argv from main(), and parses it.&lt;/p&gt;
+
+&lt;p&gt;I had it working, and then I wanted to change the internals of that function, to use getopt.&lt;br /&gt;
+Interesting, I found that the unit tests were still applicable.  They had names eg.&lt;br /&gt;
+ParseCommandline_InvalidCommand_Returns0&lt;br /&gt;
+ParseCommandline_ValidLoadCommand_SetsCommandVariable&lt;/p&gt;
+
+&lt;p&gt;That’s cool!  I swapped out the internals and I know to some degree that the external users of this unit will be OK.&lt;/p&gt;
+
+&lt;p&gt;The new code that I swapped in, I had used before but did not have tests for it.  So I knew for example that my syntax for calling getopt was OK.&lt;br /&gt;
+I did have trouble compiling, because I was using -Werror and you probably know with crazy casts and use of const and pointers and arrays, you get warnings.  In my case the compiler didn’t like my use of const char * argv[].&lt;br /&gt;
+When I got the new code to compile, the above mentions tests FAILED !  Why???&lt;/p&gt;
+
+&lt;p&gt;I figured it was because I changed something with the types and casts to make the compiler happy.&lt;/p&gt;
+
+&lt;p&gt;I tried a bunch of things that didn’t make any difference.  Casting to (char **).&lt;/p&gt;
+
+&lt;p&gt;I then found out, that, getopt uses global variables that do not get reset !!!&lt;br /&gt;
+Now, obviously there were global variables because you have to use them, &lt;strong&gt;optarg&lt;/strong&gt;.&lt;br /&gt;
+But to me I had no idea there was another global variable,&lt;br /&gt;
+&lt;strong&gt;optind&lt;/strong&gt; ,&lt;br /&gt;
+and this is the argument index!  Starts at the beginning of the command line and when it gets to the end, that’s what makes the next getopt() call return EOF!&lt;/p&gt;
+
+&lt;p&gt;In my tests, getopt() was being called in each test!  Of course only the first test worked!&lt;/p&gt;
+
+&lt;p&gt;So obviously the solution is to put the following line in the TEST_START{} block or whatever you call it, it’s the code that runs before every test!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;optind = 0&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I literally added that one line and all my tests passed.  Crazy!&lt;/p&gt;</content><author><name></name></author><summary type="html">I have a function with associated unit tests, called Parse_Bootloader_Commandline(). int Parse_Bootloader_Commandline(int argc, char * const argv[]) It clearly takes in the argc and argv from main(), and parses it. I had it working, and then I wanted to change the internals of that function, to use getopt. Interesting, I found that the unit tests were still applicable. They had names eg. ParseCommandline_InvalidCommand_Returns0 ParseCommandline_ValidLoadCommand_SetsCommandVariable That’s cool! I swapped out the internals and I know to some degree that the external users of this unit will be OK.</summary></entry><entry><title type="html">continous-delivery-of-firmware-hex-files</title><link href="/blog/guide/2017/05/07/continous-delivery-of-firmware-hex-files.html" rel="alternate" type="text/html" title="continous-delivery-of-firmware-hex-files" /><published>2017-05-07T00:00:00-07:00</published><updated>2017-05-07T00:00:00-07:00</updated><id>/blog/guide/2017/05/07/continous-delivery-of-firmware-hex-files</id><content type="html" xml:base="/blog/guide/2017/05/07/continous-delivery-of-firmware-hex-files.html">&lt;p&gt;I had a short, one-off project based on a code base in production.&lt;br /&gt;
+Writing the source was easy, but the deliverable was 20 hex files.
+Each hex file contained the exact same firmware image, with a single piece of data in flash changed to some value.&lt;br /&gt;
+I had my Makefile set up so I could set that value inside the Makefile.&lt;br /&gt;
+But to build all 20 required editing the Makefile and running a clean build.&lt;br /&gt;
+I did that once and released to the customer.&lt;br /&gt;
+Obviously the customer changed the spec because they couldn’t translate what they wanted into the spec correctly, and they discovered this by getting what they specified originally.&lt;/p&gt;
+
+&lt;p&gt;So now I have to repeat the process except the change to the source code is now a single line.  The entirety of the time spent for this job is in waiting for 20 clean builds.&lt;/p&gt;
+
+&lt;p&gt;I have a postulation here, needs to be reworded:&lt;/p&gt;
+
+&lt;p&gt;As soon as the build system use case goes beyond a single command-line command, eg. “make”, you have to automate your build system.&lt;/p&gt;
+
+&lt;p&gt;In my case I need the system to do a clean build, 20 times, each with a different value for some variable in the Makefile.&lt;/p&gt;
+
+&lt;p&gt;So I did this the fastest simplest way possible for me to implement.&lt;br /&gt;
+I went with the following:&lt;br /&gt;
+Make 20 different targets in the Makefile.  target1,target2,target3….target20.&lt;br /&gt;
+For each target, a target-specific variable can be specified, and in this case
+it overwrites a variable from the top of the makefile which is used in the all target.&lt;br /&gt;
+So, each target simply sets that target-specific variable, then has a dependency on the clean and all targets.  So we get a clean build with the variable set.  This variable also conveniently appears in the name of the hex file so that takes care of getting 20 unique filenames.&lt;br /&gt;
+Then, to actually build all of those targets, I just made a shell script that does make -f MyMakefile targetN for all targets.&lt;br /&gt;
+Really a crappy solution but that’s all I could do at the time and it still achieves automation.  Cool!&lt;/p&gt;</content><author><name></name></author><summary type="html">I had a short, one-off project based on a code base in production. Writing the source was easy, but the deliverable was 20 hex files. Each hex file contained the exact same firmware image, with a single piece of data in flash changed to some value. I had my Makefile set up so I could set that value inside the Makefile. But to build all 20 required editing the Makefile and running a clean build. I did that once and released to the customer. Obviously the customer changed the spec because they couldn’t translate what they wanted into the spec correctly, and they discovered this by getting what they specified originally. So now I have to repeat the process except the change to the source code is now a single line. The entirety of the time spent for this job is in waiting for 20 clean builds. I have a postulation here, needs to be reworded: As soon as the build system use case goes beyond a single command-line command, eg. “make”, you have to automate your build system. In my case I need the system to do a clean build, 20 times, each with a different value for some variable in the Makefile. So I did this the fastest simplest way possible for me to implement. I went with the following: Make 20 different targets in the Makefile. target1,target2,target3….target20. For each target, a target-specific variable can be specified, and in this case it overwrites a variable from the top of the makefile which is used in the all target. So, each target simply sets that target-specific variable, then has a dependency on the clean and all targets. So we get a clean build with the variable set. This variable also conveniently appears in the name of the hex file so that takes care of getting 20 unique filenames. Then, to actually build all of those targets, I just made a shell script that does make -f MyMakefile targetN for all targets. Really a crappy solution but that’s all I could do at the time and it still achieves automation. Cool!</summary></entry><entry><title type="html">resin.io , first try !</title><link href="/blog/post/2017/04/30/Resin.io-Beaglebone-FirstTry.html" rel="alternate" type="text/html" title="resin.io , first try !" /><published>2017-04-30T00:00:00-07:00</published><updated>2017-04-30T00:00:00-07:00</updated><id>/blog/post/2017/04/30/Resin.io-Beaglebone-FirstTry</id><content type="html" xml:base="/blog/post/2017/04/30/Resin.io-Beaglebone-FirstTry.html">&lt;p&gt;I needed to learn about continuous delivery.  I found resin.io and a couple things about it made me try it immediately.&lt;br /&gt;
+1, it supports beaglebone, and it supports other stuff too.&lt;br /&gt;
+2, the architectural drawing made sense and I was planning to go in a similar direction anyway.&lt;/p&gt;
+
+&lt;p&gt;Making an account was super fast.  Getting an OS image to download was also super fast.&lt;/p&gt;
+
+&lt;p&gt;First thing I don’t like:  you have to flash the Beaglebone’s internal (on-board) flash memory with the image.  You can’t run the image off the SD card.  It didn’t work when I tried it.  I just don’t like the idea that I have to flash an on-board flash memory with an OS that I literally just learned of its existence.  I like having the stock Beaglebone OS on there so I can do rescue.  This is a known issue and the issue is NOT there for other devices eg. raspberry pi.&lt;/p&gt;
+
+&lt;p&gt;SSH keys.  I like the interface, very simple.  I use SSH keys for other things so I made a new set of keys in some directory.  I had to edit the file ~/.ssh/config to tell ssh client to use the keys in some directory, when some host is being contacted.&lt;br /&gt;
+I had never done this before so 1 thing tripped me up:&lt;br /&gt;
+&lt;strong&gt;the IdentityFile is as shown.  do not put the .pub extension after it&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;n&quot;&gt;Host&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;git&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;HostName&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;git&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;myuser&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;IdentityFile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resin_id_rsa&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Got that working, and was able to git push resin master.&lt;br /&gt;
+Immediately, I saw on the resin.io dashboard that my beaglebone was starting to download the new code that was pushed up.  Cool!&lt;/p&gt;
+
+&lt;p&gt;I then pointed my browser at port 80 of the beaglebone’s IP address.  I got “Hello World!”.  Awesome!&lt;br /&gt;
+Next, the obvious thought that I had was:  I want to do the same thing again and host Hello World on port 81 instead of 80.  I imagined being able to swap in and out servers listening on different ports on the fly, and have some beaglebones with some types of servers and others with different combinations of server types.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Well, you can’t!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;As far as I understand (almost nothing) the concept of “Application” in Resin.io encompasses all the devices.  You can’t have a single beaglebone running 2 different applications.  A beaglebone is bound to a single application.  A single application is bound to a single git repository and a single docker file.&lt;/p&gt;</content><author><name></name></author><summary type="html">I needed to learn about continuous delivery. I found resin.io and a couple things about it made me try it immediately. 1, it supports beaglebone, and it supports other stuff too. 2, the architectural drawing made sense and I was planning to go in a similar direction anyway. Making an account was super fast. Getting an OS image to download was also super fast. First thing I don’t like: you have to flash the Beaglebone’s internal (on-board) flash memory with the image. You can’t run the image off the SD card. It didn’t work when I tried it. I just don’t like the idea that I have to flash an on-board flash memory with an OS that I literally just learned of its existence. I like having the stock Beaglebone OS on there so I can do rescue. This is a known issue and the issue is NOT there for other devices eg. raspberry pi. SSH keys. I like the interface, very simple. I use SSH keys for other things so I made a new set of keys in some directory. I had to edit the file ~/.ssh/config to tell ssh client to use the keys in some directory, when some host is being contacted. I had never done this before so 1 thing tripped me up: the IdentityFile is as shown. do not put the .pub extension after it</summary></entry><entry><title type="html">OpenVPN: What I need to know</title><link href="/blog/guide/2017/04/21/OpenVPN-For-Me.html" rel="alternate" type="text/html" title="OpenVPN: What I need to know" /><published>2017-04-21T00:00:00-07:00</published><updated>2017-04-21T00:00:00-07:00</updated><id>/blog/guide/2017/04/21/OpenVPN-For-Me</id><content type="html" xml:base="/blog/guide/2017/04/21/OpenVPN-For-Me.html">&lt;p&gt;Remember:&lt;br /&gt;
+    only .key files should be kept confidential.
+    .crt and .csr files can be sent over insecure channels such as plaintext email.
+    do not need to copy a .key file between computers.
+    each computer will have its own certificate/key pair.&lt;/p&gt;
+
+&lt;p&gt;Step 4 — Generating Client Certificates
+Each client will also each need a certificate and key in order to authenticate and connect to the VPN. Make sure you’re in the /usr/local/etc/openvpn/easy-rsa/ directory.&lt;/p&gt;
+
+&lt;p&gt;=========================================================================
+Server generates DH parameters&lt;br /&gt;
+openssl dhparam -out /etc/openvpn/dh2048.pem 2048&lt;/p&gt;
+
+&lt;p&gt;Before keys can be generated: 
+Now, we can begin setting up the CA itself. First, initialize the Public Key Infrastructure (PKI).&lt;br /&gt;
+./build-ca&lt;/p&gt;
+
+&lt;p&gt;Now we can build keys&lt;br /&gt;
+./build-key-server server&lt;br /&gt;
+Sign the certificate? [y/n]
+1 out of 1 certificate requests certified, commit? [y/n]&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Step 7 — Move the Server Certificates and Keys&lt;/strong&gt;
+&lt;em&gt;THIS IS IMPORTANT:  The server uses server.crt, server.key, ca.crt in some directory.  But they do not have to be created on the server; they can be moved to the server&lt;/em&gt;
+&lt;em&gt;In my case, I put the files somewhere else and referenced them in the server.ovpn file&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;We will now copy the certificate and key to /etc/openvpn, as OpenVPN will search in that directory for the server’s CA, certificate, and key.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cp /etc/openvpn/easy-rsa/keys/{server.crt,server.key,ca.crt} /etc/openvpn
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Step 8 — Generate Certificates and Keys for Clients&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;So far we’ve installed and configured the OpenVPN server, created a Certificate Authority, and created the server’s own certificate and key. In this step, we use the server’s CA to generate certificates and keys for each client device which will be connecting to the VPN.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;IMPORTANT:  the CA creates the keys for server and client.  The CA does not have to be on the server&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;./build-key client1&lt;/p&gt;
+
+&lt;p&gt;Sign the certificate? [y/n]
+1 out of 1 certificate requests certified, commit? [y/n]&lt;/p&gt;
+
+&lt;p&gt;Then, we’ll copy the generated key to the Easy-RSA keys directory that we created earlier. Note that we change the extension from .conf to .ovpn. This is to match convention.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/easy-rsa/keys/client.ovpn
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;IMPORTANT:  the SERVER needs copies of the client keys, and a client.ovpn&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;We need to modify each client file to include the IP address of the OpenVPN server so it knows what to connect to.&lt;/p&gt;
+
+&lt;p&gt;Transferring Certificates and Keys to Client Devices&lt;/p&gt;
+
+&lt;p&gt;Recall from the steps above that we created the client certificates and keys, and that they are stored on the OpenVPN server in the /etc/openvpn/easy-rsa/keys directory.&lt;/p&gt;
+
+&lt;p&gt;For each client we need to transfer the client certificate, key, and profile template files to a folder on our local computer or another client device.&lt;/p&gt;
+
+&lt;p&gt;In this example, our client1 device requires its certificate and key, located on the server in:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/openvpn/easy-rsa/keys/client1.crt
+/etc/openvpn/easy-rsa/keys/client1.key
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The ca.crt and client.ovpn files are the same for all clients. Download these two files as well; note that the ca.crt file is in a different directory than the others.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/openvpn/easy-rsa/keys/client.ovpn
+/etc/openvpn/ca.crt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;================================================&lt;/p&gt;
+
+&lt;p&gt;crt and key files represent both parts of a certificate, key being the private key to the certificate and crt being the signed certificate.&lt;/p&gt;</content><author><name></name></author><summary type="html">Remember: only .key files should be kept confidential. .crt and .csr files can be sent over insecure channels such as plaintext email. do not need to copy a .key file between computers. each computer will have its own certificate/key pair.</summary></entry><entry><title type="html">SAMD10 ADC Init, Complete!</title><link href="/blog/guide/2017/03/31/SAMD10-ADC-Init-Part2-Complete.html" rel="alternate" type="text/html" title="SAMD10 ADC Init, Complete!" /><published>2017-03-31T00:00:00-07:00</published><updated>2017-03-31T00:00:00-07:00</updated><id>/blog/guide/2017/03/31/SAMD10-ADC-Init-Part2-Complete</id><content type="html" xml:base="/blog/guide/2017/03/31/SAMD10-ADC-Init-Part2-Complete.html">&lt;p&gt;After configuring the GCLK generator and GCLK_ADC, I knew that was done properly because I could
+read and write the ADC registers.  I configured the ADC registers but I still could not get a reading.&lt;/p&gt;
+
+&lt;p&gt;After starting the conversion with a SWTRIG, the RESRDY flag never went high.&lt;br /&gt;
+Nothing else indicated a problem.  I then did a similar process as I did to get the GCLKs working:
+find working snippets of code that only depends on CMSIS.&lt;/p&gt;
+
+&lt;p&gt;Had a theory that if you wait too long after triggering the conversion, the result goes away. 
+I found this snippet on avrfreaks.  Looks like it is generated by Atmel START.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;  &lt;span class=&quot;n&quot;&gt;ADC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SWTRIG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ADC_SWTRIG_START&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ADC_SWTRIG_FLUSH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;cm&quot;&gt;/* wait for Synchronization */&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ADC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STATUS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ADC_STATUS_SYNCBUSY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/* Wait for synchronization */&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ADC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INTFLAG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RESRDY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/* Wait for analog conversion to complete */&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;cm&quot;&gt;/* return with converted value */&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ADC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RESULT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Pretty obvious but I can’t do that with my framework.  So I compiled this and flashed it in the target.
+And it works!&lt;br /&gt;
+Temp sensor, bandgap ref were both getting results.&lt;br /&gt;
+All other register accesses were done over serial, one at a time.  Serial is slow so the delay
+between each access was in the milliseconds.&lt;/p&gt;</content><author><name></name></author><summary type="html">After configuring the GCLK generator and GCLK_ADC, I knew that was done properly because I could read and write the ADC registers. I configured the ADC registers but I still could not get a reading. After starting the conversion with a SWTRIG, the RESRDY flag never went high. Nothing else indicated a problem. I then did a similar process as I did to get the GCLKs working: find working snippets of code that only depends on CMSIS. Had a theory that if you wait too long after triggering the conversion, the result goes away. I found this snippet on avrfreaks. Looks like it is generated by Atmel START.</summary></entry><entry><title type="html">ASF Snippets that only depend on CMSIS</title><link href="/blog/guide/2017/03/30/ASF-Snippets.html" rel="alternate" type="text/html" title="ASF Snippets that only depend on CMSIS" /><published>2017-03-30T00:00:00-07:00</published><updated>2017-03-30T00:00:00-07:00</updated><id>/blog/guide/2017/03/30/ASF-Snippets</id><content type="html" xml:base="/blog/guide/2017/03/30/ASF-Snippets.html">&lt;p&gt;I’ve always had problems getting ASF dependent crap to compile.  But the code works so I have to go to it
+either for use or reference.  I just discovered, with slight editing, a lot of the lowest level ASF functions
+can be snipped out and compiled using only the CMSIS headers.&lt;/p&gt;
+
+&lt;p&gt;The motivation for this was: how to read and write to the GCLK registers.  They require writes before reads and writes before writes.
+Datasheet doesn’t explictly state that but the ASF code does.  I discovered that the special C code to do this register access is not
+dependent on any ASF headers!&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;is_gclk_adc_enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;cm&quot;&gt;/* Select the requested generic clock channel */&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CLKCTRL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CLKCTRL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CLKEN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;set_gclk_gen_5_osc8m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system_gclk_is_syncing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/* Wait for synchronization */&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+  &lt;span class=&quot;cm&quot;&gt;/* Select the correct generator */&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GENDIV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x05&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;cm&quot;&gt;/* Write the new generator configuration */&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system_gclk_is_syncing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/* Wait for synchronization */&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GENDIV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x00000205&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system_gclk_is_syncing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/* Wait for synchronization */&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GENCTRL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x00010605&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;inline&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;system_gclk_is_syncing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STATUS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GCLK_STATUS_SYNCBUSY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;</content><author><name></name></author><summary type="html">I’ve always had problems getting ASF dependent crap to compile. But the code works so I have to go to it either for use or reference. I just discovered, with slight editing, a lot of the lowest level ASF functions can be snipped out and compiled using only the CMSIS headers. The motivation for this was: how to read and write to the GCLK registers. They require writes before reads and writes before writes. Datasheet doesn’t explictly state that but the ASF code does. I discovered that the special C code to do this register access is not dependent on any ASF headers!</summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="/blog/jekyll/update/2017/03/29/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2017-03-29T13:51:03-07:00</published><updated>2017-03-29T13:51:03-07:00</updated><id>/blog/jekyll/update/2017/03/29/welcome-to-jekyll</id><content type="html" xml:base="/blog/jekyll/update/2017/03/29/welcome-to-jekyll.html">&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
+
+&lt;p&gt;To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
+
+&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry><entry><title type="html">SAMD10 ADC Init, via direct register access</title><link href="/blog/guide/2017/03/29/SAMD10-ADC-Init.html" rel="alternate" type="text/html" title="SAMD10 ADC Init, via direct register access" /><published>2017-03-29T00:00:00-07:00</published><updated>2017-03-29T00:00:00-07:00</updated><id>/blog/guide/2017/03/29/SAMD10-ADC-Init</id><content type="html" xml:base="/blog/guide/2017/03/29/SAMD10-ADC-Init.html">&lt;p&gt;First: how to brick your device.&lt;br /&gt;
+If you write to a write-synchronized register twice, before the 2 clock domains sync,
+the bus will stall until the clocks sync.
+However, if you haven’t initialized the GCLK for that peripheral,
+the clocks won’t sync and the bus stalls forever.
+If you had put the code in shortly after the reset vector is called,
+the bus will stall and you can’t regain control using the debugger.&lt;/p&gt;
+
+&lt;p&gt;Note:  there is an unbricking antidote that Atmel supplies.&lt;/p&gt;
+
+&lt;p&gt;Second:  a lesson on 32-bit architecture&lt;br /&gt;
+I’m not sure why, but before now I assumed that 32-bit architecture meant that
+all reads and writes are 32-bits.  That implied that any 8-bit write involved 
+doing a 32-bit read, doing the logic and shifting, then doing a 32-bit write.&lt;/p&gt;
+
+&lt;p&gt;Well atleast in Cortex-M0+ that is totally false.
+The instruction set has loads and stores for byte, halfword, word.
+eg ldrb, ldrh, ldr.&lt;/p&gt;
+
+&lt;p&gt;If you look at the .lss output from arm-none-eabi-gcc, you’ll see all the various instructions,
+ldrb, ldrh, ldr.  How does GCC know which instruction to use?  Is it entirely based on the type?&lt;/p&gt;
+
+&lt;p&gt;In other words, does a uint8_t 100% absolutely lead to a ldrb/strb instruction ?
+I think if there were a one-to-one mapping from primitive type to the load/store instruction,
+that would be good to know!  Who is responsible for this?  C standard?  GCC?  ARM?&lt;/p&gt;
+
+&lt;p&gt;After some research it is true enough for my purposes.  See this example.&lt;br /&gt;
+The C code simply writes the argument to a location that is stored in RAM at a fixed address.&lt;br /&gt;
+You can see the strb instruction, ie. the 8-bit write.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;//Get the address to write to, from the global RAM
+&lt;/span&gt;  &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ramptr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x20000100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writeAddr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ramptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;//Now we have the address in a uint32_t
+&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//Point to that address and write to it
+&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writePtr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writeAddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;writePtr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xAA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-asm&quot; data-lang=&quot;asm&quot;&gt;00000010 &amp;lt;main&amp;gt;:
+  10: 4b04        ldr r3, [pc, #16] ; (24 &amp;lt;main+0x14&amp;gt;)
+  12: b082        sub sp, #8
+  14: 681b        ldr r3, [r3, #0]
+  16: b2c0        uxtb  r0, r0
+  18: 9301        str r3, [sp, #4]
+  1a: 9b01        ldr r3, [sp, #4]
+  1c: 7018        strb  r0, [r3, #0]
+  1e: 20aa        movs  r0, #170  ; 0xaa
+  20: b002        add sp, #8
+  22: 4770        bx  lr
+  24: 20000100  .word 0x20000100&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we have the 32-bit write.  Notice the str r0 instruction instead of the strb.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;//Get the address to write to, from the global RAM
+&lt;/span&gt;  &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ramptr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x20000100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writeAddr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ramptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;//Now we have the address in a uint32_t
+&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//Point to that address and write to it
+&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writePtr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writeAddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;writePtr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xAA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-asm&quot; data-lang=&quot;asm&quot;&gt;00000010 &amp;lt;main&amp;gt;:
+  10: 4b04        ldr r3, [pc, #16] ; (24 &amp;lt;main+0x14&amp;gt;)
+  12: b082        sub sp, #8
+  14: 681b        ldr r3, [r3, #0]
+  16: 9301        str r3, [sp, #4]
+  18: 9b01        ldr r3, [sp, #4]
+  1a: 6018        str r0, [r3, #0]
+  1c: 20aa        movs  r0, #170  ; 0xaa
+  1e: b002        add sp, #8
+  20: 4770        bx  lr
+  22: 46c0        nop     ; (mov r8, r8)
+  24: 20000100  .word 0x20000100&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This is the API I use to write a register.&lt;br /&gt;
+You have to explicitly read the register first, then write it.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span class=&quot;k&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;write_register&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;u8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;-&amp;gt;&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;Vec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;u8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;read_register&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;baseaddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;u32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;u8&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Vec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;u8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here is a link &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; to somewhere.&lt;/p&gt;
+
+&lt;p&gt;Here is a link to the wiki &lt;a href=&quot;/wiki/todo&quot;&gt;a wiki page&lt;/a&gt; blah blah&lt;/p&gt;</content><author><name></name></author><summary type="html">First: how to brick your device. If you write to a write-synchronized register twice, before the 2 clock domains sync, the bus will stall until the clocks sync. However, if you haven’t initialized the GCLK for that peripheral, the clocks won’t sync and the bus stalls forever. If you had put the code in shortly after the reset vector is called, the bus will stall and you can’t regain control using the debugger. Note: there is an unbricking antidote that Atmel supplies. Second: a lesson on 32-bit architecture I’m not sure why, but before now I assumed that 32-bit architecture meant that all reads and writes are 32-bits. That implied that any 8-bit write involved doing a 32-bit read, doing the logic and shifting, then doing a 32-bit write. Well atleast in Cortex-M0+ that is totally false. The instruction set has loads and stores for byte, halfword, word. eg ldrb, ldrh, ldr. If you look at the .lss output from arm-none-eabi-gcc, you’ll see all the various instructions, ldrb, ldrh, ldr. How does GCC know which instruction to use? Is it entirely based on the type? In other words, does a uint8_t 100% absolutely lead to a ldrb/strb instruction ? I think if there were a one-to-one mapping from primitive type to the load/store instruction, that would be good to know! Who is responsible for this? C standard? GCC? ARM? After some research it is true enough for my purposes. See this example. The C code simply writes the argument to a location that is stored in RAM at a fixed address. You can see the strb instruction, ie. the 8-bit write.</summary></entry></feed>
