@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Bootladder News</title>
-  <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search resu...">
+  <title>Hosting on docker behind a reverse proxy</title>
+  <meta name="description" content="Needed to redo my personal infrastructure. My infrastructure at work absolutely needs work but that’s out of my control. But my personal stuff can complement...">
 
   <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="/">
+  <link rel="canonical" href="/guide/2017/08/29/docker-reverse-proxy-hosting.html">
   <link rel="alternate" type="application/rss+xml" title="Bootladder News" href="/feed.xml">
   
   
@@ -61,116 +61,57 @@
 
     <main class="page-content" aria-label="Content">
       <div class="wrapper">
-        <div class="home">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Hosting on docker behind a reverse proxy</h1>
+    <p class="post-meta"><time datetime="2017-08-29T00:00:00-07:00" itemprop="datePublished">Aug 29, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Needed to redo my personal infrastructure.  My infrastructure at work absolutely needs work
+but that’s out of my control.  But my personal stuff can complement my work stuff.</p>
+
+<p>Currently thinking about integrating:  blog, wiki, VPN, storage, CI server, etc.
+And I would like some resources, particularly storage to be hostable on physical hardware in a home/office LAN.</p>
+
+<p>And in some way that isn’t a pile of mess and I can actually see what I have and what’s happening.</p>
+
+<p>First thing I did was point all my DNS at a reverse proxy server.<br />
+I wanted the RPS to run in a docker container.<br />
+First attempted to install docker on my $12/year VPS.  Turns out it was a OpenVZ VPS which did not have the minimum kernel 3.10 for docker.<br />
+So had to get a $15/year KVM VPS.  Cheap but only 5G disk.  Makes sense to be primarly a proxy and possibly the VPN server; not sure about VPN speed on a VPS…</p>
+
+<p>Used jwilder/nginx-proxy on docker hub.
+Works great, also can add your own config for a host.  For example I want some hosts behind the proxy to be external to the proxy machine, ie. not running in a container inside the proxy machine.</p>
+
+<p>Then I wanted to host this blog behind the proxy.
+lighttpd install.  This particular one has a VOLUME of its data directory.
+So I just use docker-compose.yaml to map the volume to where the static site is stored.</p>
+
+<p>I tried putting my wiki behind the proxy but was getting weird behavior most probably related to URLs or HTTP headers.<br />
+Actually it mostly worked but logging in made it act weird.</p>
+
+<p>Now that I could host the site in a docker container and have it behind the proxy,
+I had to figure how to deploy changes.<br />
+Found a solution, though it has coupling not sure how to avoid… chef/puppet?</p>
+
+<p>I create a git repository containing:
+the static site source code, and the built site.
+a docker-compose.yaml and Dockerfile</p>
+
+<p>to develop I have a laptop that can build jekyll, so I pull the repo, edit/new files, 
+jekyll build, push the repo which includes the built site.</p>
+
+<p>Then on my production host I run git pull to pull the built site.
+Then docker-compose up serves the site.<br />
+There is coupling to the reverse proxy; a docker network.</p>
+
+
+  </div>
+
   
-  
-
-
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Aug 29, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/08/29/docker-reverse-proxy-hosting.html">Hosting on docker behind a reverse proxy</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jun 20, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded.html">How to test getopt</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 22, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/post/2017/05/22/How-to-Makefile-Linux-Good.html">How to make Linux Makefiles Work Good</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 19, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/05/19/how-to-test-getopt.html">How to test getopt</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 7, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/05/07/continous-delivery-of-firmware-hex-files.html">continous-delivery-of-firmware-hex-files</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Apr 30, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/post/2017/04/30/Resin.io-Beaglebone-FirstTry.html">resin.io , first try !</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Apr 21, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/04/21/OpenVPN-For-Me.html">OpenVPN: What I need to know</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 31, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/31/SAMD10-ADC-Init-Part2-Complete.html">SAMD10 ADC Init, Complete!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 30, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/30/ASF-Snippets.html">ASF Snippets that only depend on CMSIS</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 29, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/jekyll/update/2017/03/29/welcome-to-jekyll.html">Welcome to Jekyll!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 29, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/29/SAMD10-ADC-Init.html">SAMD10 ADC Init, via direct register access</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 28, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/28/markdownexperiments.html">Markdown Snippets</a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
-
-</div>
+</article>
 
       </div>
     </main>

@@ -1,5 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-08-29T12:54:04-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">How to test getopt</title><link href="/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded.html" rel="alternate" type="text/html" title="How to test getopt" /><published>2017-06-20T00:00:00-07:00</published><updated>2017-06-20T00:00:00-07:00</updated><id>/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded</id><content type="html" xml:base="/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded.html">&lt;p&gt;I have a function with associated unit tests, called Parse_Bootloader_Commandline().
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-08-29T13:42:09-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Hosting on docker behind a reverse proxy</title><link href="/guide/2017/08/29/docker-reverse-proxy-hosting.html" rel="alternate" type="text/html" title="Hosting on docker behind a reverse proxy" /><published>2017-08-29T00:00:00-07:00</published><updated>2017-08-29T00:00:00-07:00</updated><id>/guide/2017/08/29/docker-reverse-proxy-hosting</id><content type="html" xml:base="/guide/2017/08/29/docker-reverse-proxy-hosting.html">&lt;p&gt;Needed to redo my personal infrastructure.  My infrastructure at work absolutely needs work
+but that’s out of my control.  But my personal stuff can complement my work stuff.&lt;/p&gt;
+
+&lt;p&gt;Currently thinking about integrating:  blog, wiki, VPN, storage, CI server, etc.
+And I would like some resources, particularly storage to be hostable on physical hardware in a home/office LAN.&lt;/p&gt;
+
+&lt;p&gt;And in some way that isn’t a pile of mess and I can actually see what I have and what’s happening.&lt;/p&gt;
+
+&lt;p&gt;First thing I did was point all my DNS at a reverse proxy server.&lt;br /&gt;
+I wanted the RPS to run in a docker container.&lt;br /&gt;
+First attempted to install docker on my $12/year VPS.  Turns out it was a OpenVZ VPS which did not have the minimum kernel 3.10 for docker.&lt;br /&gt;
+So had to get a $15/year KVM VPS.  Cheap but only 5G disk.  Makes sense to be primarly a proxy and possibly the VPN server; not sure about VPN speed on a VPS…&lt;/p&gt;
+
+&lt;p&gt;Used jwilder/nginx-proxy on docker hub.
+Works great, also can add your own config for a host.  For example I want some hosts behind the proxy to be external to the proxy machine, ie. not running in a container inside the proxy machine.&lt;/p&gt;
+
+&lt;p&gt;Then I wanted to host this blog behind the proxy.
+lighttpd install.  This particular one has a VOLUME of its data directory.
+So I just use docker-compose.yaml to map the volume to where the static site is stored.&lt;/p&gt;
+
+&lt;p&gt;I tried putting my wiki behind the proxy but was getting weird behavior most probably related to URLs or HTTP headers.&lt;br /&gt;
+Actually it mostly worked but logging in made it act weird.&lt;/p&gt;
+
+&lt;p&gt;Now that I could host the site in a docker container and have it behind the proxy,
+I had to figure how to deploy changes.&lt;br /&gt;
+Found a solution, though it has coupling not sure how to avoid… chef/puppet?&lt;/p&gt;
+
+&lt;p&gt;I create a git repository containing:
+the static site source code, and the built site.
+a docker-compose.yaml and Dockerfile&lt;/p&gt;
+
+&lt;p&gt;to develop I have a laptop that can build jekyll, so I pull the repo, edit/new files, 
+jekyll build, push the repo which includes the built site.&lt;/p&gt;
+
+&lt;p&gt;Then on my production host I run git pull to pull the built site.
+Then docker-compose up serves the site.&lt;br /&gt;
+There is coupling to the reverse proxy; a docker network.&lt;/p&gt;</content><author><name></name></author><summary type="html">Needed to redo my personal infrastructure. My infrastructure at work absolutely needs work but that’s out of my control. But my personal stuff can complement my work stuff.</summary></entry><entry><title type="html">How to test getopt</title><link href="/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded.html" rel="alternate" type="text/html" title="How to test getopt" /><published>2017-06-20T00:00:00-07:00</published><updated>2017-06-20T00:00:00-07:00</updated><id>/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded</id><content type="html" xml:base="/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded.html">&lt;p&gt;I have a function with associated unit tests, called Parse_Bootloader_Commandline().
   int Parse_Bootloader_Commandline(int argc, char * const argv[])&lt;br /&gt;
 It clearly takes in the argc and argv from main(), and parses it.&lt;/p&gt;
 
@@ -342,96 +378,4 @@ dependent on any ASF headers!&lt;/p&gt;
 &lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry><entry><title type="html">SAMD10 ADC Init, via direct register access</title><link href="/guide/2017/03/29/SAMD10-ADC-Init.html" rel="alternate" type="text/html" title="SAMD10 ADC Init, via direct register access" /><published>2017-03-29T00:00:00-07:00</published><updated>2017-03-29T00:00:00-07:00</updated><id>/guide/2017/03/29/SAMD10-ADC-Init</id><content type="html" xml:base="/guide/2017/03/29/SAMD10-ADC-Init.html">&lt;p&gt;First: how to brick your device.&lt;br /&gt;
-If you write to a write-synchronized register twice, before the 2 clock domains sync,
-the bus will stall until the clocks sync.
-However, if you haven’t initialized the GCLK for that peripheral,
-the clocks won’t sync and the bus stalls forever.
-If you had put the code in shortly after the reset vector is called,
-the bus will stall and you can’t regain control using the debugger.&lt;/p&gt;
-
-&lt;p&gt;Note:  there is an unbricking antidote that Atmel supplies.&lt;/p&gt;
-
-&lt;p&gt;Second:  a lesson on 32-bit architecture&lt;br /&gt;
-I’m not sure why, but before now I assumed that 32-bit architecture meant that
-all reads and writes are 32-bits.  That implied that any 8-bit write involved 
-doing a 32-bit read, doing the logic and shifting, then doing a 32-bit write.&lt;/p&gt;
-
-&lt;p&gt;Well atleast in Cortex-M0+ that is totally false.
-The instruction set has loads and stores for byte, halfword, word.
-eg ldrb, ldrh, ldr.&lt;/p&gt;
-
-&lt;p&gt;If you look at the .lss output from arm-none-eabi-gcc, you’ll see all the various instructions,
-ldrb, ldrh, ldr.  How does GCC know which instruction to use?  Is it entirely based on the type?&lt;/p&gt;
-
-&lt;p&gt;In other words, does a uint8_t 100% absolutely lead to a ldrb/strb instruction ?
-I think if there were a one-to-one mapping from primitive type to the load/store instruction,
-that would be good to know!  Who is responsible for this?  C standard?  GCC?  ARM?&lt;/p&gt;
-
-&lt;p&gt;After some research it is true enough for my purposes.  See this example.&lt;br /&gt;
-The C code simply writes the argument to a location that is stored in RAM at a fixed address.&lt;br /&gt;
-You can see the strb instruction, ie. the 8-bit write.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;//Get the address to write to, from the global RAM
-&lt;/span&gt;  &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ramptr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x20000100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writeAddr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ramptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-  &lt;span class=&quot;c1&quot;&gt;//Now we have the address in a uint32_t
-&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//Point to that address and write to it
-&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writePtr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writeAddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;writePtr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xAA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-asm&quot; data-lang=&quot;asm&quot;&gt;00000010 &amp;lt;main&amp;gt;:
-  10: 4b04        ldr r3, [pc, #16] ; (24 &amp;lt;main+0x14&amp;gt;)
-  12: b082        sub sp, #8
-  14: 681b        ldr r3, [r3, #0]
-  16: b2c0        uxtb  r0, r0
-  18: 9301        str r3, [sp, #4]
-  1a: 9b01        ldr r3, [sp, #4]
-  1c: 7018        strb  r0, [r3, #0]
-  1e: 20aa        movs  r0, #170  ; 0xaa
-  20: b002        add sp, #8
-  22: 4770        bx  lr
-  24: 20000100  .word 0x20000100&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we have the 32-bit write.  Notice the str r0 instruction instead of the strb.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;//Get the address to write to, from the global RAM
-&lt;/span&gt;  &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ramptr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x20000100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writeAddr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ramptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-  &lt;span class=&quot;c1&quot;&gt;//Now we have the address in a uint32_t
-&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//Point to that address and write to it
-&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writePtr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writeAddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;writePtr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xAA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-asm&quot; data-lang=&quot;asm&quot;&gt;00000010 &amp;lt;main&amp;gt;:
-  10: 4b04        ldr r3, [pc, #16] ; (24 &amp;lt;main+0x14&amp;gt;)
-  12: b082        sub sp, #8
-  14: 681b        ldr r3, [r3, #0]
-  16: 9301        str r3, [sp, #4]
-  18: 9b01        ldr r3, [sp, #4]
-  1a: 6018        str r0, [r3, #0]
-  1c: 20aa        movs  r0, #170  ; 0xaa
-  1e: b002        add sp, #8
-  20: 4770        bx  lr
-  22: 46c0        nop     ; (mov r8, r8)
-  24: 20000100  .word 0x20000100&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This is the API I use to write a register.&lt;br /&gt;
-You have to explicitly read the register first, then write it.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span class=&quot;k&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;write_register&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;u8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;-&amp;gt;&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;Vec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;u8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;read_register&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;baseaddr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;u32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;offset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;u8&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Vec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;u8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here is a link &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; to somewhere.&lt;/p&gt;
-
-&lt;p&gt;Here is a link to the wiki &lt;a href=&quot;/wiki/todo&quot;&gt;a wiki page&lt;/a&gt; blah blah&lt;/p&gt;</content><author><name></name></author><summary type="html">First: how to brick your device. If you write to a write-synchronized register twice, before the 2 clock domains sync, the bus will stall until the clocks sync. However, if you haven’t initialized the GCLK for that peripheral, the clocks won’t sync and the bus stalls forever. If you had put the code in shortly after the reset vector is called, the bus will stall and you can’t regain control using the debugger. Note: there is an unbricking antidote that Atmel supplies. Second: a lesson on 32-bit architecture I’m not sure why, but before now I assumed that 32-bit architecture meant that all reads and writes are 32-bits. That implied that any 8-bit write involved doing a 32-bit read, doing the logic and shifting, then doing a 32-bit write. Well atleast in Cortex-M0+ that is totally false. The instruction set has loads and stores for byte, halfword, word. eg ldrb, ldrh, ldr. If you look at the .lss output from arm-none-eabi-gcc, you’ll see all the various instructions, ldrb, ldrh, ldr. How does GCC know which instruction to use? Is it entirely based on the type? In other words, does a uint8_t 100% absolutely lead to a ldrb/strb instruction ? I think if there were a one-to-one mapping from primitive type to the load/store instruction, that would be good to know! Who is responsible for this? C standard? GCC? ARM? After some research it is true enough for my purposes. See this example. The C code simply writes the argument to a location that is stored in RAM at a fixed address. You can see the strb instruction, ie. the 8-bit write.</summary></entry></feed>
+&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry></feed>
