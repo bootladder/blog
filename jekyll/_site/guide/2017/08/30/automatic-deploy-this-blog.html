@@ -109,15 +109,22 @@ Now consider if the Dockerfile changes.  The container has to be rebuilt and res
 Pulling into the production non-bare repo might be awkward since its data is behind master.
 The post receive hook could copy the Dockerfile.</p>
   </li>
-  <li>This may be more complicated than I like.  But perhaps the proper solution is best.
+  <li>
+    <p>This may be more complicated than I like.  But perhaps the proper solution is best.
 On production host we have the bare repo.<br />
 On dev we push to production –&gt;  bare repo executes post receive
 That post receive will install the Dockerfile, docker-compose.yaml, and the static website
 into another location.<br />
 Actually this is nice since docker-compose.yaml uses relative paths “./” when mapping the
 volume for http server root.<br />
-So we can actually deploy the website in any directory.</li>
+So we can actually deploy the website in any directory.</p>
+  </li>
+  <li>Nice! It worked as expected.</li>
+  <li>git remote add prod</li>
+  <li>git push prod master</li>
+  <li>the bare prod repo executes its script and files appear inside the deploy directory!</li>
 </ul>
+
 
   </div>
 

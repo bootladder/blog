@@ -49,3 +49,9 @@ Trying it out now...
   Actually this is nice since docker-compose.yaml uses relative paths "./" when mapping the
   volume for http server root.  
   So we can actually deploy the website in any directory.
+  
+* Nice! It worked as expected.
+* git remote add prod
+* git push prod master
+* the bare prod repo executes its script and files appear inside the deploy directory!
+
