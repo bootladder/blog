@@ -40,18 +40,18 @@ permalink: /about/
   
 My goal is to acquire more experience in the following direction:  
   
-* Testing  
+* **Testing**  
  We can completely develop and test an application before the target hardware or OS even exists.  
  We can have a complete hardware test bed; especially for wireless devices!  
  We develop extra software for tests, let's develop extra hardware for tests.  
 
-* Version Control , Continuous Integration  
+* **Version Control , Continuous Integration**  
  Test what you ship, ship what you test.  
  The system is entirely integrated in a cloud-based test environment without a production environment even existing.  
  You can always go back to an exact build and throw it on the hardware test bed.  Though if the hardware test bed ever changes that's a tough one.
 
   
-* Really Good Modularity and Portability  
+* **Really Good Modularity and Portability**  
 I've seen Conway's law in action in every engineering job I've had.  
 Let's steer it by making modular architecture critical.   
 Let's be able to swap out a PHY layer or a NWK layer, or a HAL, or an algorithm.    
