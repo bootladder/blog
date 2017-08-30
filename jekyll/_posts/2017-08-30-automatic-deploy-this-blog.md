@@ -59,5 +59,11 @@ I used the post-receive script from here
 https://gist.github.com/thomasfr/9691385
   
 Works great.
+  
+Actually you know what's really cool, I don't even need github.com to do this!  It's just my laptop and prod.
+  
+I could actually automate this further and combine:  jekyll build --> git add . --> git commit -m "insert message here" --> git push 
+Into 1 command.
 
-## Now I can deploy changes to my blog with 1 git push!  As demonstrated by this particular change!
+# Now I can deploy changes to my blog with 1 git push!  As demonstrated by this particular change!
+  
