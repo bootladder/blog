@@ -11,12 +11,12 @@ Change blog source --> jekyll build --> git add && git commit && git push --> gi
   
 The worst part being that git pull happens on the production host and the others happen on dev host.
   
-So, I found a bunch of posts talking about a push-to-deploy solution using git --init.
+So, I found a bunch of posts talking about a push-to-deploy solution using git --bare.
 It works by pushing commits to a bare repository located on production host.
 The bare repo then has a post receive hook which installs files somewhere else on the production filesytem.
   
 I want to skip a step there, because fortunately, the Docker setup for this blog
-maps the web server root directory to inside the git repo.
+maps the web server root directory to inside the git repo.  So no separate install directory needed.
   
 This guide is relevant, actually obvious but it's nice to see it in a guide.  https://gist.github.com/joahking/780877
   
@@ -38,7 +38,7 @@ Trying it out now...
   If there was a separate bare repo, its post receive hook would install files inside another git repo.
   Which is not too bad since I won't ever push from that repo.
   Now consider if the Dockerfile changes.  The container has to be rebuilt and restarted.
-  Pulling into the production non-bare repo might be awkward since its data is behind master.
+  Pulling into the production non-bare repo might be awkward since its data is behind master in the history.
   The post receive hook could copy the Dockerfile.
   
 * This may be more complicated than I like.  But perhaps the proper solution is best.
@@ -55,3 +55,9 @@ Trying it out now...
 * git push prod master
 * the bare prod repo executes its script and files appear inside the deploy directory!
 
+I used the post-receive script from here
+https://gist.github.com/thomasfr/9691385
+  
+Works great.
+
+## Now I can deploy changes to my blog with 1 git push!  As demonstrated by this particular change!
