@@ -76,12 +76,12 @@ I immediately noticed there were too many steps to work on the blog.</p>
 
 <p>The worst part being that git pull happens on the production host and the others happen on dev host.</p>
 
-<p>So, I found a bunch of posts talking about a push-to-deploy solution using git –init.
+<p>So, I found a bunch of posts talking about a push-to-deploy solution using git –bare.
 It works by pushing commits to a bare repository located on production host.
 The bare repo then has a post receive hook which installs files somewhere else on the production filesytem.</p>
 
 <p>I want to skip a step there, because fortunately, the Docker setup for this blog
-maps the web server root directory to inside the git repo.</p>
+maps the web server root directory to inside the git repo.  So no separate install directory needed.</p>
 
 <p>This guide is relevant, actually obvious but it’s nice to see it in a guide.  https://gist.github.com/joahking/780877</p>
 
@@ -106,7 +106,7 @@ to create a working copy and install that.</li>
 If there was a separate bare repo, its post receive hook would install files inside another git repo.
 Which is not too bad since I won’t ever push from that repo.
 Now consider if the Dockerfile changes.  The container has to be rebuilt and restarted.
-Pulling into the production non-bare repo might be awkward since its data is behind master.
+Pulling into the production non-bare repo might be awkward since its data is behind master in the history.
 The post receive hook could copy the Dockerfile.</p>
   </li>
   <li>
@@ -125,6 +125,12 @@ So we can actually deploy the website in any directory.</p>
   <li>the bare prod repo executes its script and files appear inside the deploy directory!</li>
 </ul>
 
+<p>I used the post-receive script from here
+https://gist.github.com/thomasfr/9691385</p>
+
+<p>Works great.</p>
+
+<h2 id="now-i-can-deploy-changes-to-my-blog-with-1-git-push--as-demonstrated-by-this-particular-change">Now I can deploy changes to my blog with 1 git push!  As demonstrated by this particular change!</h2>
 
   </div>
 
