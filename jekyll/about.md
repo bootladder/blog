@@ -55,7 +55,7 @@ My goal is to acquire more experience in the following direction:
 I've seen Conway's law in action in every engineering job I've had.  
 Let's steer it by making modular architecture critical.   
 Let's be able to swap out a PHY layer or a NWK layer, or a HAL, or an algorithm.    
-Let's divide up a system into components, tasks, messages, control flow, whatever.
+Let's divide up a system into components, tasks, messages, control flow, whatever.  
 Let's be extremely flexible but not too complicated.
 
   
