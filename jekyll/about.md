@@ -6,7 +6,7 @@ permalink: /about/
 
 <script>
 //This just refreshes the page every 5 seconds.  Cool!
-setTimeout(function(){ window.location.href = window.location.href; }, 5000);
+//setTimeout(function(){ window.location.href = window.location.href; }, 5000);
 </script>
 
     Just an un-edited documentation of technical tips.  
@@ -26,6 +26,7 @@ setTimeout(function(){ window.location.href = window.location.href; }, 5000);
 * I keep software up to date with hardware changes.
 * I'm familiar with product development/engineering as well as software/hardware.
 * I work with devs, designers, Mech E's, the customer, IT, whoever.
+* I will learn any language, protocol, API, platform, toolchain, CAD tool, etc.  
   
 
 
@@ -34,6 +35,7 @@ setTimeout(function(){ window.location.href = window.location.href; }, 5000);
 
     I need a mentor, some good teammates and a good project 
     to take me to the next level.
+    I'd say I have about 3 solid years of experience in the embedded industry.
   
   
 My goal is to acquire more experience in the following direction:  
@@ -45,13 +47,16 @@ My goal is to acquire more experience in the following direction:
 
 * Version Control , Continuous Integration  
  Test what you ship, ship what you test.  
- The system is entirely integrated in a cloud-based test environment without a production environment even existing.  You can always go back to an exact build and throw it on the hardware test bed.  Though if the hardware test bed ever changes that's a tough one.
+ The system is entirely integrated in a cloud-based test environment without a production environment even existing.  
+ You can always go back to an exact build and throw it on the hardware test bed.  Though if the hardware test bed ever changes that's a tough one.
 
   
 * Really Good Modularity and Portability  
 I've seen Conway's law in action in every engineering job I've had.  
-Let's steer it by making modular architecture critical.
-  
+Let's steer it by making modular architecture critical.   
+Let's be able to swap out a PHY layer or a NWK layer, or a HAL, or an algorithm.    
+Let's divide up a system into components, tasks, messages, control flow, whatever.
+Let's be extremely flexible but not too complicated.
 
   
 My professional experience includes, but is absolutely not limited to: 
@@ -63,6 +68,7 @@ My professional experience includes, but is absolutely not limited to:
 - Design of power electronic converters, eg. PID control, data sampling, control interface.
 - Design of IoT device, eg. gateway, low-power, RF.
 - Schematics,PCB Layout, BOMs, board bring up, hardware debugging, PCB rework, etc.
+- Technical field work, travelling to install sites, collecting and analyzing field test data.
 
 
 I've worked at ODI, Inc.  JLM, Inc.  and UC Davis.  
