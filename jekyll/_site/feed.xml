@@ -1,5 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-08-29T17:17:46-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Hosting on docker behind a reverse proxy</title><link href="/guide/2017/08/29/docker-reverse-proxy-hosting.html" rel="alternate" type="text/html" title="Hosting on docker behind a reverse proxy" /><published>2017-08-29T00:00:00-07:00</published><updated>2017-08-29T00:00:00-07:00</updated><id>/guide/2017/08/29/docker-reverse-proxy-hosting</id><content type="html" xml:base="/guide/2017/08/29/docker-reverse-proxy-hosting.html">&lt;p&gt;Needed to redo my personal infrastructure.  My infrastructure at work absolutely needs work
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-08-30T10:13:38-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Deploy blog updates automatically with git push</title><link href="/guide/2017/08/30/automatic-deploy-this-blog.html" rel="alternate" type="text/html" title="Deploy blog updates automatically with git push" /><published>2017-08-30T00:00:00-07:00</published><updated>2017-08-30T00:00:00-07:00</updated><id>/guide/2017/08/30/automatic-deploy-this-blog</id><content type="html" xml:base="/guide/2017/08/30/automatic-deploy-this-blog.html">&lt;p&gt;After I had the docker shared volume + git solution working (see other post),
+I immediately noticed there were too many steps to work on the blog.&lt;/p&gt;
+
+&lt;p&gt;Change blog source –&amp;gt; jekyll build –&amp;gt; git add &amp;amp;&amp;amp; git commit &amp;amp;&amp;amp; git push –&amp;gt; git pull&lt;/p&gt;
+
+&lt;p&gt;The worst part being that git pull happens on the production host and the others happen on dev host.&lt;/p&gt;
+
+&lt;p&gt;So, I found a bunch of posts talking about a push-to-deploy solution using git –init.
+It works by pushing commits to a bare repository located on production host.
+The bare repo then has a post receive hook which installs files somewhere else on the production filesytem.&lt;/p&gt;
+
+&lt;p&gt;I want to skip a step there, because fortunately, the Docker setup for this blog
+maps the web server root directory to inside the git repo.&lt;/p&gt;
+
+&lt;p&gt;This guide is relevant, actually obvious but it’s nice to see it in a guide.  https://gist.github.com/joahking/780877&lt;/p&gt;
+
+&lt;p&gt;Trying it out now…&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Stop the running Docker container&lt;/li&gt;
+  &lt;li&gt;Go into a new directory so we don’t touch the working install&lt;/li&gt;
+  &lt;li&gt;git clone –bare https://myrepo&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;I get a blog.git directory, no source.
+Ahh, now I get it.  There’s no working tree, there’s only objects (blobs).  The raw git stuff.
+A working tree at any commit can be constructed using the objects and the history (did I say that right?).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;So, I can’t just have a bare repo.  I can’t have a non-bare repo because I can’t push to it.&lt;/li&gt;
+  &lt;li&gt;So I guess the other guys were right.&lt;br /&gt;
+Push to the bare repo and use the post receive hook
+to create a working copy and install that.&lt;/li&gt;
+  &lt;li&gt;But that doesn’t work if my Docker container is already running&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If Docker container is running, that means docker-compose up happened inside a git repo. (in my case)
+If there was a separate bare repo, its post receive hook would install files inside another git repo.
+Which is not too bad since I won’t ever push from that repo.
+Now consider if the Dockerfile changes.  The container has to be rebuilt and restarted.
+Pulling into the production non-bare repo might be awkward since its data is behind master.
+The post receive hook could copy the Dockerfile.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;This may be more complicated than I like.  But perhaps the proper solution is best.
+On production host we have the bare repo.&lt;br /&gt;
+On dev we push to production –&amp;gt;  bare repo executes post receive
+That post receive will install the Dockerfile, docker-compose.yaml, and the static website
+into another location.&lt;br /&gt;
+Actually this is nice since docker-compose.yaml uses relative paths “./” when mapping the
+volume for http server root.&lt;br /&gt;
+So we can actually deploy the website in any directory.&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">After I had the docker shared volume + git solution working (see other post), I immediately noticed there were too many steps to work on the blog. Change blog source –&amp;gt; jekyll build –&amp;gt; git add &amp;amp;&amp;amp; git commit &amp;amp;&amp;amp; git push –&amp;gt; git pull The worst part being that git pull happens on the production host and the others happen on dev host. So, I found a bunch of posts talking about a push-to-deploy solution using git –init. It works by pushing commits to a bare repository located on production host. The bare repo then has a post receive hook which installs files somewhere else on the production filesytem. I want to skip a step there, because fortunately, the Docker setup for this blog maps the web server root directory to inside the git repo. This guide is relevant, actually obvious but it’s nice to see it in a guide. https://gist.github.com/joahking/780877 Trying it out now… Stop the running Docker container Go into a new directory so we don’t touch the working install git clone –bare https://myrepo I get a blog.git directory, no source. Ahh, now I get it. There’s no working tree, there’s only objects (blobs). The raw git stuff. A working tree at any commit can be constructed using the objects and the history (did I say that right?). So, I can’t just have a bare repo. I can’t have a non-bare repo because I can’t push to it. So I guess the other guys were right. Push to the bare repo and use the post receive hook to create a working copy and install that. But that doesn’t work if my Docker container is already running If Docker container is running, that means docker-compose up happened inside a git repo. (in my case) If there was a separate bare repo, its post receive hook would install files inside another git repo. Which is not too bad since I won’t ever push from that repo. Now consider if the Dockerfile changes. The container has to be rebuilt and restarted. Pulling into the production non-bare repo might be awkward since its data is behind master. The post receive hook could copy the Dockerfile. This may be more complicated than I like. But perhaps the proper solution is best. On production host we have the bare repo. On dev we push to production –&amp;gt; bare repo executes post receive That post receive will install the Dockerfile, docker-compose.yaml, and the static website into another location. Actually this is nice since docker-compose.yaml uses relative paths “./” when mapping the volume for http server root. So we can actually deploy the website in any directory.</summary></entry><entry><title type="html">Hosting on docker behind a reverse proxy</title><link href="/guide/2017/08/29/docker-reverse-proxy-hosting.html" rel="alternate" type="text/html" title="Hosting on docker behind a reverse proxy" /><published>2017-08-29T00:00:00-07:00</published><updated>2017-08-29T00:00:00-07:00</updated><id>/guide/2017/08/29/docker-reverse-proxy-hosting</id><content type="html" xml:base="/guide/2017/08/29/docker-reverse-proxy-hosting.html">&lt;p&gt;Needed to redo my personal infrastructure.  My infrastructure at work absolutely needs work
 but that’s out of my control.  But my personal stuff can complement my work stuff.&lt;/p&gt;
 
 &lt;p&gt;Currently thinking about integrating:  blog, wiki, VPN, storage, CI server, etc.
@@ -369,16 +417,4 @@ dependent on any ASF headers!&lt;/p&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;</content><author><name></name></author><summary type="html">I’ve always had problems getting ASF dependent crap to compile. But the code works so I have to go to it either for use or reference. I just discovered, with slight editing, a lot of the lowest level ASF functions can be snipped out and compiled using only the CMSIS headers. The motivation for this was: how to read and write to the GCLK registers. They require writes before reads and writes before writes. Datasheet doesn’t explictly state that but the ASF code does. I discovered that the special C code to do this register access is not dependent on any ASF headers!</summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="/jekyll/update/2017/03/29/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2017-03-29T13:51:03-07:00</published><updated>2017-03-29T13:51:03-07:00</updated><id>/jekyll/update/2017/03/29/welcome-to-jekyll</id><content type="html" xml:base="/jekyll/update/2017/03/29/welcome-to-jekyll.html">&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
-
-&lt;p&gt;To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
-
-&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry></feed>
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;</content><author><name></name></author><summary type="html">I’ve always had problems getting ASF dependent crap to compile. But the code works so I have to go to it either for use or reference. I just discovered, with slight editing, a lot of the lowest level ASF functions can be snipped out and compiled using only the CMSIS headers. The motivation for this was: how to read and write to the GCLK registers. They require writes before reads and writes before writes. Datasheet doesn’t explictly state that but the ASF code does. I discovered that the special C code to do this register access is not dependent on any ASF headers!</summary></entry></feed>

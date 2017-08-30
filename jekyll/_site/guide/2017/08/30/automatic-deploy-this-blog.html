@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Bootladder News</title>
-  <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search resu...">
+  <title>Deploy blog updates automatically with git push</title>
+  <meta name="description" content="After I had the docker shared volume + git solution working (see other post), I immediately noticed there were too many steps to work on the blog. Change blo...">
 
   <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="/">
+  <link rel="canonical" href="/guide/2017/08/30/automatic-deploy-this-blog.html">
   <link rel="alternate" type="application/rss+xml" title="Bootladder News" href="/feed.xml">
   
   
@@ -61,124 +61,68 @@
 
     <main class="page-content" aria-label="Content">
       <div class="wrapper">
-        <div class="home">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Deploy blog updates automatically with git push</h1>
+    <p class="post-meta"><time datetime="2017-08-30T00:00:00-07:00" itemprop="datePublished">Aug 30, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>After I had the docker shared volume + git solution working (see other post),
+I immediately noticed there were too many steps to work on the blog.</p>
+
+<p>Change blog source –&gt; jekyll build –&gt; git add &amp;&amp; git commit &amp;&amp; git push –&gt; git pull</p>
+
+<p>The worst part being that git pull happens on the production host and the others happen on dev host.</p>
+
+<p>So, I found a bunch of posts talking about a push-to-deploy solution using git –init.
+It works by pushing commits to a bare repository located on production host.
+The bare repo then has a post receive hook which installs files somewhere else on the production filesytem.</p>
+
+<p>I want to skip a step there, because fortunately, the Docker setup for this blog
+maps the web server root directory to inside the git repo.</p>
+
+<p>This guide is relevant, actually obvious but it’s nice to see it in a guide.  https://gist.github.com/joahking/780877</p>
+
+<p>Trying it out now…</p>
+
+<ul>
+  <li>Stop the running Docker container</li>
+  <li>Go into a new directory so we don’t touch the working install</li>
+  <li>git clone –bare https://myrepo</li>
+  <li>
+    <p>I get a blog.git directory, no source.
+Ahh, now I get it.  There’s no working tree, there’s only objects (blobs).  The raw git stuff.
+A working tree at any commit can be constructed using the objects and the history (did I say that right?).</p>
+  </li>
+  <li>So, I can’t just have a bare repo.  I can’t have a non-bare repo because I can’t push to it.</li>
+  <li>So I guess the other guys were right.<br />
+Push to the bare repo and use the post receive hook
+to create a working copy and install that.</li>
+  <li>But that doesn’t work if my Docker container is already running</li>
+  <li>
+    <p>If Docker container is running, that means docker-compose up happened inside a git repo. (in my case)
+If there was a separate bare repo, its post receive hook would install files inside another git repo.
+Which is not too bad since I won’t ever push from that repo.
+Now consider if the Dockerfile changes.  The container has to be rebuilt and restarted.
+Pulling into the production non-bare repo might be awkward since its data is behind master.
+The post receive hook could copy the Dockerfile.</p>
+  </li>
+  <li>This may be more complicated than I like.  But perhaps the proper solution is best.
+On production host we have the bare repo.<br />
+On dev we push to production –&gt;  bare repo executes post receive
+That post receive will install the Dockerfile, docker-compose.yaml, and the static website
+into another location.<br />
+Actually this is nice since docker-compose.yaml uses relative paths “./” when mapping the
+volume for http server root.<br />
+So we can actually deploy the website in any directory.</li>
+</ul>
+
+  </div>
+
   
-  
-
-
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Aug 30, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/08/30/automatic-deploy-this-blog.html">Deploy blog updates automatically with git push</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 29, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/08/29/docker-reverse-proxy-hosting.html">Hosting on docker behind a reverse proxy</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jun 20, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded.html">How to test getopt</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 22, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/post/2017/05/22/How-to-Makefile-Linux-Good.html">How to make Linux Makefiles Work Good</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 19, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/05/19/how-to-test-getopt.html">How to test getopt</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 7, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/05/07/continous-delivery-of-firmware-hex-files.html">continous-delivery-of-firmware-hex-files</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Apr 30, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/post/2017/04/30/Resin.io-Beaglebone-FirstTry.html">resin.io , first try !</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Apr 21, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/04/21/OpenVPN-For-Me.html">OpenVPN: What I need to know</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 31, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/31/SAMD10-ADC-Init-Part2-Complete.html">SAMD10 ADC Init, Complete!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 30, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/30/ASF-Snippets.html">ASF Snippets that only depend on CMSIS</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 29, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/jekyll/update/2017/03/29/welcome-to-jekyll.html">Welcome to Jekyll!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 29, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/29/SAMD10-ADC-Init.html">SAMD10 ADC Init, via direct register access</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 28, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/28/markdownexperiments.html">Markdown Snippets</a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
-
-</div>
+</article>
 
       </div>
     </main>
