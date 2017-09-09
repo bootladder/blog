@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: page
 title: super fast static website migration
 ---
 A friend was paying a company a crazy amount of money per month to create a static site,
