@@ -1,5 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-08-30T10:34:02-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Deploy blog updates automatically with git push</title><link href="/guide/2017/08/30/automatic-deploy-this-blog.html" rel="alternate" type="text/html" title="Deploy blog updates automatically with git push" /><published>2017-08-30T00:00:00-07:00</published><updated>2017-08-30T00:00:00-07:00</updated><id>/guide/2017/08/30/automatic-deploy-this-blog</id><content type="html" xml:base="/guide/2017/08/30/automatic-deploy-this-blog.html">&lt;p&gt;After I had the docker shared volume + git solution working (see other post),
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-09-08T18:22:26-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">super fast static website migration</title><link href="/2017/09/08/super-fast-static-website-migration.html" rel="alternate" type="text/html" title="super fast static website migration" /><published>2017-09-08T00:00:00-07:00</published><updated>2017-09-08T00:00:00-07:00</updated><id>/2017/09/08/super-fast-static-website-migration</id><content type="html" xml:base="/2017/09/08/super-fast-static-website-migration.html">&lt;p&gt;A friend was paying a company a crazy amount of money per month to create a static site,
+and host it.&lt;br /&gt;
+Friend realized they were being ripped off and stopped paying.
+The company then shutdown the website host, blocking access to the site source.&lt;/p&gt;
+
+&lt;p&gt;Fortunately there was a copy on the wayback machine.&lt;/p&gt;
+
+&lt;p&gt;I ripped the last good copy and dumped it onto my own host.&lt;/p&gt;
+
+&lt;p&gt;It was super easy and fast, took just a few hours to figure out a couple things.&lt;/p&gt;
+
+&lt;p&gt;The entire website was roughly 1MB.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Actually you don’t even need a Dockerfile, you can work straight from this image
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  from sebp/lighttpd
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;docker-compose.yaml
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  version: '2'
+  services:
+    lighttpd:
+      build: .
+      environment:
+        - VIRTUAL_HOST=mywebsite.com
+      ports:
+        - &quot;14001:80&quot;
+      volumes:
+        - ./website/:/var/www/localhost/htdocs
+
+  networks:
+    default:
+      external:
+        name: nginx-proxy
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;explanation&quot;&gt;Explanation:&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;the environment variable VIRTUAL_HOST is for the nginx reverse proxy.&lt;br /&gt;
+It’s name based so when you HTTP request the reverse proxy looking for hostname
+mywebsite.com , the reverse proxy directs traffic to this container we’re discussing.&lt;/li&gt;
+  &lt;li&gt;ports: the container lighttpd serves on port 80.  14001 is a random number.&lt;/li&gt;
+  &lt;li&gt;volumes: ./website , ie. the current directory where the docker-compose.yaml file is,
+is mapped to the web root of the lighttpd server.
+Just stick the website in there.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;to-grab-the-website-from-wayback-machine-i-used-wayback-machine-downloader&quot;&gt;To grab the website from Wayback Machine, I used Wayback Machine Downloader&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/hartator/wayback-machine-downloader&quot;&gt;https://github.com/hartator/wayback-machine-downloader&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Was super easy to use, just took a minute to figure out the –to and –from flags.&lt;/li&gt;
+  &lt;li&gt;When the site you’re interested in is currently pointing to a domain parking spot,
+you want to get files up to a certain date.&lt;/li&gt;
+  &lt;li&gt;If you want to exclude older files you’ll have to do that explicitly also.&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">A friend was paying a company a crazy amount of money per month to create a static site, and host it. Friend realized they were being ripped off and stopped paying. The company then shutdown the website host, blocking access to the site source. Fortunately there was a copy on the wayback machine. I ripped the last good copy and dumped it onto my own host. It was super easy and fast, took just a few hours to figure out a couple things. The entire website was roughly 1MB.</summary></entry><entry><title type="html">Deploy blog updates automatically with git push</title><link href="/guide/2017/08/30/automatic-deploy-this-blog.html" rel="alternate" type="text/html" title="Deploy blog updates automatically with git push" /><published>2017-08-30T00:00:00-07:00</published><updated>2017-08-30T00:00:00-07:00</updated><id>/guide/2017/08/30/automatic-deploy-this-blog</id><content type="html" xml:base="/guide/2017/08/30/automatic-deploy-this-blog.html">&lt;p&gt;After I had the docker shared volume + git solution working (see other post),
 I immediately noticed there were too many steps to work on the blog.&lt;/p&gt;
 
 &lt;p&gt;Change blog source –&amp;gt; jekyll build –&amp;gt; git add &amp;amp;&amp;amp; git commit &amp;amp;&amp;amp; git push –&amp;gt; git pull&lt;/p&gt;
@@ -389,50 +448,4 @@ I found this snippet on avrfreaks.  Looks like it is generated by Atmel START.&l
 And it works!&lt;br /&gt;
 Temp sensor, bandgap ref were both getting results.&lt;br /&gt;
 All other register accesses were done over serial, one at a time.  Serial is slow so the delay
-between each access was in the milliseconds.&lt;/p&gt;</content><author><name></name></author><summary type="html">After configuring the GCLK generator and GCLK_ADC, I knew that was done properly because I could read and write the ADC registers. I configured the ADC registers but I still could not get a reading. After starting the conversion with a SWTRIG, the RESRDY flag never went high. Nothing else indicated a problem. I then did a similar process as I did to get the GCLKs working: find working snippets of code that only depends on CMSIS. Had a theory that if you wait too long after triggering the conversion, the result goes away. I found this snippet on avrfreaks. Looks like it is generated by Atmel START.</summary></entry><entry><title type="html">ASF Snippets that only depend on CMSIS</title><link href="/guide/2017/03/30/ASF-Snippets.html" rel="alternate" type="text/html" title="ASF Snippets that only depend on CMSIS" /><published>2017-03-30T00:00:00-07:00</published><updated>2017-03-30T00:00:00-07:00</updated><id>/guide/2017/03/30/ASF-Snippets</id><content type="html" xml:base="/guide/2017/03/30/ASF-Snippets.html">&lt;p&gt;I’ve always had problems getting ASF dependent crap to compile.  But the code works so I have to go to it
-either for use or reference.  I just discovered, with slight editing, a lot of the lowest level ASF functions
-can be snipped out and compiled using only the CMSIS headers.&lt;/p&gt;
-
-&lt;p&gt;The motivation for this was: how to read and write to the GCLK registers.  They require writes before reads and writes before writes.
-Datasheet doesn’t explictly state that but the ASF code does.  I discovered that the special C code to do this register access is not
-dependent on any ASF headers!&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;is_gclk_adc_enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-  &lt;span class=&quot;cm&quot;&gt;/* Select the requested generic clock channel */&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CLKCTRL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CLKCTRL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CLKEN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;set_gclk_gen_5_osc8m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system_gclk_is_syncing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;cm&quot;&gt;/* Wait for synchronization */&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-
-  &lt;span class=&quot;cm&quot;&gt;/* Select the correct generator */&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GENDIV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x05&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-  &lt;span class=&quot;cm&quot;&gt;/* Write the new generator configuration */&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system_gclk_is_syncing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;cm&quot;&gt;/* Wait for synchronization */&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GENDIV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x00000205&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system_gclk_is_syncing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;cm&quot;&gt;/* Wait for synchronization */&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GENCTRL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x00010605&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;inline&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;system_gclk_is_syncing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GCLK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STATUS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GCLK_STATUS_SYNCBUSY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;</content><author><name></name></author><summary type="html">I’ve always had problems getting ASF dependent crap to compile. But the code works so I have to go to it either for use or reference. I just discovered, with slight editing, a lot of the lowest level ASF functions can be snipped out and compiled using only the CMSIS headers. The motivation for this was: how to read and write to the GCLK registers. They require writes before reads and writes before writes. Datasheet doesn’t explictly state that but the ASF code does. I discovered that the special C code to do this register access is not dependent on any ASF headers!</summary></entry></feed>
+between each access was in the milliseconds.&lt;/p&gt;</content><author><name></name></author><summary type="html">After configuring the GCLK generator and GCLK_ADC, I knew that was done properly because I could read and write the ADC registers. I configured the ADC registers but I still could not get a reading. After starting the conversion with a SWTRIG, the RESRDY flag never went high. Nothing else indicated a problem. I then did a similar process as I did to get the GCLKs working: find working snippets of code that only depends on CMSIS. Had a theory that if you wait too long after triggering the conversion, the result goes away. I found this snippet on avrfreaks. Looks like it is generated by Atmel START.</summary></entry></feed>

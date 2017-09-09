@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Bootladder News</title>
-  <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search resu...">
+  <title>super fast static website migration</title>
+  <meta name="description" content="A friend was paying a company a crazy amount of money per month to create a static site, and host it. Friend realized they were being ripped off and stopped ...">
 
   <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="/">
+  <link rel="canonical" href="/2017/09/08/super-fast-static-website-migration.html">
   <link rel="alternate" type="application/rss+xml" title="Bootladder News" href="/feed.xml">
   
   
@@ -61,132 +61,79 @@
 
     <main class="page-content" aria-label="Content">
       <div class="wrapper">
-        <div class="home">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">super fast static website migration</h1>
+    <p class="post-meta"><time datetime="2017-09-08T00:00:00-07:00" itemprop="datePublished">Sep 8, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>A friend was paying a company a crazy amount of money per month to create a static site,
+and host it.<br />
+Friend realized they were being ripped off and stopped paying.
+The company then shutdown the website host, blocking access to the site source.</p>
+
+<p>Fortunately there was a copy on the wayback machine.</p>
+
+<p>I ripped the last good copy and dumped it onto my own host.</p>
+
+<p>It was super easy and fast, took just a few hours to figure out a couple things.</p>
+
+<p>The entire website was roughly 1MB.</p>
+
+<ul>
+  <li>Actually you don’t even need a Dockerfile, you can work straight from this image
+    <div class="highlighter-rouge"><pre class="highlight"><code>  from sebp/lighttpd
+</code></pre>
+    </div>
+  </li>
+  <li>docker-compose.yaml
+    <div class="highlighter-rouge"><pre class="highlight"><code>  version: '2'
+  services:
+    lighttpd:
+      build: .
+      environment:
+        - VIRTUAL_HOST=mywebsite.com
+      ports:
+        - "14001:80"
+      volumes:
+        - ./website/:/var/www/localhost/htdocs
+
+  networks:
+    default:
+      external:
+        name: nginx-proxy
+</code></pre>
+    </div>
+  </li>
+</ul>
+
+<h1 id="explanation">Explanation:</h1>
+<ul>
+  <li>the environment variable VIRTUAL_HOST is for the nginx reverse proxy.<br />
+It’s name based so when you HTTP request the reverse proxy looking for hostname
+mywebsite.com , the reverse proxy directs traffic to this container we’re discussing.</li>
+  <li>ports: the container lighttpd serves on port 80.  14001 is a random number.</li>
+  <li>volumes: ./website , ie. the current directory where the docker-compose.yaml file is,
+is mapped to the web root of the lighttpd server.
+Just stick the website in there.</li>
+</ul>
+
+<h1 id="to-grab-the-website-from-wayback-machine-i-used-wayback-machine-downloader">To grab the website from Wayback Machine, I used Wayback Machine Downloader</h1>
+<p><a href="https://github.com/hartator/wayback-machine-downloader">https://github.com/hartator/wayback-machine-downloader</a></p>
+
+<ul>
+  <li>Was super easy to use, just took a minute to figure out the –to and –from flags.</li>
+  <li>When the site you’re interested in is currently pointing to a domain parking spot,
+you want to get files up to a certain date.</li>
+  <li>If you want to exclude older files you’ll have to do that explicitly also.</li>
+</ul>
+
+  </div>
+
   
-  
-
-
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Sep 8, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/2017/09/08/super-fast-static-website-migration.html">super fast static website migration</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 30, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/08/30/automatic-deploy-this-blog.html">Deploy blog updates automatically with git push</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 29, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/08/29/docker-reverse-proxy-hosting.html">Hosting on docker behind a reverse proxy</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jun 20, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/06/20/Unit-Testing-Legacy-C-Embedded.html">How to test getopt</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 22, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/post/2017/05/22/How-to-Makefile-Linux-Good.html">How to make Linux Makefiles Work Good</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 19, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/05/19/how-to-test-getopt.html">How to test getopt</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 7, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/05/07/continous-delivery-of-firmware-hex-files.html">continous-delivery-of-firmware-hex-files</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Apr 30, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/post/2017/04/30/Resin.io-Beaglebone-FirstTry.html">resin.io , first try !</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Apr 21, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/04/21/OpenVPN-For-Me.html">OpenVPN: What I need to know</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 31, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/31/SAMD10-ADC-Init-Part2-Complete.html">SAMD10 ADC Init, Complete!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 30, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/30/ASF-Snippets.html">ASF Snippets that only depend on CMSIS</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 29, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/jekyll/update/2017/03/29/welcome-to-jekyll.html">Welcome to Jekyll!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 29, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/29/SAMD10-ADC-Init.html">SAMD10 ADC Init, via direct register access</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 28, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/guide/2017/03/28/markdownexperiments.html">Markdown Snippets</a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
-
-</div>
+</article>
 
       </div>
     </main>
