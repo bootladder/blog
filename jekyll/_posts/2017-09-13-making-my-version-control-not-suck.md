@@ -70,3 +70,14 @@ Well apparently 2 things are wrong with that, as I've read.
 1, VPATH doesn't work on generated files.  Not sure what that means specifically but the way I made sense of it is this:  You can add directories to VPATH but if they don't exist when make is run, the VPATH won't see that directory.  Even if the file exists at the time it is needed, it won't be found.  That explains why the build works the second time. 
   
 2.  Recursive Make Considered Harmful?
+
+# Discovery:  how to do git inside make
+  
+https://stackoverflow.com/questions/15602059/git-shortcut-to-pull-with-clone-if-no-local-there-yet
+  
+Using this I can solve the problem in the above snippet
+        if [ ! -d "../../mysrcrepo" ] ; then \
+  
+If the directory does exist, nothing happens.  What I want is a git pull in that case.
+  
+
