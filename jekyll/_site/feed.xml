@@ -1,5 +1,74 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-09-08T18:45:20-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">super fast static website migration</title><link href="/2017/09/08/super-fast-static-website-migration.html" rel="alternate" type="text/html" title="super fast static website migration" /><published>2017-09-08T00:00:00-07:00</published><updated>2017-09-08T00:00:00-07:00</updated><id>/2017/09/08/super-fast-static-website-migration</id><content type="html" xml:base="/2017/09/08/super-fast-static-website-migration.html">&lt;p&gt;A friend was paying a company a crazy amount of money per month to create a static site,
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-09-13T18:22:03-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Making my version control not suck</title><link href="/2017/09/13/making-my-version-control-not-suck.html" rel="alternate" type="text/html" title="Making my version control not suck" /><published>2017-09-13T00:00:00-07:00</published><updated>2017-09-13T00:00:00-07:00</updated><id>/2017/09/13/making-my-version-control-not-suck</id><content type="html" xml:base="/2017/09/13/making-my-version-control-not-suck.html">&lt;p&gt;I develop and maintain firmware for a family of products.
+There are 5 different firmware projects here.
+They’re all releated in communication protocol, as well as other things
+such as beep frequency, LED blink patterns etc.&lt;/p&gt;
+
+&lt;p&gt;But now I’m faced with splitting all 5 of those into 3 versions.
+So now there are technically 15 different firmware images that need to be
+available for download and documented to identify what they are.&lt;/p&gt;
+
+&lt;p&gt;My (git) version control system until now was obvious.  Master goes forward, occasional branching and merging, tags on version releases.&lt;/p&gt;
+
+&lt;p&gt;It would be possible to use branches and tags to rebuild any version of any project.  But here’s the complication:  there is a in-house shared library used by all 15 firmware versions.  That library also has 3 versions.  In other words the correct version of the shared library has to be available when building a version of firmware.
+  In more other words, to build a version of firmware, the project repo has to be checked out at the right version, as well as the shared library checked out at the right version.  Finally, the build config (eg. Makefile) has to identify and locate the correct shared library to be linked.&lt;/p&gt;
+
+&lt;p&gt;I like stuff like Ruby, Rust, etc. where you have a config file (yaml) to specify dependencies.&lt;/p&gt;
+
+&lt;p&gt;I think I can improve my Makefile to do what I want.&lt;br /&gt;
+It would be as simple as git checkout my_commit followed by make.
+The Makefile at this commit should build the proper version.  The Makefile itself identifies its own version and the dependency versions it needs.  It can then git clone the dependencies using git submodules.&lt;/p&gt;
+
+&lt;p&gt;This way, a complete build with all dependencies lives inside 1 directory.  If a submodule is updated or branched, it won’t affect previous builds.&lt;/p&gt;
+
+&lt;h1 id=&quot;strategy--use-a-fresh-machine-vps-to-recreate-the-build&quot;&gt;Strategy:  use a fresh machine (VPS) to recreate the build&lt;/h1&gt;
+
+&lt;p&gt;I don’t want to be confused with currently existing directory structure.  Building the same firmware version on a different machine is a good way to shake out things like hard coded paths breaking.&lt;br /&gt;
+Ideally all builds would happen on this separate machine.  I guess that’s part of Continous Integration?&lt;/p&gt;
+
+&lt;h1 id=&quot;-makefile-needs-source-located-in-a-hard-coded-directory&quot;&gt;— Makefile needs source located in a hard coded directory&lt;/h1&gt;
+
+&lt;p&gt;Project needs a library or some source somewhere else to compile.
+The Makefile can find the source with a VPATH and find the headers
+with -I compiler flags.  But, that enforces a certain directory structure.&lt;/p&gt;
+
+&lt;h1 id=&quot;-new-rule-discovery-only-create-directory-structure-for-sub-directories--never-depend-on-paths-starting-wtih--or--etc&quot;&gt;— New rule discovery?: Only create directory structure for sub-directories.  Never depend on paths starting wtih ../ or ../../ etc.&lt;/h1&gt;
+
+&lt;p&gt;This rule allows you to create directory structure, but doesn’t cause problems because the structure is all below current directory.&lt;br /&gt;
+Basically, enforced sub-directory structure is coupled entirely to
+the populating of that sub-directory and makes no assumptions about directories above current directory.&lt;br /&gt;
+In other words, if you have enforced structure, the build system has to automatically conform to that structure.  Let the Makefile create the directories with their correct names, populate them with files.&lt;/p&gt;
+
+&lt;h1 id=&quot;-vpath-issue-with-git-clone&quot;&gt;— VPATH Issue with git clone&lt;/h1&gt;
+
+&lt;p&gt;I have a repo prereq inside my all target.
+The purpose is to clone the dependencies,
+so Make can then refer to those dependencies and build the target.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;always: 
+repos: always
+        @echo hello
+        if [ ! -d &quot;../../mysrcrepo&quot; ] ; then \
+            git clone https://mysrcrepo ;\
+        fi 
+        if [ ! -d &quot;../../mylibrepo&quot; ] ; then \
+            git clone https://mylibrepo ;\
+            make; \
+
+        fi 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;It almost worked.
+  In the case of a cloned library, the make command is run, which builds the library.  That worked.
+  But in the case of cloned source, the VPATH didn’t catch the source files that were cloned.  When running make a second time, it would work.&lt;/p&gt;
+
+&lt;p&gt;Well apparently 2 things are wrong with that, as I’ve read.&lt;br /&gt;
+1, VPATH doesn’t work on generated files.  Not sure what that means specifically but the way I made sense of it is this:  You can add directories to VPATH but if they don’t exist when make is run, the VPATH won’t see that directory.  Even if the file exists at the time it is needed, it won’t be found.  That explains why the build works the second time.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Recursive Make Considered Harmful?&lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">I develop and maintain firmware for a family of products. There are 5 different firmware projects here. They’re all releated in communication protocol, as well as other things such as beep frequency, LED blink patterns etc.</summary></entry><entry><title type="html">super fast static website migration</title><link href="/2017/09/08/super-fast-static-website-migration.html" rel="alternate" type="text/html" title="super fast static website migration" /><published>2017-09-08T00:00:00-07:00</published><updated>2017-09-08T00:00:00-07:00</updated><id>/2017/09/08/super-fast-static-website-migration</id><content type="html" xml:base="/2017/09/08/super-fast-static-website-migration.html">&lt;p&gt;A friend was paying a company a crazy amount of money per month to create a static site,
 and host it.&lt;br /&gt;
 Friend realized they were being ripped off and stopped paying.
 The company then shutdown the website host, blocking access to the site source.&lt;/p&gt;
@@ -418,34 +487,4 @@ Sign the certificate? [y/n]
 
 &lt;p&gt;================================================&lt;/p&gt;
 
-&lt;p&gt;crt and key files represent both parts of a certificate, key being the private key to the certificate and crt being the signed certificate.&lt;/p&gt;</content><author><name></name></author><summary type="html">Remember: only .key files should be kept confidential. .crt and .csr files can be sent over insecure channels such as plaintext email. do not need to copy a .key file between computers. each computer will have its own certificate/key pair.</summary></entry><entry><title type="html">SAMD10 ADC Init, Complete!</title><link href="/guide/2017/03/31/SAMD10-ADC-Init-Part2-Complete.html" rel="alternate" type="text/html" title="SAMD10 ADC Init, Complete!" /><published>2017-03-31T00:00:00-07:00</published><updated>2017-03-31T00:00:00-07:00</updated><id>/guide/2017/03/31/SAMD10-ADC-Init-Part2-Complete</id><content type="html" xml:base="/guide/2017/03/31/SAMD10-ADC-Init-Part2-Complete.html">&lt;p&gt;After configuring the GCLK generator and GCLK_ADC, I knew that was done properly because I could
-read and write the ADC registers.  I configured the ADC registers but I still could not get a reading.&lt;/p&gt;
-
-&lt;p&gt;After starting the conversion with a SWTRIG, the RESRDY flag never went high.&lt;br /&gt;
-Nothing else indicated a problem.  I then did a similar process as I did to get the GCLKs working:
-find working snippets of code that only depends on CMSIS.&lt;/p&gt;
-
-&lt;p&gt;Had a theory that if you wait too long after triggering the conversion, the result goes away. 
-I found this snippet on avrfreaks.  Looks like it is generated by Atmel START.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;  &lt;span class=&quot;n&quot;&gt;ADC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SWTRIG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ADC_SWTRIG_START&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ADC_SWTRIG_FLUSH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-  &lt;span class=&quot;cm&quot;&gt;/* wait for Synchronization */&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ADC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STATUS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ADC_STATUS_SYNCBUSY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;cm&quot;&gt;/* Wait for synchronization */&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ADC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INTFLAG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RESRDY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;cm&quot;&gt;/* Wait for analog conversion to complete */&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-  &lt;span class=&quot;cm&quot;&gt;/* return with converted value */&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ADC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RESULT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Pretty obvious but I can’t do that with my framework.  So I compiled this and flashed it in the target.
-And it works!&lt;br /&gt;
-Temp sensor, bandgap ref were both getting results.&lt;br /&gt;
-All other register accesses were done over serial, one at a time.  Serial is slow so the delay
-between each access was in the milliseconds.&lt;/p&gt;</content><author><name></name></author><summary type="html">After configuring the GCLK generator and GCLK_ADC, I knew that was done properly because I could read and write the ADC registers. I configured the ADC registers but I still could not get a reading. After starting the conversion with a SWTRIG, the RESRDY flag never went high. Nothing else indicated a problem. I then did a similar process as I did to get the GCLKs working: find working snippets of code that only depends on CMSIS. Had a theory that if you wait too long after triggering the conversion, the result goes away. I found this snippet on avrfreaks. Looks like it is generated by Atmel START.</summary></entry></feed>
+&lt;p&gt;crt and key files represent both parts of a certificate, key being the private key to the certificate and crt being the signed certificate.&lt;/p&gt;</content><author><name></name></author><summary type="html">Remember: only .key files should be kept confidential. .crt and .csr files can be sent over insecure channels such as plaintext email. do not need to copy a .key file between computers. each computer will have its own certificate/key pair.</summary></entry></feed>
