@@ -16,10 +16,16 @@ Let's look into mobile internet with unlimited data.  Let's see if I can do this
 sudo sysctl -w net.ipv4.ip_forward=1
 ~~~
   
-Now Internet is available through gateway laptop, but the gateway now has to go out the WiFi hotspot
+Now Internet is available through gateway laptop, but the gateway now has to go out the WiFi hotspot.
+  
+Turns out there are 2 0.0.0.0 entries in the route table.  Let's delete the one for Ethernet and keep the WiFi one.
+  
+~~~
+route del default gateway x.x.x.x
+~~~
   
   
-Hmm, ping doesn't work.  Just hangs, no ouptut.  I see what's happening... traffic starts at the tester client, gets to the gateway on the Ethernet interface, then goes out the WiFi interface, but the source address is still the tester client's source.  
+Hmm, ping doesn't work.  Just hangs, no ouptut.  I see what's happening using tcpdump ... traffic starts at the tester client, gets to the gateway on the Ethernet interface, then goes out the WiFi interface, but the source address is still the tester client's source.  
 If I run a ping on the gateway laptop, it does go through.  The obvious difference is the source address.  Let's change that.  
  
 Let's try this one
