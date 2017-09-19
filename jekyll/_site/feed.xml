@@ -1,5 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-09-13T19:40:26-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Making my version control not suck</title><link href="/2017/09/13/making-my-version-control-not-suck.html" rel="alternate" type="text/html" title="Making my version control not suck" /><published>2017-09-13T00:00:00-07:00</published><updated>2017-09-13T00:00:00-07:00</updated><id>/2017/09/13/making-my-version-control-not-suck</id><content type="html" xml:base="/2017/09/13/making-my-version-control-not-suck.html">&lt;p&gt;I develop and maintain firmware for a family of products.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-09-18T19:40:32-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Use Phone WiFi Hotspot as default gateway for LAN</title><link href="/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan.html" rel="alternate" type="text/html" title="Use Phone WiFi Hotspot as default gateway for LAN" /><published>2017-09-18T00:00:00-07:00</published><updated>2017-09-18T00:00:00-07:00</updated><id>/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan</id><content type="html" xml:base="/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan.html">&lt;p&gt;Big telecom companies are garbage.  Turd sandwich or giant douche?&lt;br /&gt;
+Comcast: 1 year contract for $100/mo, 50Mb down.  No thanks!&lt;br /&gt;
+Let’s look into mobile internet with unlimited data.  Let’s see if I can do this with my phone.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;First I grab an extra laptop that has both Ethernet and WiFi.  This is the gateway&lt;/li&gt;
+  &lt;li&gt;I turn on my phone’s hotspot and connect to it with the gateway laptop&lt;/li&gt;
+  &lt;li&gt;Verify I can ping the gateway laptop from my tester client&lt;/li&gt;
+  &lt;li&gt;Change default gateway on tester client to 10.0.0.6, verify Internet is now unavailable&lt;/li&gt;
+  &lt;li&gt;On the gateway laptop, run this&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo sysctl -w net.ipv4.ip_forward=1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now Internet is available through gateway laptop, but the gateway now has to go out the WiFi hotspot&lt;/p&gt;
+
+&lt;p&gt;Hmm, ping doesn’t work.  Just hangs, no ouptut.  I see what’s happening… traffic starts at the tester client, gets to the gateway on the Ethernet interface, then goes out the WiFi interface, but the source address is still the tester client’s source.&lt;br /&gt;
+If I run a ping on the gateway laptop, it does go through.  The obvious difference is the source address.  Let’s change that.&lt;/p&gt;
+
+&lt;p&gt;Let’s try this one&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth1 -j SNAT --to-source 1.2.3.4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;wow-that-made-it-work&quot;&gt;Wow, that made it work!&lt;/h1&gt;</content><author><name></name></author><summary type="html">Big telecom companies are garbage. Turd sandwich or giant douche? Comcast: 1 year contract for $100/mo, 50Mb down. No thanks! Let’s look into mobile internet with unlimited data. Let’s see if I can do this with my phone. First I grab an extra laptop that has both Ethernet and WiFi. This is the gateway I turn on my phone’s hotspot and connect to it with the gateway laptop Verify I can ping the gateway laptop from my tester client Change default gateway on tester client to 10.0.0.6, verify Internet is now unavailable On the gateway laptop, run this sudo sysctl -w net.ipv4.ip_forward=1 Now Internet is available through gateway laptop, but the gateway now has to go out the WiFi hotspot Hmm, ping doesn’t work. Just hangs, no ouptut. I see what’s happening… traffic starts at the tester client, gets to the gateway on the Ethernet interface, then goes out the WiFi interface, but the source address is still the tester client’s source. If I run a ping on the gateway laptop, it does go through. The obvious difference is the source address. Let’s change that. Let’s try this one # iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth1 -j SNAT --to-source 1.2.3.4 Wow, that made it work!</summary></entry><entry><title type="html">Making my version control not suck</title><link href="/2017/09/13/making-my-version-control-not-suck.html" rel="alternate" type="text/html" title="Making my version control not suck" /><published>2017-09-13T00:00:00-07:00</published><updated>2017-09-13T00:00:00-07:00</updated><id>/2017/09/13/making-my-version-control-not-suck</id><content type="html" xml:base="/2017/09/13/making-my-version-control-not-suck.html">&lt;p&gt;I develop and maintain firmware for a family of products.
 There are 5 different firmware projects here.
 They’re all releated in communication protocol, as well as other things
 such as beep frequency, LED blink patterns etc.&lt;/p&gt;
@@ -421,79 +447,4 @@ Next, the obvious thought that I had was:  I want to do the same thing again and
 
 &lt;p&gt;&lt;strong&gt;Well, you can’t!&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;As far as I understand (almost nothing) the concept of “Application” in Resin.io encompasses all the devices.  You can’t have a single beaglebone running 2 different applications.  A beaglebone is bound to a single application.  A single application is bound to a single git repository and a single docker file.&lt;/p&gt;</content><author><name></name></author><summary type="html">I needed to learn about continuous delivery. I found resin.io and a couple things about it made me try it immediately. 1, it supports beaglebone, and it supports other stuff too. 2, the architectural drawing made sense and I was planning to go in a similar direction anyway. Making an account was super fast. Getting an OS image to download was also super fast. First thing I don’t like: you have to flash the Beaglebone’s internal (on-board) flash memory with the image. You can’t run the image off the SD card. It didn’t work when I tried it. I just don’t like the idea that I have to flash an on-board flash memory with an OS that I literally just learned of its existence. I like having the stock Beaglebone OS on there so I can do rescue. This is a known issue and the issue is NOT there for other devices eg. raspberry pi. SSH keys. I like the interface, very simple. I use SSH keys for other things so I made a new set of keys in some directory. I had to edit the file ~/.ssh/config to tell ssh client to use the keys in some directory, when some host is being contacted. I had never done this before so 1 thing tripped me up: the IdentityFile is as shown. do not put the .pub extension after it</summary></entry><entry><title type="html">OpenVPN: What I need to know</title><link href="/guide/2017/04/21/OpenVPN-For-Me.html" rel="alternate" type="text/html" title="OpenVPN: What I need to know" /><published>2017-04-21T00:00:00-07:00</published><updated>2017-04-21T00:00:00-07:00</updated><id>/guide/2017/04/21/OpenVPN-For-Me</id><content type="html" xml:base="/guide/2017/04/21/OpenVPN-For-Me.html">&lt;p&gt;Remember:&lt;br /&gt;
-    only .key files should be kept confidential.
-    .crt and .csr files can be sent over insecure channels such as plaintext email.
-    do not need to copy a .key file between computers.
-    each computer will have its own certificate/key pair.&lt;/p&gt;
-
-&lt;p&gt;Step 4 — Generating Client Certificates
-Each client will also each need a certificate and key in order to authenticate and connect to the VPN. Make sure you’re in the /usr/local/etc/openvpn/easy-rsa/ directory.&lt;/p&gt;
-
-&lt;p&gt;=========================================================================
-Server generates DH parameters&lt;br /&gt;
-openssl dhparam -out /etc/openvpn/dh2048.pem 2048&lt;/p&gt;
-
-&lt;p&gt;Before keys can be generated: 
-Now, we can begin setting up the CA itself. First, initialize the Public Key Infrastructure (PKI).&lt;br /&gt;
-./build-ca&lt;/p&gt;
-
-&lt;p&gt;Now we can build keys&lt;br /&gt;
-./build-key-server server&lt;br /&gt;
-Sign the certificate? [y/n]
-1 out of 1 certificate requests certified, commit? [y/n]&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Step 7 — Move the Server Certificates and Keys&lt;/strong&gt;
-&lt;em&gt;THIS IS IMPORTANT:  The server uses server.crt, server.key, ca.crt in some directory.  But they do not have to be created on the server; they can be moved to the server&lt;/em&gt;
-&lt;em&gt;In my case, I put the files somewhere else and referenced them in the server.ovpn file&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;We will now copy the certificate and key to /etc/openvpn, as OpenVPN will search in that directory for the server’s CA, certificate, and key.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cp /etc/openvpn/easy-rsa/keys/{server.crt,server.key,ca.crt} /etc/openvpn
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;Step 8 — Generate Certificates and Keys for Clients&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;So far we’ve installed and configured the OpenVPN server, created a Certificate Authority, and created the server’s own certificate and key. In this step, we use the server’s CA to generate certificates and keys for each client device which will be connecting to the VPN.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;IMPORTANT:  the CA creates the keys for server and client.  The CA does not have to be on the server&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;./build-key client1&lt;/p&gt;
-
-&lt;p&gt;Sign the certificate? [y/n]
-1 out of 1 certificate requests certified, commit? [y/n]&lt;/p&gt;
-
-&lt;p&gt;Then, we’ll copy the generated key to the Easy-RSA keys directory that we created earlier. Note that we change the extension from .conf to .ovpn. This is to match convention.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/easy-rsa/keys/client.ovpn
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;em&gt;IMPORTANT:  the SERVER needs copies of the client keys, and a client.ovpn&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;We need to modify each client file to include the IP address of the OpenVPN server so it knows what to connect to.&lt;/p&gt;
-
-&lt;p&gt;Transferring Certificates and Keys to Client Devices&lt;/p&gt;
-
-&lt;p&gt;Recall from the steps above that we created the client certificates and keys, and that they are stored on the OpenVPN server in the /etc/openvpn/easy-rsa/keys directory.&lt;/p&gt;
-
-&lt;p&gt;For each client we need to transfer the client certificate, key, and profile template files to a folder on our local computer or another client device.&lt;/p&gt;
-
-&lt;p&gt;In this example, our client1 device requires its certificate and key, located on the server in:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/openvpn/easy-rsa/keys/client1.crt
-/etc/openvpn/easy-rsa/keys/client1.key
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The ca.crt and client.ovpn files are the same for all clients. Download these two files as well; note that the ca.crt file is in a different directory than the others.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/openvpn/easy-rsa/keys/client.ovpn
-/etc/openvpn/ca.crt
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;================================================&lt;/p&gt;
-
-&lt;p&gt;crt and key files represent both parts of a certificate, key being the private key to the certificate and crt being the signed certificate.&lt;/p&gt;</content><author><name></name></author><summary type="html">Remember: only .key files should be kept confidential. .crt and .csr files can be sent over insecure channels such as plaintext email. do not need to copy a .key file between computers. each computer will have its own certificate/key pair.</summary></entry></feed>
+&lt;p&gt;As far as I understand (almost nothing) the concept of “Application” in Resin.io encompasses all the devices.  You can’t have a single beaglebone running 2 different applications.  A beaglebone is bound to a single application.  A single application is bound to a single git repository and a single docker file.&lt;/p&gt;</content><author><name></name></author><summary type="html">I needed to learn about continuous delivery. I found resin.io and a couple things about it made me try it immediately. 1, it supports beaglebone, and it supports other stuff too. 2, the architectural drawing made sense and I was planning to go in a similar direction anyway. Making an account was super fast. Getting an OS image to download was also super fast. First thing I don’t like: you have to flash the Beaglebone’s internal (on-board) flash memory with the image. You can’t run the image off the SD card. It didn’t work when I tried it. I just don’t like the idea that I have to flash an on-board flash memory with an OS that I literally just learned of its existence. I like having the stock Beaglebone OS on there so I can do rescue. This is a known issue and the issue is NOT there for other devices eg. raspberry pi. SSH keys. I like the interface, very simple. I use SSH keys for other things so I made a new set of keys in some directory. I had to edit the file ~/.ssh/config to tell ssh client to use the keys in some directory, when some host is being contacted. I had never done this before so 1 thing tripped me up: the IdentityFile is as shown. do not put the .pub extension after it</summary></entry></feed>
