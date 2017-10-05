@@ -9,6 +9,16 @@ So first, when the VPS host goes down and reboots my VPS, my VPS has to start up
 
   
 * Reverse Proxy, blog, friend's site
+  
+systemd service looks OK but... feel safer with a shell script.
+  
+To get this going, I'll reboot the VPS and repeat the steps.  
+  
+~~~
+service docker start;
+cd /opt/deploy/ ; docker-compose up &
+~~~
+
 * l
   
 
