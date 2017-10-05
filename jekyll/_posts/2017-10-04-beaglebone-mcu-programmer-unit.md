@@ -35,8 +35,7 @@ So I'll just take that copy of libudev.so out of the repo.
   
 So now it looks like this
 ```
-cp libudev.h /usr/include;
-cp libudev.so /lib ;
+apt-get install libudev-dev
 make;
 cp edbg /bin/;
 ```
