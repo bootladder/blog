@@ -83,9 +83,21 @@ I can’t let it go down.  Also this blog, might as well keep it up.</p>
 <p>To get this going, I’ll reboot the VPS and repeat the steps.</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>service docker start;
+cd /opt/nginx-proxy/ ; docker-compose up &amp;
 cd /opt/deploy/ ; docker-compose up &amp;
 </code></pre>
 </div>
+
+<p>stick it in rc.local</p>
+
+<p>nice!</p>
+
+<p>Now how about a way to check if the website ever goes down?<br />
+Well if the host goes down it can’t tell me about it.<br />
+So, it could be the stopping of keepalive messages out of the host,
+or a different host being unable to connect to the host.</p>
+
+<p>eh, leave that one at that for now.</p>
 
 <ul>
   <li>l</li>

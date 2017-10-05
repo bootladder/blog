@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-04T16:59:59-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-04T17:06:37-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">Keep my hosts running</title><link href="/2017/10/04/keep-my-hosts-running.html" rel="alternate" type="text/html" title="Keep my hosts running" /><published>2017-10-04T00:00:00-07:00</published><updated>2017-10-04T00:00:00-07:00</updated><id>/2017/10/04/keep-my-hosts-running</id><content type="html" xml:base="/2017/10/04/keep-my-hosts-running.html">&lt;p&gt;Now that I temporarily host my friend’s site who actually wants to have visitors,
 I can’t let it go down.  Also this blog, might as well keep it up.&lt;/p&gt;
 
@@ -13,9 +13,21 @@ I can’t let it go down.  Also this blog, might as well keep it up.&lt;/p&gt;
 &lt;p&gt;To get this going, I’ll reboot the VPS and repeat the steps.&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;service docker start;
+cd /opt/nginx-proxy/ ; docker-compose up &amp;amp;
 cd /opt/deploy/ ; docker-compose up &amp;amp;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+
+&lt;p&gt;stick it in rc.local&lt;/p&gt;
+
+&lt;p&gt;nice!&lt;/p&gt;
+
+&lt;p&gt;Now how about a way to check if the website ever goes down?&lt;br /&gt;
+Well if the host goes down it can’t tell me about it.&lt;br /&gt;
+So, it could be the stopping of keepalive messages out of the host,
+or a different host being unable to connect to the host.&lt;/p&gt;
+
+&lt;p&gt;eh, leave that one at that for now.&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;l&lt;/li&gt;
