@@ -1,1 +1,6 @@
-bundle exec jekyll post "Keep my hosts running"
+if [ -z "$1" ]
+  then
+     echo post needs a name
+     exit
+fi
+bundle exec jekyll post "$1"
