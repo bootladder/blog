@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-04T17:06:37-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-04T17:49:24-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">Keep my hosts running</title><link href="/2017/10/04/keep-my-hosts-running.html" rel="alternate" type="text/html" title="Keep my hosts running" /><published>2017-10-04T00:00:00-07:00</published><updated>2017-10-04T00:00:00-07:00</updated><id>/2017/10/04/keep-my-hosts-running</id><content type="html" xml:base="/2017/10/04/keep-my-hosts-running.html">&lt;p&gt;Now that I temporarily host my friend’s site who actually wants to have visitors,
 I can’t let it go down.  Also this blog, might as well keep it up.&lt;/p&gt;
 
@@ -31,7 +31,52 @@ or a different host being unable to connect to the host.&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;l&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><summary type="html">Now that I temporarily host my friend’s site who actually wants to have visitors, I can’t let it go down. Also this blog, might as well keep it up. So first, when the VPS host goes down and reboots my VPS, my VPS has to start up.</summary></entry><entry><title type="html">Use Phone WiFi Hotspot as default gateway for LAN</title><link href="/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan.html" rel="alternate" type="text/html" title="Use Phone WiFi Hotspot as default gateway for LAN" /><published>2017-09-18T00:00:00-07:00</published><updated>2017-09-18T00:00:00-07:00</updated><id>/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan</id><content type="html" xml:base="/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan.html">&lt;p&gt;Big telecom companies are garbage.  Turd sandwich or giant douche?&lt;br /&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">Now that I temporarily host my friend’s site who actually wants to have visitors, I can’t let it go down. Also this blog, might as well keep it up. So first, when the VPS host goes down and reboots my VPS, my VPS has to start up.</summary></entry><entry><title type="html">beaglebone MCU programmer unit</title><link href="/2017/10/04/beaglebone-mcu-programmer-unit.html" rel="alternate" type="text/html" title="beaglebone MCU programmer unit" /><published>2017-10-04T00:00:00-07:00</published><updated>2017-10-04T00:00:00-07:00</updated><id>/2017/10/04/beaglebone-mcu-programmer-unit</id><content type="html" xml:base="/2017/10/04/beaglebone-mcu-programmer-unit.html">&lt;p&gt;I’m flashing Atmel ARM microcontrollers with a USB programmer dongle.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://github.com/bootladder/edbg
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Got a fresh beaglebone running, grabbed the IP from the local router.&lt;br /&gt;
+In order to get the git clone to work I had to get the time right.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt-get install ntp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;the compiled edbg binary is not included so it must be installed.&lt;br /&gt;
+Let’s write the install script here.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cp libudev.h /usr/include;
+cp libudev.so /lib ;
+make;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Hmm looks like the library I included in there is out of date.  libc perhaps?&lt;/p&gt;
+
+&lt;p&gt;Fortunately it worked after a&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt-get install libudev-dev 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So I’ll just take that copy of libudev.so out of the repo.&lt;/p&gt;
+
+&lt;p&gt;So now it looks like this&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cp libudev.h /usr/include;
+cp libudev.so /lib ;
+make;
+cp edbg /bin/;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Then I run a&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@beaglebone:/tmp# edbg -l
+Attached debuggers:
+  J41800059345 - Atmel Corp. Atmel-ICE CMSIS-DAP
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Sweet!&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m flashing Atmel ARM microcontrollers with a USB programmer dongle. https://github.com/bootladder/edbg Got a fresh beaglebone running, grabbed the IP from the local router. In order to get the git clone to work I had to get the time right. apt-get install ntp the compiled edbg binary is not included so it must be installed. Let’s write the install script here. cp libudev.h /usr/include; cp libudev.so /lib ; make; Hmm looks like the library I included in there is out of date. libc perhaps? Fortunately it worked after a apt-get install libudev-dev So I’ll just take that copy of libudev.so out of the repo. So now it looks like this cp libudev.h /usr/include; cp libudev.so /lib ; make; cp edbg /bin/; Then I run a root@beaglebone:/tmp# edbg -l Attached debuggers: J41800059345 - Atmel Corp. Atmel-ICE CMSIS-DAP Sweet!</summary></entry><entry><title type="html">Use Phone WiFi Hotspot as default gateway for LAN</title><link href="/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan.html" rel="alternate" type="text/html" title="Use Phone WiFi Hotspot as default gateway for LAN" /><published>2017-09-18T00:00:00-07:00</published><updated>2017-09-18T00:00:00-07:00</updated><id>/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan</id><content type="html" xml:base="/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan.html">&lt;p&gt;Big telecom companies are garbage.  Turd sandwich or giant douche?&lt;br /&gt;
 Comcast: 1 year contract for $100/mo, 50Mb down.  No thanks!&lt;br /&gt;
 Let’s look into mobile internet with unlimited data.  Let’s see if I can do this with my phone.&lt;/p&gt;
 
@@ -437,27 +482,4 @@ and this is the argument index!  Starts at the beginning of the command line and
 
 &lt;p&gt;&lt;strong&gt;optind = 0&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;I literally added that one line and all my tests passed.  Crazy!&lt;/p&gt;</content><author><name></name></author><summary type="html">I have a function with associated unit tests, called Parse_Bootloader_Commandline(). int Parse_Bootloader_Commandline(int argc, char * const argv[]) It clearly takes in the argc and argv from main(), and parses it. I had it working, and then I wanted to change the internals of that function, to use getopt. Interesting, I found that the unit tests were still applicable. They had names eg. ParseCommandline_InvalidCommand_Returns0 ParseCommandline_ValidLoadCommand_SetsCommandVariable That’s cool! I swapped out the internals and I know to some degree that the external users of this unit will be OK.</summary></entry><entry><title type="html">continous-delivery-of-firmware-hex-files</title><link href="/guide/2017/05/07/continous-delivery-of-firmware-hex-files.html" rel="alternate" type="text/html" title="continous-delivery-of-firmware-hex-files" /><published>2017-05-07T00:00:00-07:00</published><updated>2017-05-07T00:00:00-07:00</updated><id>/guide/2017/05/07/continous-delivery-of-firmware-hex-files</id><content type="html" xml:base="/guide/2017/05/07/continous-delivery-of-firmware-hex-files.html">&lt;p&gt;I had a short, one-off project based on a code base in production.&lt;br /&gt;
-Writing the source was easy, but the deliverable was 20 hex files.
-Each hex file contained the exact same firmware image, with a single piece of data in flash changed to some value.&lt;br /&gt;
-I had my Makefile set up so I could set that value inside the Makefile.&lt;br /&gt;
-But to build all 20 required editing the Makefile and running a clean build.&lt;br /&gt;
-I did that once and released to the customer.&lt;br /&gt;
-Obviously the customer changed the spec because they couldn’t translate what they wanted into the spec correctly, and they discovered this by getting what they specified originally.&lt;/p&gt;
-
-&lt;p&gt;So now I have to repeat the process except the change to the source code is now a single line.  The entirety of the time spent for this job is in waiting for 20 clean builds.&lt;/p&gt;
-
-&lt;p&gt;I have a postulation here, needs to be reworded:&lt;/p&gt;
-
-&lt;p&gt;As soon as the build system use case goes beyond a single command-line command, eg. “make”, you have to automate your build system.&lt;/p&gt;
-
-&lt;p&gt;In my case I need the system to do a clean build, 20 times, each with a different value for some variable in the Makefile.&lt;/p&gt;
-
-&lt;p&gt;So I did this the fastest simplest way possible for me to implement.&lt;br /&gt;
-I went with the following:&lt;br /&gt;
-Make 20 different targets in the Makefile.  target1,target2,target3….target20.&lt;br /&gt;
-For each target, a target-specific variable can be specified, and in this case
-it overwrites a variable from the top of the makefile which is used in the all target.&lt;br /&gt;
-So, each target simply sets that target-specific variable, then has a dependency on the clean and all targets.  So we get a clean build with the variable set.  This variable also conveniently appears in the name of the hex file so that takes care of getting 20 unique filenames.&lt;br /&gt;
-Then, to actually build all of those targets, I just made a shell script that does make -f MyMakefile targetN for all targets.&lt;br /&gt;
-Really a crappy solution but that’s all I could do at the time and it still achieves automation.  Cool!&lt;/p&gt;</content><author><name></name></author><summary type="html">I had a short, one-off project based on a code base in production. Writing the source was easy, but the deliverable was 20 hex files. Each hex file contained the exact same firmware image, with a single piece of data in flash changed to some value. I had my Makefile set up so I could set that value inside the Makefile. But to build all 20 required editing the Makefile and running a clean build. I did that once and released to the customer. Obviously the customer changed the spec because they couldn’t translate what they wanted into the spec correctly, and they discovered this by getting what they specified originally. So now I have to repeat the process except the change to the source code is now a single line. The entirety of the time spent for this job is in waiting for 20 clean builds. I have a postulation here, needs to be reworded: As soon as the build system use case goes beyond a single command-line command, eg. “make”, you have to automate your build system. In my case I need the system to do a clean build, 20 times, each with a different value for some variable in the Makefile. So I did this the fastest simplest way possible for me to implement. I went with the following: Make 20 different targets in the Makefile. target1,target2,target3….target20. For each target, a target-specific variable can be specified, and in this case it overwrites a variable from the top of the makefile which is used in the all target. So, each target simply sets that target-specific variable, then has a dependency on the clean and all targets. So we get a clean build with the variable set. This variable also conveniently appears in the name of the hex file so that takes care of getting 20 unique filenames. Then, to actually build all of those targets, I just made a shell script that does make -f MyMakefile targetN for all targets. Really a crappy solution but that’s all I could do at the time and it still achieves automation. Cool!</summary></entry></feed>
+&lt;p&gt;I literally added that one line and all my tests passed.  Crazy!&lt;/p&gt;</content><author><name></name></author><summary type="html">I have a function with associated unit tests, called Parse_Bootloader_Commandline(). int Parse_Bootloader_Commandline(int argc, char * const argv[]) It clearly takes in the argc and argv from main(), and parses it. I had it working, and then I wanted to change the internals of that function, to use getopt. Interesting, I found that the unit tests were still applicable. They had names eg. ParseCommandline_InvalidCommand_Returns0 ParseCommandline_ValidLoadCommand_SetsCommandVariable That’s cool! I swapped out the internals and I know to some degree that the external users of this unit will be OK.</summary></entry></feed>
