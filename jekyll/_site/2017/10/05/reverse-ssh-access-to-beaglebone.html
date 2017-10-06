@@ -109,7 +109,14 @@ Finally, disable password logins again.</p>
   <li>One of the beaglebones was only accepting SSH logins by key, but it only accepted one of a static set of keys.</li>
 </ul>
 
-<p>This was annoying, I had to scp the key over to the VPS.</p>
+<p>This was annoying, I had to scp the key over to the VPS.  Then to login to the beaglebone thru the tunnel,
+I had to supply the key with ssh -i.</p>
+
+<h1 id="important-detail-for-having-2-tunnels">Important detail for having 2+ tunnels</h1>
+
+<p>The port 10022 is arbitrary but if there are 2 tunnels they can’t be both on 10022.<br />
+So actually one of them was on 10023.<br />
+When SSHing through the tunnel I specified which tunnel by specifying the port.</p>
 
   </div>
 

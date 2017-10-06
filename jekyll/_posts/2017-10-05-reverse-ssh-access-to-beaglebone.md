@@ -39,4 +39,11 @@ homeserver~$ ssh -fN -R 10022:localhost:6000 relayserver_user@1.1.1.1
   
 * One of the beaglebones was only accepting SSH logins by key, but it only accepted one of a static set of keys.
   
-This was annoying, I had to scp the key over to the VPS.
+This was annoying, I had to scp the key over to the VPS.  Then to login to the beaglebone thru the tunnel,
+I had to supply the key with ssh -i.
+  
+# Important detail for having 2+ tunnels
+  
+The port 10022 is arbitrary but if there are 2 tunnels they can't be both on 10022.  
+So actually one of them was on 10023.  
+When SSHing through the tunnel I specified which tunnel by specifying the port.
