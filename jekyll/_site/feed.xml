@@ -1,5 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-04T17:51:16-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Keep my hosts running</title><link href="/2017/10/04/keep-my-hosts-running.html" rel="alternate" type="text/html" title="Keep my hosts running" /><published>2017-10-04T00:00:00-07:00</published><updated>2017-10-04T00:00:00-07:00</updated><id>/2017/10/04/keep-my-hosts-running</id><content type="html" xml:base="/2017/10/04/keep-my-hosts-running.html">&lt;p&gt;Now that I temporarily host my friend’s site who actually wants to have visitors,
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-06T09:38:59-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Reverse SSH access to beaglebone</title><link href="/2017/10/05/reverse-ssh-access-to-beaglebone.html" rel="alternate" type="text/html" title="Reverse SSH access to beaglebone" /><published>2017-10-05T00:00:00-07:00</published><updated>2017-10-05T00:00:00-07:00</updated><id>/2017/10/05/reverse-ssh-access-to-beaglebone</id><content type="html" xml:base="/2017/10/05/reverse-ssh-access-to-beaglebone.html">&lt;p&gt;I’m leaving for the weekend and I want access to my 2 beaglebones.&lt;br /&gt;
+1 is my system under test, the other controls a USB programmer
+that can flash a microcontroller on the SUT.&lt;/p&gt;
+
+&lt;p&gt;Following this guide http://xmodulo.com/access-linux-server-behind-nat-reverse-ssh-tunnel.html&lt;/p&gt;
+
+&lt;p&gt;First I’ll locally SSH into the beaglebone.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;homeserver~$ ssh -fN -R 10022:localhost:22 relayserver_user@1.1.1.1 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;-R for reverse tunnel.  Port 10022 on remote host is forwarded to port 22 on beaglebone&lt;/li&gt;
+  &lt;li&gt;10022 is arbitrary&lt;/li&gt;
+  &lt;li&gt;port 22 is the SSH port that beaglebone sshd is listening on&lt;/li&gt;
+  &lt;li&gt;-f for background&lt;/li&gt;
+  &lt;li&gt;-N for “don’t execute a command”&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Note:  I forgot that my VPS had disabled password logins; only permitted by key.&lt;br /&gt;
+I had only installed 1 key on the VPS:  for my main laptop.&lt;br /&gt;
+So to install 2 more keys, I SSHed into the VPS with my main laptop.&lt;br /&gt;
+Temporarily allowed password logins.&lt;br /&gt;
+Then used ssh-copy-id to install the keys on VPS.&lt;br /&gt;
+Finally, disable password logins again.&lt;/p&gt;
+
+&lt;p&gt;Last step is to add the command in rc.local.&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m leaving for the weekend and I want access to my 2 beaglebones. 1 is my system under test, the other controls a USB programmer that can flash a microcontroller on the SUT. Following this guide http://xmodulo.com/access-linux-server-behind-nat-reverse-ssh-tunnel.html First I’ll locally SSH into the beaglebone.</summary></entry><entry><title type="html">Keep my hosts running</title><link href="/2017/10/04/keep-my-hosts-running.html" rel="alternate" type="text/html" title="Keep my hosts running" /><published>2017-10-04T00:00:00-07:00</published><updated>2017-10-04T00:00:00-07:00</updated><id>/2017/10/04/keep-my-hosts-running</id><content type="html" xml:base="/2017/10/04/keep-my-hosts-running.html">&lt;p&gt;Now that I temporarily host my friend’s site who actually wants to have visitors,
 I can’t let it go down.  Also this blog, might as well keep it up.&lt;/p&gt;
 
 &lt;p&gt;So first, when the VPS host goes down and reboots my VPS, my VPS has to start up.&lt;/p&gt;
@@ -450,35 +477,4 @@ These are the objects and libraries and stuff I need, linker script etc.
 If DEPENDENCIES_BEFORE_LINKING has the format described below, the provided make target works.&lt;/p&gt;
 
 &lt;p&gt;When the list DEPENDENCIES_BEFORE_LINKING includes .o object files inside the TARGET_OBJECT_BUILD_DIRECTORY,
-they will match the target.  The source file will be found from the VPATH.&lt;/p&gt;</content><author><name>Steven Anderson</name></author><summary type="html">I’m going to describe what I do for my current project. I’m porting over my 5th project to this system so I gotta write it down haha. Main Elements: VPATH: You have to append every source directory in the VPATH. OBJS: Then you list all the objects being compiled Use a command like this: OBJS_PRODUCTION_CROSS = $(addprefix build/,$(PRODUCTION_OBJ_NAMES) $(PRODUCTION_TARGET_SPECIFIC_OBJ_NAMES) $(PRODUCTION_APP_OBJ_NAMES) $(ASFNAMES) ) To create a list of Target Object Paths. These are the objects you want to build. They’ll be in the /build directory. The Make targets: For building each object use a Make target like this: build/%.o : %.c @echo Building file: $&amp;lt; @echo Invoking: ARM/GNU C Compiler : 5.3.1 $(CROSS_C_COMPILER) -x c -mthumb $(PROJECT_VERSION_NUMBER) $(PROJECT_FLAGS) $(PROJECT_INCLUDES) $(PROJECT_COMMON_FLAGS) -mlong-calls -g3 -Wall -Werror -m</summary></entry><entry><title type="html">How to test getopt</title><link href="/guide/2017/05/19/how-to-test-getopt.html" rel="alternate" type="text/html" title="How to test getopt" /><published>2017-05-19T00:00:00-07:00</published><updated>2017-05-19T00:00:00-07:00</updated><id>/guide/2017/05/19/how-to-test-getopt</id><content type="html" xml:base="/guide/2017/05/19/how-to-test-getopt.html">&lt;p&gt;I have a function with associated unit tests, called Parse_Bootloader_Commandline().
-  int Parse_Bootloader_Commandline(int argc, char * const argv[])&lt;br /&gt;
-It clearly takes in the argc and argv from main(), and parses it.&lt;/p&gt;
-
-&lt;p&gt;I had it working, and then I wanted to change the internals of that function, to use getopt.&lt;br /&gt;
-Interesting, I found that the unit tests were still applicable.  They had names eg.&lt;br /&gt;
-ParseCommandline_InvalidCommand_Returns0&lt;br /&gt;
-ParseCommandline_ValidLoadCommand_SetsCommandVariable&lt;/p&gt;
-
-&lt;p&gt;That’s cool!  I swapped out the internals and I know to some degree that the external users of this unit will be OK.&lt;/p&gt;
-
-&lt;p&gt;The new code that I swapped in, I had used before but did not have tests for it.  So I knew for example that my syntax for calling getopt was OK.&lt;br /&gt;
-I did have trouble compiling, because I was using -Werror and you probably know with crazy casts and use of const and pointers and arrays, you get warnings.  In my case the compiler didn’t like my use of const char * argv[].&lt;br /&gt;
-When I got the new code to compile, the above mentions tests FAILED !  Why???&lt;/p&gt;
-
-&lt;p&gt;I figured it was because I changed something with the types and casts to make the compiler happy.&lt;/p&gt;
-
-&lt;p&gt;I tried a bunch of things that didn’t make any difference.  Casting to (char **).&lt;/p&gt;
-
-&lt;p&gt;I then found out, that, getopt uses global variables that do not get reset !!!&lt;br /&gt;
-Now, obviously there were global variables because you have to use them, &lt;strong&gt;optarg&lt;/strong&gt;.&lt;br /&gt;
-But to me I had no idea there was another global variable,&lt;br /&gt;
-&lt;strong&gt;optind&lt;/strong&gt; ,&lt;br /&gt;
-and this is the argument index!  Starts at the beginning of the command line and when it gets to the end, that’s what makes the next getopt() call return EOF!&lt;/p&gt;
-
-&lt;p&gt;In my tests, getopt() was being called in each test!  Of course only the first test worked!&lt;/p&gt;
-
-&lt;p&gt;So obviously the solution is to put the following line in the TEST_START{} block or whatever you call it, it’s the code that runs before every test!&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;optind = 0&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;I literally added that one line and all my tests passed.  Crazy!&lt;/p&gt;</content><author><name></name></author><summary type="html">I have a function with associated unit tests, called Parse_Bootloader_Commandline(). int Parse_Bootloader_Commandline(int argc, char * const argv[]) It clearly takes in the argc and argv from main(), and parses it. I had it working, and then I wanted to change the internals of that function, to use getopt. Interesting, I found that the unit tests were still applicable. They had names eg. ParseCommandline_InvalidCommand_Returns0 ParseCommandline_ValidLoadCommand_SetsCommandVariable That’s cool! I swapped out the internals and I know to some degree that the external users of this unit will be OK.</summary></entry></feed>
+they will match the target.  The source file will be found from the VPATH.&lt;/p&gt;</content><author><name>Steven Anderson</name></author><summary type="html">I’m going to describe what I do for my current project. I’m porting over my 5th project to this system so I gotta write it down haha. Main Elements: VPATH: You have to append every source directory in the VPATH. OBJS: Then you list all the objects being compiled Use a command like this: OBJS_PRODUCTION_CROSS = $(addprefix build/,$(PRODUCTION_OBJ_NAMES) $(PRODUCTION_TARGET_SPECIFIC_OBJ_NAMES) $(PRODUCTION_APP_OBJ_NAMES) $(ASFNAMES) ) To create a list of Target Object Paths. These are the objects you want to build. They’ll be in the /build directory. The Make targets: For building each object use a Make target like this: build/%.o : %.c @echo Building file: $&amp;lt; @echo Invoking: ARM/GNU C Compiler : 5.3.1 $(CROSS_C_COMPILER) -x c -mthumb $(PROJECT_VERSION_NUMBER) $(PROJECT_FLAGS) $(PROJECT_INCLUDES) $(PROJECT_COMMON_FLAGS) -mlong-calls -g3 -Wall -Werror -m</summary></entry></feed>
