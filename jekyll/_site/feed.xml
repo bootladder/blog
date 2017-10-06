@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-06T09:46:17-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-06T15:57:05-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">Reverse SSH access to beaglebone</title><link href="/2017/10/05/reverse-ssh-access-to-beaglebone.html" rel="alternate" type="text/html" title="Reverse SSH access to beaglebone" /><published>2017-10-05T00:00:00-07:00</published><updated>2017-10-05T00:00:00-07:00</updated><id>/2017/10/05/reverse-ssh-access-to-beaglebone</id><content type="html" xml:base="/2017/10/05/reverse-ssh-access-to-beaglebone.html">&lt;p&gt;I’m leaving for the weekend and I want access to my 2 beaglebones.&lt;br /&gt;
 1 is my system under test, the other controls a USB programmer
 that can flash a microcontroller on the SUT.&lt;/p&gt;
@@ -46,7 +46,15 @@ I had to supply the key with ssh -i.&lt;/p&gt;
 
 &lt;p&gt;The port 10022 is arbitrary but if there are 2 tunnels they can’t be both on 10022.&lt;br /&gt;
 So actually one of them was on 10023.&lt;br /&gt;
-When SSHing through the tunnel I specified which tunnel by specifying the port.&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m leaving for the weekend and I want access to my 2 beaglebones. 1 is my system under test, the other controls a USB programmer that can flash a microcontroller on the SUT. Following this guide http://xmodulo.com/access-linux-server-behind-nat-reverse-ssh-tunnel.html First I’ll locally SSH into the beaglebone.</summary></entry><entry><title type="html">Keep my hosts running</title><link href="/2017/10/04/keep-my-hosts-running.html" rel="alternate" type="text/html" title="Keep my hosts running" /><published>2017-10-04T00:00:00-07:00</published><updated>2017-10-04T00:00:00-07:00</updated><id>/2017/10/04/keep-my-hosts-running</id><content type="html" xml:base="/2017/10/04/keep-my-hosts-running.html">&lt;p&gt;Now that I temporarily host my friend’s site who actually wants to have visitors,
+When SSHing through the tunnel I specified which tunnel by specifying the port.&lt;/p&gt;
+
+&lt;h1 id=&quot;dang-the-ssh-connection-disconnected-overnight&quot;&gt;Dang, the SSH connection disconnected overnight.&lt;/h1&gt;
+
+&lt;p&gt;Using AutoSSH 
+https://www.everythingcli.org/ssh-tunnelling-for-fun-and-profit-autossh/&lt;/p&gt;
+
+&lt;p&gt;Looks promising, I just used standard config.&lt;br /&gt;
+Let’s see if it stays up!&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m leaving for the weekend and I want access to my 2 beaglebones. 1 is my system under test, the other controls a USB programmer that can flash a microcontroller on the SUT. Following this guide http://xmodulo.com/access-linux-server-behind-nat-reverse-ssh-tunnel.html First I’ll locally SSH into the beaglebone.</summary></entry><entry><title type="html">Keep my hosts running</title><link href="/2017/10/04/keep-my-hosts-running.html" rel="alternate" type="text/html" title="Keep my hosts running" /><published>2017-10-04T00:00:00-07:00</published><updated>2017-10-04T00:00:00-07:00</updated><id>/2017/10/04/keep-my-hosts-running</id><content type="html" xml:base="/2017/10/04/keep-my-hosts-running.html">&lt;p&gt;Now that I temporarily host my friend’s site who actually wants to have visitors,
 I can’t let it go down.  Also this blog, might as well keep it up.&lt;/p&gt;
 
 &lt;p&gt;So first, when the VPS host goes down and reboots my VPS, my VPS has to start up.&lt;/p&gt;

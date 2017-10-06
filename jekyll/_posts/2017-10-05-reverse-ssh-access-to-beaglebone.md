@@ -47,3 +47,14 @@ I had to supply the key with ssh -i.
 The port 10022 is arbitrary but if there are 2 tunnels they can't be both on 10022.  
 So actually one of them was on 10023.  
 When SSHing through the tunnel I specified which tunnel by specifying the port.
+  
+# Dang, the SSH connection disconnected overnight.
+  
+Using AutoSSH 
+https://www.everythingcli.org/ssh-tunnelling-for-fun-and-profit-autossh/
+  
+Looks promising, I just used standard config.  
+Let's see if it stays up!
+  
+
+
