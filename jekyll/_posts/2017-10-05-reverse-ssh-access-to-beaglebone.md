@@ -28,3 +28,15 @@ Then used ssh-copy-id to install the keys on VPS.
 Finally, disable password logins again.  
   
 Last step is to add the command in rc.local.
+  
+# Couple extra details
+  
+* One of the beaglebones was running SSH on port 6000.  So, I had to change the 22 to a 6000.
+```
+homeserver~$ ssh -fN -R 10022:localhost:6000 relayserver_user@1.1.1.1 
+```
+  
+  
+* One of the beaglebones was only accepting SSH logins by key, but it only accepted one of a static set of keys.
+  
+This was annoying, I had to scp the key over to the VPS.

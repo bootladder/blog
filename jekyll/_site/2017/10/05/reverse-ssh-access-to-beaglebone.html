@@ -98,6 +98,19 @@ Finally, disable password logins again.</p>
 
 <p>Last step is to add the command in rc.local.</p>
 
+<h1 id="couple-extra-details">Couple extra details</h1>
+
+<ul>
+  <li>One of the beaglebones was running SSH on port 6000.  So, I had to change the 22 to a 6000.
+    <div class="highlighter-rouge"><pre class="highlight"><code>homeserver~$ ssh -fN -R 10022:localhost:6000 relayserver_user@1.1.1.1 
+</code></pre>
+    </div>
+  </li>
+  <li>One of the beaglebones was only accepting SSH logins by key, but it only accepted one of a static set of keys.</li>
+</ul>
+
+<p>This was annoying, I had to scp the key over to the VPS.</p>
+
   </div>
 
   
