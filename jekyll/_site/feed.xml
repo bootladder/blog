@@ -1,5 +1,74 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-06T15:57:05-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Reverse SSH access to beaglebone</title><link href="/2017/10/05/reverse-ssh-access-to-beaglebone.html" rel="alternate" type="text/html" title="Reverse SSH access to beaglebone" /><published>2017-10-05T00:00:00-07:00</published><updated>2017-10-05T00:00:00-07:00</updated><id>/2017/10/05/reverse-ssh-access-to-beaglebone</id><content type="html" xml:base="/2017/10/05/reverse-ssh-access-to-beaglebone.html">&lt;p&gt;I’m leaving for the weekend and I want access to my 2 beaglebones.&lt;br /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-09T16:22:19-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">CMake and Gradle for ARM C/C++</title><link href="/2017/10/09/cmake-and-gradle-for-arm-c-c.html" rel="alternate" type="text/html" title="CMake and Gradle for ARM C/C++" /><published>2017-10-09T00:00:00-07:00</published><updated>2017-10-09T00:00:00-07:00</updated><id>/2017/10/09/cmake-and-gradle-for-arm-c-c</id><content type="html" xml:base="/2017/10/09/cmake-and-gradle-for-arm-c-c.html">&lt;p&gt;I’m trying to build my codebase in CMake or Gradle.&lt;br /&gt;
+Tried Gradle first.  At first glance there are way too many DSL keywords,
+I have no idea what they do and connecting the dots is insane.&lt;br /&gt;
+It’s the same frustration I get with python.  Never knowing what type anything is
+and always having to look up documentation before writing a single line.&lt;/p&gt;
+
+&lt;p&gt;Now trying CMake…&lt;/p&gt;
+
+&lt;p&gt;http://derekmolloy.ie/hello-world-introductions-to-cmake/&lt;/p&gt;
+
+&lt;p&gt;I started with this CMakeLists.txt&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cmake_minimum_required(VERSION 2.8)
+project(hello)
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+include_directories(&quot;${PROJECT_SOURCE_DIR}&quot;)
+add_executable(hello ${PROJECT_SOURCE_DIR}/src/main.c)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;To build,&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cmake .
+make
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Wow it actually tried to compile something.  No include directories were supplied.  Let’s add one.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;include_directories(myincludedir)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Works.  Now there’s another header that’s not inside the repo.&lt;br /&gt;
+Let’s add those.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;include_directories(&quot;../samd20_cmsis_headers&quot;)
+include_directories(&quot;../arm_cmsis_headers&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Next error, Error: no such instruction: `cpsie i’.&lt;br /&gt;
+I must not be compling with the arm gcc compiler.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now I get this error.  Found a solution from here.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://github.com/digitalbitbox/mcu/blob/master/arm.cmake
+# Avoid known bug in linux giving: 
+#    arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS &quot;&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;For the CFLAGS I used this syntax.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set(CMAKE_C_FLAGS &quot;-std=c99                      &quot;)
+string(APPEND CMAKE_C_FLAGS &quot;-Wall                         &quot;)
+string(APPEND CMAKE_C_FLAGS &quot;-Wextra                       &quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I used this to add directories containing source files to be compiled.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file(GLOB SOURCES
+    &quot;src/*.h&quot;
+    &quot;src/*.c&quot;
+    &quot;src/hal/*.c&quot;
+    &quot;src/hal/*.h&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;</content><author><name></name></author><summary type="html">I’m trying to build my codebase in CMake or Gradle. Tried Gradle first. At first glance there are way too many DSL keywords, I have no idea what they do and connecting the dots is insane. It’s the same frustration I get with python. Never knowing what type anything is and always having to look up documentation before writing a single line. Now trying CMake… http://derekmolloy.ie/hello-world-introductions-to-cmake/ I started with this CMakeLists.txt cmake_minimum_required(VERSION 2.8) project(hello) set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin) set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}) set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}) include_directories(&quot;${PROJECT_SOURCE_DIR}&quot;) add_executable(hello ${PROJECT_SOURCE_DIR}/src/main.c) To build, cmake . make Wow it actually tried to compile something. No include directories were supplied. Let’s add one. include_directories(myincludedir) Works. Now there’s another header that’s not inside the repo. Let’s add those. include_directories(&quot;../samd20_cmsis_headers&quot;) include_directories(&quot;../arm_cmsis_headers&quot;)</summary></entry><entry><title type="html">Reverse SSH access to beaglebone</title><link href="/2017/10/05/reverse-ssh-access-to-beaglebone.html" rel="alternate" type="text/html" title="Reverse SSH access to beaglebone" /><published>2017-10-05T00:00:00-07:00</published><updated>2017-10-05T00:00:00-07:00</updated><id>/2017/10/05/reverse-ssh-access-to-beaglebone</id><content type="html" xml:base="/2017/10/05/reverse-ssh-access-to-beaglebone.html">&lt;p&gt;I’m leaving for the weekend and I want access to my 2 beaglebones.&lt;br /&gt;
 1 is my system under test, the other controls a USB programmer
 that can flash a microcontroller on the SUT.&lt;/p&gt;
 
@@ -435,74 +504,4 @@ and this is the argument index!  Starts at the beginning of the command line and
 
 &lt;p&gt;&lt;strong&gt;optind = 0&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;I literally added that one line and all my tests passed.  Crazy!&lt;/p&gt;</content><author><name></name></author><summary type="html">I have a function with associated unit tests, called Parse_Bootloader_Commandline(). int Parse_Bootloader_Commandline(int argc, char * const argv[]) It clearly takes in the argc and argv from main(), and parses it. I had it working, and then I wanted to change the internals of that function, to use getopt. Interesting, I found that the unit tests were still applicable. They had names eg. ParseCommandline_InvalidCommand_Returns0 ParseCommandline_ValidLoadCommand_SetsCommandVariable That’s cool! I swapped out the internals and I know to some degree that the external users of this unit will be OK.</summary></entry><entry><title type="html">How to make Linux Makefiles Work Good</title><link href="/post/2017/05/22/How-to-Makefile-Linux-Good.html" rel="alternate" type="text/html" title="How to make Linux Makefiles Work Good" /><published>2017-05-22T00:00:00-07:00</published><updated>2017-05-22T00:00:00-07:00</updated><id>/post/2017/05/22/How-to-Makefile-Linux-Good</id><content type="html" xml:base="/post/2017/05/22/How-to-Makefile-Linux-Good.html">&lt;p&gt;I’m going to describe what I do for my current project.  I’m porting over my 5th project to this system so I gotta write it down haha.&lt;/p&gt;
-
-&lt;p&gt;Main Elements:&lt;br /&gt;
-VPATH:  You have to append every source directory in the VPATH.&lt;br /&gt;
-OBJS:  Then you list all the objects being compiled&lt;/p&gt;
-
-&lt;p&gt;Use a command like this:
-OBJS_PRODUCTION_CROSS = $(addprefix build/,$(PRODUCTION_OBJ_NAMES) $(PRODUCTION_TARGET_SPECIFIC_OBJ_NAMES) $(PRODUCTION_APP_OBJ_NAMES) $(ASFNAMES) )&lt;/p&gt;
-
-&lt;p&gt;To create a list of Target Object Paths.  These are the objects you want to build.  They’ll be in the /build directory.&lt;/p&gt;
-
-&lt;p&gt;The Make targets:  For building each object use a Make target like this:
-build/%.o : %.c
-  @echo Building file: $&amp;lt;
-  @echo Invoking: ARM/GNU C Compiler : 5.3.1
-  $(CROSS_C_COMPILER)  -x c -mthumb $(PROJECT_VERSION_NUMBER)  $(PROJECT_FLAGS) $(PROJECT_INCLUDES) $(PROJECT_COMMON_FLAGS)  -mlong-calls -g3 -Wall -Werror -m&lt;/p&gt;
-
-&lt;p&gt;This is why you made that list of the target objects before.  That’s a list of dependencies.  Every object is a dependency.&lt;br /&gt;
-The Make target covers all of these.&lt;br /&gt;
-The cool part is the dependency : %.c here.  This is where the VPATH is cool.
-No need to specify where any particular source file is.  The VPATH contains all the directories with source.&lt;/p&gt;
-
-&lt;p&gt;To build that source C file, all you need is the path to it so that’s all the VPATH does.&lt;br /&gt;
-The rest is just obvious compiler flags!&lt;/p&gt;
-
-&lt;p&gt;So what I”m doing is converting a Visual Studio generated makefile with all this Windows specific crap.&lt;br /&gt;
-Into a PORTABLE-ABLE MAKEFILE THAT I HAPPEN TO BE USING WITH LINUX.  Ahem.&lt;/p&gt;
-
-&lt;p&gt;Let’s create that PORTABLE-ABLE Makefile starter template, might as well.&lt;/p&gt;
-
-&lt;p&gt;To get incremental progress I’ll start with the all target and go from there.&lt;/p&gt;
-
-&lt;p&gt;First the all target:&lt;/p&gt;
-&lt;h1 id=&quot;all-target&quot;&gt;All Target&lt;/h1&gt;
-&lt;p&gt;all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)&lt;/p&gt;
-
-&lt;p&gt;$(OUTPUT_FILE_PATH): $(OBJS_PRODUCTION_CROSS) $(USER_OBJS) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
-  @echo Building target: $@
-  @echo Invoking: ARM/GNU Linker : 5.3.1
-  $(CROSS_C_COMPIL&lt;/p&gt;
-
-&lt;p&gt;What we see here is all will make the target with name specified by variable $(OUTPUT_FILE_PATH)&lt;br /&gt;
-To make that target, it depends on our production objects, libraries, a linker script, and whatever else.&lt;br /&gt;
-Let’s get that working.&lt;/p&gt;
-
-&lt;p&gt;#&lt;/p&gt;
-&lt;h1 id=&quot;generals&quot;&gt;GENERALS&lt;/h1&gt;
-&lt;p&gt;#
-#
-#&lt;/p&gt;
-
-&lt;p&gt;$(TARGET_OBJECT_BUILD_DIRECTORY)/%.o : %.c
-  @echo Building file: $&amp;lt;
-  @echo Invoking: C Compiler 
-  @echo $(COMPILER_COMMAND)
-  $(COMPILER_COMMAND)&lt;/p&gt;
-
-&lt;h1 id=&quot;all-target-1&quot;&gt;All Target&lt;/h1&gt;
-&lt;p&gt;all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)&lt;/p&gt;
-
-&lt;p&gt;$(OUTPUT_FILE_PATH): $(DEPENDENCIES_BEFORE_LINKING)
-  @echo Building target: $@&lt;/p&gt;
-
-&lt;p&gt;Works!&lt;/p&gt;
-
-&lt;p&gt;Now to use this, I need to create variables DEPENDENCIES_BEFORE_LINKING.
-These are the objects and libraries and stuff I need, linker script etc.
-If DEPENDENCIES_BEFORE_LINKING has the format described below, the provided make target works.&lt;/p&gt;
-
-&lt;p&gt;When the list DEPENDENCIES_BEFORE_LINKING includes .o object files inside the TARGET_OBJECT_BUILD_DIRECTORY,
-they will match the target.  The source file will be found from the VPATH.&lt;/p&gt;</content><author><name>Steven Anderson</name></author><summary type="html">I’m going to describe what I do for my current project. I’m porting over my 5th project to this system so I gotta write it down haha. Main Elements: VPATH: You have to append every source directory in the VPATH. OBJS: Then you list all the objects being compiled Use a command like this: OBJS_PRODUCTION_CROSS = $(addprefix build/,$(PRODUCTION_OBJ_NAMES) $(PRODUCTION_TARGET_SPECIFIC_OBJ_NAMES) $(PRODUCTION_APP_OBJ_NAMES) $(ASFNAMES) ) To create a list of Target Object Paths. These are the objects you want to build. They’ll be in the /build directory. The Make targets: For building each object use a Make target like this: build/%.o : %.c @echo Building file: $&amp;lt; @echo Invoking: ARM/GNU C Compiler : 5.3.1 $(CROSS_C_COMPILER) -x c -mthumb $(PROJECT_VERSION_NUMBER) $(PROJECT_FLAGS) $(PROJECT_INCLUDES) $(PROJECT_COMMON_FLAGS) -mlong-calls -g3 -Wall -Werror -m</summary></entry></feed>
+&lt;p&gt;I literally added that one line and all my tests passed.  Crazy!&lt;/p&gt;</content><author><name></name></author><summary type="html">I have a function with associated unit tests, called Parse_Bootloader_Commandline(). int Parse_Bootloader_Commandline(int argc, char * const argv[]) It clearly takes in the argc and argv from main(), and parses it. I had it working, and then I wanted to change the internals of that function, to use getopt. Interesting, I found that the unit tests were still applicable. They had names eg. ParseCommandline_InvalidCommand_Returns0 ParseCommandline_ValidLoadCommand_SetsCommandVariable That’s cool! I swapped out the internals and I know to some degree that the external users of this unit will be OK.</summary></entry></feed>
