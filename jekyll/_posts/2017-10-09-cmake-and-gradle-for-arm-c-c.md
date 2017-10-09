@@ -44,6 +44,9 @@ include_directories("../arm_cmsis_headers")
 
 Next error, Error: no such instruction: `cpsie i'.  
 I must not be compling with the arm gcc compiler.  
+```
+set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+```
   
 ```
 arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
@@ -72,6 +75,10 @@ file(GLOB SOURCES
     "src/hal/*.c"
     "src/hal/*.h"
 )
+```
+And I changed the executable to be built from those sources:
+```
+add_executable(myname ${SOURCES})
 ```
   
 

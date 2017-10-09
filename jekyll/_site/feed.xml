@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-09T16:22:19-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-09T16:28:35-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">CMake and Gradle for ARM C/C++</title><link href="/2017/10/09/cmake-and-gradle-for-arm-c-c.html" rel="alternate" type="text/html" title="CMake and Gradle for ARM C/C++" /><published>2017-10-09T00:00:00-07:00</published><updated>2017-10-09T00:00:00-07:00</updated><id>/2017/10/09/cmake-and-gradle-for-arm-c-c</id><content type="html" xml:base="/2017/10/09/cmake-and-gradle-for-arm-c-c.html">&lt;p&gt;I’m trying to build my codebase in CMake or Gradle.&lt;br /&gt;
 Tried Gradle first.  At first glance there are way too many DSL keywords,
 I have no idea what they do and connecting the dots is insane.&lt;br /&gt;
@@ -40,6 +40,9 @@ include_directories(&quot;../arm_cmsis_headers&quot;)
 
 &lt;p&gt;Next error, Error: no such instruction: `cpsie i’.&lt;br /&gt;
 I must not be compling with the arm gcc compiler.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
 &lt;/code&gt;&lt;/pre&gt;
@@ -67,6 +70,10 @@ string(APPEND CMAKE_C_FLAGS &quot;-Wextra                       &quot;)
     &quot;src/hal/*.c&quot;
     &quot;src/hal/*.h&quot;
 )
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;And I changed the executable to be built from those sources:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;add_executable(myname ${SOURCES})
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;</content><author><name></name></author><summary type="html">I’m trying to build my codebase in CMake or Gradle. Tried Gradle first. At first glance there are way too many DSL keywords, I have no idea what they do and connecting the dots is insane. It’s the same frustration I get with python. Never knowing what type anything is and always having to look up documentation before writing a single line. Now trying CMake… http://derekmolloy.ie/hello-world-introductions-to-cmake/ I started with this CMakeLists.txt cmake_minimum_required(VERSION 2.8) project(hello) set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin) set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}) set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}) include_directories(&quot;${PROJECT_SOURCE_DIR}&quot;) add_executable(hello ${PROJECT_SOURCE_DIR}/src/main.c) To build, cmake . make Wow it actually tried to compile something. No include directories were supplied. Let’s add one. include_directories(myincludedir) Works. Now there’s another header that’s not inside the repo. Let’s add those. include_directories(&quot;../samd20_cmsis_headers&quot;) include_directories(&quot;../arm_cmsis_headers&quot;)</summary></entry><entry><title type="html">Reverse SSH access to beaglebone</title><link href="/2017/10/05/reverse-ssh-access-to-beaglebone.html" rel="alternate" type="text/html" title="Reverse SSH access to beaglebone" /><published>2017-10-05T00:00:00-07:00</published><updated>2017-10-05T00:00:00-07:00</updated><id>/2017/10/05/reverse-ssh-access-to-beaglebone</id><content type="html" xml:base="/2017/10/05/reverse-ssh-access-to-beaglebone.html">&lt;p&gt;I’m leaving for the weekend and I want access to my 2 beaglebones.&lt;br /&gt;
 1 is my system under test, the other controls a USB programmer
