@@ -81,4 +81,16 @@ And I changed the executable to be built from those sources:
 add_executable(myname ${SOURCES})
 ```
   
-
+I noticed the output of the GNU size command shows different sizes for the
+ELF output from the CMake build and the original Makefile build.
+  I realized I never specified the linker script.  Let's do that.
+  
+Turns out I just stick it in the CMAKE_C_FLAGS , no need for a separate linker flags.
+  
+Added that and I get the desired output.
+```
+   text    data     bss     dec     hex filename     
+  3352      68    2584    6004    1774 bin/debos_firmware  
+```
+  
+Seeing that exact same output on either build is... extremely releiving.
