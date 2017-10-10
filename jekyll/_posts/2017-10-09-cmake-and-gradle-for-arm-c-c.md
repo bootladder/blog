@@ -94,3 +94,34 @@ Added that and I get the desired output.
 ```
   
 Seeing that exact same output on either build is... extremely releiving.
+  
+# Uh, now I'm trying to build my unit test executable.
+  
+I got this far ...
+```
+file(GLOB TEST_SOURCES
+    "test/*.h"
+    "test/*.c"
+    "test/test_runners/*.c"
+    "test/test_runners/*.h"
+    "mock/*.c"
+    "../Unity/src/*.c"
+    "src/*.c"
+    "src/hal/*.c"
+)
+```
+  
+First issue I have to deal with:  
+Multiple Definition error from the linker.  
+As you see, I included the test/ directory and src/.
+Inside test there are some mocked objects.  The names collide with the ones from source.  
+  
+A solution I've learned from various books is to compile the source into a library.
+When linking the test executable, the library will only be searched when the
+symbol is not found in the test objects.  
+This hackish technique creates a priority of sorts, for names.  Test names first, production names second.  
+
+  
+Now how do I do this with CMake?  Reimplement that above logic?  
+My guess is Yes, because CMake just wraps make and it is make and gcc that are complaining
+about not finding the symbols.  
