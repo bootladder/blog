@@ -19,4 +19,17 @@ docker volume create --name $OVPN_DATA
 sudo ls /var/lib/docker/volumes/ovpn-data-example/_data/
 ccd  down.sh  openvpn.conf  ovpn_env.sh  up.sh
 ```
-
+```
+docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki
+ubuntu@ubuntu:~$ sudo ls /var/lib/docker/volumes/ovpn-data-example/_data/
+ccd  down.sh  openvpn.conf  ovpn_env.sh  pki  up.sh
+```
+```
+docker run -v $OVPN_DATA:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN kylemanna/openvpn
+  docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn easyrsa build-client-full CLIENTNAME nopass
+  docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient CLIENTNAME > CLIENTNAME.ovpn
+```
+```
+ubuntu@ubuntu:~$ ls
+CLIENTNAME.ovpn 
+```
