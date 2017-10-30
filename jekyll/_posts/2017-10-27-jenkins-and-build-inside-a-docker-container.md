@@ -10,4 +10,7 @@ Toolchain is static but the code isn't so the code building
 is done inside the container.  pulling the code, dependencies,
 building it, etc is a script run inside the container.
   
+Installed docker on the fresh VM with the get docker script.  
+Installed docker-compose also from docker.io hosted script.
+  
 
