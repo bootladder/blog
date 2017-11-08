@@ -1,5 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-10-30T12:02:51-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">jenkins and build inside a docker container</title><link href="/2017/10/27/jenkins-and-build-inside-a-docker-container.html" rel="alternate" type="text/html" title="jenkins and build inside a docker container" /><published>2017-10-27T00:00:00-07:00</published><updated>2017-10-27T00:00:00-07:00</updated><id>/2017/10/27/jenkins-and-build-inside-a-docker-container</id><content type="html" xml:base="/2017/10/27/jenkins-and-build-inside-a-docker-container.html">&lt;p&gt;Jenkins will be available through some URL.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-11-08T12:59:54-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">CMake redo</title><link href="/2017/11/08/cmake-redo.html" rel="alternate" type="text/html" title="CMake redo" /><published>2017-11-08T00:00:00-08:00</published><updated>2017-11-08T00:00:00-08:00</updated><id>/2017/11/08/cmake-redo</id><content type="html" xml:base="/2017/11/08/cmake-redo.html">&lt;p&gt;Running into so many little issues.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;External Libraries, git repos&lt;br /&gt;
+I have 2 libraries that are shared by multiple projects.
+I’ve experimented with linking to a prebuilt binary that is shared by multiple projects,
+or having each individual project compile the library source.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Linking to prebuilt worked before when I wasn’t automating my build.&lt;br /&gt;
+I just installed the libraries and used hard coded paths to connect everything up in my handwritten Makefile.&lt;br /&gt;
+Now I can’t do that, I want this on Jenkins and quick deploy.&lt;/p&gt;
+
+&lt;p&gt;So I am trying to build the source.&lt;br /&gt;
+I took the libraries out of the /src tree&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ExternalProject_Add(XYZ_COMMON_SOURCE
+    GIT_REPOSITORY &quot;https://steve@bitbucket.org/xyz/xyz_common_source.git&quot;
+    BUILD_COMMAND &quot;&quot;
+    UPDATE_COMMAND &quot;&quot;
+    CONFIGURE_COMMAND &quot;&quot;
+    INSTALL_COMMAND &quot;&quot;
+    PREFIX &quot;/tmp/lib/&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;`/tmp/lib is under the filesystem root, not a cmake root’&lt;/p&gt;
+
+&lt;p&gt;This allowed me to do this&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file(GLOB_RECURSE SOURCES_RECURSE
+    &quot;/tmp/lib/src/XYZ_COMMON_SOURCE/*.c&quot;
+    &quot;/tmp/lib/src/XYZ_COMMON_SOURCE/*.h&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;but-my-next-problem-is-some-of-these-source-files-have-header-dependencies--interface-header&quot;&gt;But my next problem is, some of these source files have header dependencies.  Interface header.&lt;/h1&gt;
+
+&lt;p&gt;One of the files in COMMON_SOURCE has a header, “IHAL_MYSERIAL.h”
+A hardware interface.&lt;br /&gt;
+The project I’m trying to build now doesn’t have that interface or use that source file.&lt;br /&gt;
+But CMake wants to build all the source files, and IHAL_MYSERIAL.h isn’t there.
+Eh, thinking again, the header should be in there.  I put it in.&lt;/p&gt;
+
+&lt;p&gt;OK got somewhere, just had to take out some files from the Primary project that
+were multiply defined with the common source.&lt;br /&gt;
+Previously I had avoided this by individually selecting each source file to be built.&lt;br /&gt;
+But now I’m building everything so there are conflicts due to that.&lt;/p&gt;
+
+&lt;h1 id=&quot;small-note&quot;&gt;Small Note,&lt;/h1&gt;
+&lt;p&gt;If the build fails I guess the artifacts are deleted?&lt;br /&gt;
+I had a GNU size command running after the linker step, but it failed due to the wrong path.&lt;br /&gt;
+When that happened there was no binary in the bin directory.&lt;br /&gt;
+But removing the size command entirely, the binary was there.  Also when fixing the wrong path,
+the binary was there.&lt;/p&gt;</content><author><name></name></author><summary type="html">Running into so many little issues.</summary></entry><entry><title type="html">jenkins and build inside a docker container</title><link href="/2017/10/27/jenkins-and-build-inside-a-docker-container.html" rel="alternate" type="text/html" title="jenkins and build inside a docker container" /><published>2017-10-27T00:00:00-07:00</published><updated>2017-10-27T00:00:00-07:00</updated><id>/2017/10/27/jenkins-and-build-inside-a-docker-container</id><content type="html" xml:base="/2017/10/27/jenkins-and-build-inside-a-docker-container.html">&lt;p&gt;Jenkins will be available through some URL.
 The build toolchain will be installed in the Dockerfile,
 on top of the jenkins image.&lt;/p&gt;
 
@@ -474,82 +527,4 @@ If I run a ping on the gateway laptop, it does go through.  The obvious differen
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;h1 id=&quot;wow-that-made-it-work&quot;&gt;Wow, that made it work!&lt;/h1&gt;</content><author><name></name></author><summary type="html">Big telecom companies are garbage. Turd sandwich or giant douche? Comcast: 1 year contract for $100/mo, 50Mb down. No thanks! Let’s look into mobile internet with unlimited data. Let’s see if I can do this with my phone. First I grab an extra laptop that has both Ethernet and WiFi. This is the gateway I turn on my phone’s hotspot and connect to it with the gateway laptop Verify I can ping the gateway laptop from my tester client Change default gateway on tester client to 10.0.0.6, verify Internet is now unavailable On the gateway laptop, run this sudo sysctl -w net.ipv4.ip_forward=1 Now Internet is available through gateway laptop, but the gateway now has to go out the WiFi hotspot. Turns out there are 2 0.0.0.0 entries in the route table. Let’s delete the one for Ethernet and keep the WiFi one. route del default gateway x.x.x.x Hmm, ping doesn’t work. Just hangs, no ouptut. I see what’s happening using tcpdump … traffic starts at the tester client, gets to the gateway on the Ethernet interface, then goes out the WiFi interface, but the source address is still the tester client’s source. If I run a ping on the gateway laptop, it does go through. The obvious difference is the source address. Let’s change that. Let’s try this one # iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth1 -j SNAT --to-source 1.2.3.4 Wow, that made it work!</summary></entry><entry><title type="html">Making my version control not suck</title><link href="/2017/09/13/making-my-version-control-not-suck.html" rel="alternate" type="text/html" title="Making my version control not suck" /><published>2017-09-13T00:00:00-07:00</published><updated>2017-09-13T00:00:00-07:00</updated><id>/2017/09/13/making-my-version-control-not-suck</id><content type="html" xml:base="/2017/09/13/making-my-version-control-not-suck.html">&lt;p&gt;I develop and maintain firmware for a family of products.
-There are 5 different firmware projects here.
-They’re all releated in communication protocol, as well as other things
-such as beep frequency, LED blink patterns etc.&lt;/p&gt;
-
-&lt;p&gt;But now I’m faced with splitting all 5 of those into 3 versions.
-So now there are technically 15 different firmware images that need to be
-available for download and documented to identify what they are.&lt;/p&gt;
-
-&lt;p&gt;My (git) version control system until now was obvious.  Master goes forward, occasional branching and merging, tags on version releases.&lt;/p&gt;
-
-&lt;p&gt;It would be possible to use branches and tags to rebuild any version of any project.  But here’s the complication:  there is a in-house shared library used by all 15 firmware versions.  That library also has 3 versions.  In other words the correct version of the shared library has to be available when building a version of firmware.
-  In more other words, to build a version of firmware, the project repo has to be checked out at the right version, as well as the shared library checked out at the right version.  Finally, the build config (eg. Makefile) has to identify and locate the correct shared library to be linked.&lt;/p&gt;
-
-&lt;p&gt;I like stuff like Ruby, Rust, etc. where you have a config file (yaml) to specify dependencies.&lt;/p&gt;
-
-&lt;p&gt;I think I can improve my Makefile to do what I want.&lt;br /&gt;
-It would be as simple as git checkout my_commit followed by make.
-The Makefile at this commit should build the proper version.  The Makefile itself identifies its own version and the dependency versions it needs.  It can then git clone the dependencies using git submodules.&lt;/p&gt;
-
-&lt;p&gt;This way, a complete build with all dependencies lives inside 1 directory.  If a submodule is updated or branched, it won’t affect previous builds.&lt;/p&gt;
-
-&lt;h1 id=&quot;strategy--use-a-fresh-machine-vps-to-recreate-the-build&quot;&gt;Strategy:  use a fresh machine (VPS) to recreate the build&lt;/h1&gt;
-
-&lt;p&gt;I don’t want to be confused with currently existing directory structure.  Building the same firmware version on a different machine is a good way to shake out things like hard coded paths breaking.&lt;br /&gt;
-Ideally all builds would happen on this separate machine.  I guess that’s part of Continous Integration?&lt;/p&gt;
-
-&lt;h1 id=&quot;-makefile-needs-source-located-in-a-hard-coded-directory&quot;&gt;— Makefile needs source located in a hard coded directory&lt;/h1&gt;
-
-&lt;p&gt;Project needs a library or some source somewhere else to compile.
-The Makefile can find the source with a VPATH and find the headers
-with -I compiler flags.  But, that enforces a certain directory structure.&lt;/p&gt;
-
-&lt;h1 id=&quot;-new-rule-discovery-only-create-directory-structure-for-sub-directories--never-depend-on-paths-starting-wtih--or--etc&quot;&gt;— New rule discovery?: Only create directory structure for sub-directories.  Never depend on paths starting wtih ../ or ../../ etc.&lt;/h1&gt;
-
-&lt;p&gt;This rule allows you to create directory structure, but doesn’t cause problems because the structure is all below current directory.&lt;br /&gt;
-Basically, enforced sub-directory structure is coupled entirely to
-the populating of that sub-directory and makes no assumptions about directories above current directory.&lt;br /&gt;
-In other words, if you have enforced structure, the build system has to automatically conform to that structure.  Let the Makefile create the directories with their correct names, populate them with files.&lt;/p&gt;
-
-&lt;h1 id=&quot;-vpath-issue-with-git-clone&quot;&gt;— VPATH Issue with git clone&lt;/h1&gt;
-
-&lt;p&gt;I have a repo prereq inside my all target.
-The purpose is to clone the dependencies,
-so Make can then refer to those dependencies and build the target.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;always: 
-repos: always
-        @echo hello
-        if [ ! -d &quot;../../mysrcrepo&quot; ] ; then \
-            git clone https://mysrcrepo ;\
-        fi 
-        if [ ! -d &quot;../../mylibrepo&quot; ] ; then \
-            git clone https://mylibrepo ;\
-            make; \
-
-        fi 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;It almost worked.
-  In the case of a cloned library, the make command is run, which builds the library.  That worked.
-  But in the case of cloned source, the VPATH didn’t catch the source files that were cloned.  When running make a second time, it would work.&lt;/p&gt;
-
-&lt;p&gt;Well apparently 2 things are wrong with that, as I’ve read.&lt;br /&gt;
-1, VPATH doesn’t work on generated files.  Not sure what that means specifically but the way I made sense of it is this:  You can add directories to VPATH but if they don’t exist when make is run, the VPATH won’t see that directory.  Even if the file exists at the time it is needed, it won’t be found.  That explains why the build works the second time.&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Recursive Make Considered Harmful?&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h1 id=&quot;discovery--how-to-do-git-inside-make&quot;&gt;Discovery:  how to do git inside make&lt;/h1&gt;
-
-&lt;p&gt;https://stackoverflow.com/questions/15602059/git-shortcut-to-pull-with-clone-if-no-local-there-yet&lt;/p&gt;
-
-&lt;p&gt;Using this I can solve the problem in the above snippet
-        if [ ! -d “../../mysrcrepo” ] ; then \&lt;/p&gt;
-
-&lt;p&gt;If the directory does exist, nothing happens.  What I want is a git pull in that case.&lt;/p&gt;</content><author><name></name></author><summary type="html">I develop and maintain firmware for a family of products. There are 5 different firmware projects here. They’re all releated in communication protocol, as well as other things such as beep frequency, LED blink patterns etc.</summary></entry></feed>
+&lt;h1 id=&quot;wow-that-made-it-work&quot;&gt;Wow, that made it work!&lt;/h1&gt;</content><author><name></name></author><summary type="html">Big telecom companies are garbage. Turd sandwich or giant douche? Comcast: 1 year contract for $100/mo, 50Mb down. No thanks! Let’s look into mobile internet with unlimited data. Let’s see if I can do this with my phone. First I grab an extra laptop that has both Ethernet and WiFi. This is the gateway I turn on my phone’s hotspot and connect to it with the gateway laptop Verify I can ping the gateway laptop from my tester client Change default gateway on tester client to 10.0.0.6, verify Internet is now unavailable On the gateway laptop, run this sudo sysctl -w net.ipv4.ip_forward=1 Now Internet is available through gateway laptop, but the gateway now has to go out the WiFi hotspot. Turns out there are 2 0.0.0.0 entries in the route table. Let’s delete the one for Ethernet and keep the WiFi one. route del default gateway x.x.x.x Hmm, ping doesn’t work. Just hangs, no ouptut. I see what’s happening using tcpdump … traffic starts at the tester client, gets to the gateway on the Ethernet interface, then goes out the WiFi interface, but the source address is still the tester client’s source. If I run a ping on the gateway laptop, it does go through. The obvious difference is the source address. Let’s change that. Let’s try this one # iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth1 -j SNAT --to-source 1.2.3.4 Wow, that made it work!</summary></entry></feed>
