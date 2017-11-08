@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-11-08T12:59:54-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-11-08T14:43:13-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">CMake redo</title><link href="/2017/11/08/cmake-redo.html" rel="alternate" type="text/html" title="CMake redo" /><published>2017-11-08T00:00:00-08:00</published><updated>2017-11-08T00:00:00-08:00</updated><id>/2017/11/08/cmake-redo</id><content type="html" xml:base="/2017/11/08/cmake-redo.html">&lt;p&gt;Running into so many little issues.&lt;/p&gt;
 
 &lt;ul&gt;
@@ -52,7 +52,38 @@ But now I’m building everything so there are conflicts due to that.&lt;/p&gt;
 I had a GNU size command running after the linker step, but it failed due to the wrong path.&lt;br /&gt;
 When that happened there was no binary in the bin directory.&lt;br /&gt;
 But removing the size command entirely, the binary was there.  Also when fixing the wrong path,
-the binary was there.&lt;/p&gt;</content><author><name></name></author><summary type="html">Running into so many little issues.</summary></entry><entry><title type="html">jenkins and build inside a docker container</title><link href="/2017/10/27/jenkins-and-build-inside-a-docker-container.html" rel="alternate" type="text/html" title="jenkins and build inside a docker container" /><published>2017-10-27T00:00:00-07:00</published><updated>2017-10-27T00:00:00-07:00</updated><id>/2017/10/27/jenkins-and-build-inside-a-docker-container</id><content type="html" xml:base="/2017/10/27/jenkins-and-build-inside-a-docker-container.html">&lt;p&gt;Jenkins will be available through some URL.
+the binary was there.&lt;/p&gt;</content><author><name></name></author><summary type="html">Running into so many little issues.</summary></entry><entry><title type="html">Bitbucket Access Keys inside a Jenkins Container</title><link href="/2017/11/08/bitbucket-access-keys-inside-a-jenkins-container.html" rel="alternate" type="text/html" title="Bitbucket Access Keys inside a Jenkins Container" /><published>2017-11-08T00:00:00-08:00</published><updated>2017-11-08T00:00:00-08:00</updated><id>/2017/11/08/bitbucket-access-keys-inside-a-jenkins-container</id><content type="html" xml:base="/2017/11/08/bitbucket-access-keys-inside-a-jenkins-container.html">&lt;p&gt;Bit of extra work to get a container to talk to Bitbucket.&lt;br /&gt;
+This is necessary because Jenkins needs to pull private repos autmatically,
+so must use keys.&lt;br /&gt;
+The key could be baked in the image but then I can’t share it.&lt;br /&gt;
+So what I did was put in a global /etc/ssh/ssh_config that points to a key
+inside the shared data volume.  I simply stick the key in there.&lt;/p&gt;
+
+&lt;p&gt;First generate the key, then copy/paste it into bitbucket repo settings access key.
+Then copy the key to an accessible server.
+Then copy the key into the Docker host and then docker container.&lt;/p&gt;
+
+&lt;p&gt;ssh -i bitbucket_access_key git@bitbucket.org&lt;/p&gt;
+
+&lt;p&gt;to make sure the key works.&lt;/p&gt;
+
+&lt;p&gt;Then configure SSH to use the keys there.&lt;/p&gt;
+
+&lt;p&gt;Problem, the only shared volume is /var/jenkins_home in the container.  /etc is not persistent.
+We’ll have to bake it into the image?&lt;/p&gt;
+
+&lt;p&gt;Add this to the Dockerfile and add this file&lt;/p&gt;
+
+&lt;p&gt;Host bitbucket.org
+    HostName bitbucket.org
+    User steveODI
+    IdentityFile /var/jenkins_home/bitbucket_access_key&lt;/p&gt;
+
+&lt;p&gt;Dockerfile:
+COPY ssh_config /home/jenkins/.ssh/ssh_config&lt;/p&gt;
+
+&lt;p&gt;no,
+COPY ssh_config /etc/ssh/ssh_config&lt;/p&gt;</content><author><name></name></author><summary type="html">Bit of extra work to get a container to talk to Bitbucket. This is necessary because Jenkins needs to pull private repos autmatically, so must use keys. The key could be baked in the image but then I can’t share it. So what I did was put in a global /etc/ssh/ssh_config that points to a key inside the shared data volume. I simply stick the key in there.</summary></entry><entry><title type="html">jenkins and build inside a docker container</title><link href="/2017/10/27/jenkins-and-build-inside-a-docker-container.html" rel="alternate" type="text/html" title="jenkins and build inside a docker container" /><published>2017-10-27T00:00:00-07:00</published><updated>2017-10-27T00:00:00-07:00</updated><id>/2017/10/27/jenkins-and-build-inside-a-docker-container</id><content type="html" xml:base="/2017/10/27/jenkins-and-build-inside-a-docker-container.html">&lt;p&gt;Jenkins will be available through some URL.
 The build toolchain will be installed in the Dockerfile,
 on top of the jenkins image.&lt;/p&gt;
 
@@ -495,36 +526,4 @@ Attached debuggers:
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Sweet!&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m flashing Atmel ARM microcontrollers with a USB programmer dongle. https://github.com/bootladder/edbg Got a fresh beaglebone running, grabbed the IP from the local router. In order to get the git clone to work I had to get the time right. apt-get install ntp the compiled edbg binary is not included so it must be installed. Let’s write the install script here. cp libudev.h /usr/include; cp libudev.so /lib ; make; Hmm looks like the library I included in there is out of date. libc perhaps? Fortunately it worked after a apt-get install libudev-dev So I’ll just take that copy of libudev.so out of the repo. So now it looks like this apt-get install libudev-dev make; cp edbg /bin/; Then I run a root@beaglebone:/tmp# edbg -l Attached debuggers: J41800059345 - Atmel Corp. Atmel-ICE CMSIS-DAP Sweet!</summary></entry><entry><title type="html">Use Phone WiFi Hotspot as default gateway for LAN</title><link href="/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan.html" rel="alternate" type="text/html" title="Use Phone WiFi Hotspot as default gateway for LAN" /><published>2017-09-18T00:00:00-07:00</published><updated>2017-09-18T00:00:00-07:00</updated><id>/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan</id><content type="html" xml:base="/2017/09/18/use-phone-wifi-hotspot-as-default-gateway-for-lan.html">&lt;p&gt;Big telecom companies are garbage.  Turd sandwich or giant douche?&lt;br /&gt;
-Comcast: 1 year contract for $100/mo, 50Mb down.  No thanks!&lt;br /&gt;
-Let’s look into mobile internet with unlimited data.  Let’s see if I can do this with my phone.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;First I grab an extra laptop that has both Ethernet and WiFi.  This is the gateway&lt;/li&gt;
-  &lt;li&gt;I turn on my phone’s hotspot and connect to it with the gateway laptop&lt;/li&gt;
-  &lt;li&gt;Verify I can ping the gateway laptop from my tester client&lt;/li&gt;
-  &lt;li&gt;Change default gateway on tester client to 10.0.0.6, verify Internet is now unavailable&lt;/li&gt;
-  &lt;li&gt;On the gateway laptop, run this&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo sysctl -w net.ipv4.ip_forward=1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Now Internet is available through gateway laptop, but the gateway now has to go out the WiFi hotspot.&lt;/p&gt;
-
-&lt;p&gt;Turns out there are 2 0.0.0.0 entries in the route table.  Let’s delete the one for Ethernet and keep the WiFi one.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;route del default gateway x.x.x.x
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Hmm, ping doesn’t work.  Just hangs, no ouptut.  I see what’s happening using tcpdump … traffic starts at the tester client, gets to the gateway on the Ethernet interface, then goes out the WiFi interface, but the source address is still the tester client’s source.&lt;br /&gt;
-If I run a ping on the gateway laptop, it does go through.  The obvious difference is the source address.  Let’s change that.&lt;/p&gt;
-
-&lt;p&gt;Let’s try this one&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth1 -j SNAT --to-source 1.2.3.4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h1 id=&quot;wow-that-made-it-work&quot;&gt;Wow, that made it work!&lt;/h1&gt;</content><author><name></name></author><summary type="html">Big telecom companies are garbage. Turd sandwich or giant douche? Comcast: 1 year contract for $100/mo, 50Mb down. No thanks! Let’s look into mobile internet with unlimited data. Let’s see if I can do this with my phone. First I grab an extra laptop that has both Ethernet and WiFi. This is the gateway I turn on my phone’s hotspot and connect to it with the gateway laptop Verify I can ping the gateway laptop from my tester client Change default gateway on tester client to 10.0.0.6, verify Internet is now unavailable On the gateway laptop, run this sudo sysctl -w net.ipv4.ip_forward=1 Now Internet is available through gateway laptop, but the gateway now has to go out the WiFi hotspot. Turns out there are 2 0.0.0.0 entries in the route table. Let’s delete the one for Ethernet and keep the WiFi one. route del default gateway x.x.x.x Hmm, ping doesn’t work. Just hangs, no ouptut. I see what’s happening using tcpdump … traffic starts at the tester client, gets to the gateway on the Ethernet interface, then goes out the WiFi interface, but the source address is still the tester client’s source. If I run a ping on the gateway laptop, it does go through. The obvious difference is the source address. Let’s change that. Let’s try this one # iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth1 -j SNAT --to-source 1.2.3.4 Wow, that made it work!</summary></entry></feed>
+&lt;p&gt;Sweet!&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m flashing Atmel ARM microcontrollers with a USB programmer dongle. https://github.com/bootladder/edbg Got a fresh beaglebone running, grabbed the IP from the local router. In order to get the git clone to work I had to get the time right. apt-get install ntp the compiled edbg binary is not included so it must be installed. Let’s write the install script here. cp libudev.h /usr/include; cp libudev.so /lib ; make; Hmm looks like the library I included in there is out of date. libc perhaps? Fortunately it worked after a apt-get install libudev-dev So I’ll just take that copy of libudev.so out of the repo. So now it looks like this apt-get install libudev-dev make; cp edbg /bin/; Then I run a root@beaglebone:/tmp# edbg -l Attached debuggers: J41800059345 - Atmel Corp. Atmel-ICE CMSIS-DAP Sweet!</summary></entry></feed>
