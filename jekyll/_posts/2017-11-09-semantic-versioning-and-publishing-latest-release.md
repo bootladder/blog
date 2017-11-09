@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Semantic Versioning and Publishing Latest Release
+title: Name Versioning and Publishing Latest Release
 ---
 After I got Jenkins building my code, there was no semantic versioning so this is what happened:  
 The built executable would have the same name every build so got overwritten.  
