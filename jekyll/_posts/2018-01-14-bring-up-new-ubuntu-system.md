@@ -66,3 +66,7 @@ Enable Workspaces:  `Settings-->Appearance-->Behavior-->Enable Workspaces`
 
 # arm-none-eabi-gcc  
 `apt-get install gcc-arm-none-eabi`
+  
+# IRC
+`apt-get install xchat-gnome`
+`/msg nickserv register`
