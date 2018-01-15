@@ -5,7 +5,10 @@ title: Bring up New Ubuntu System
 Ubuntu on my laptop was crashing regularly and taking way too long to boot from the SSD.  
   
 # Editing this Blog
-  Need: Clone git repo, apt-get install ruby ruby-dev, gem install bundler, bundle install
+  Need: Clone git repo, apt-get install ruby ruby-dev, gem install bundler, bundle install  
+Need: Production repo URL, so it can be pushed to.  
+The prod remote is a bare git repo on the production server.  
+Put in the url to it?  Behind web root?
 
 # Atom IDE
 `sudo add-apt-repository ppa:webupd8team/atom`  

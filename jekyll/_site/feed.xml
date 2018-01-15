@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-01-14T17:48:00-08:00</updated><id>http://localhost:4000/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Bring up New Ubuntu System</title><link href="http://localhost:4000/2018/01/14/bring-up-new-ubuntu-system.html" rel="alternate" type="text/html" title="Bring up New Ubuntu System" /><published>2018-01-14T00:00:00-08:00</published><updated>2018-01-14T00:00:00-08:00</updated><id>http://localhost:4000/2018/01/14/bring-up-new-ubuntu-system</id><content type="html" xml:base="http://localhost:4000/2018/01/14/bring-up-new-ubuntu-system.html">&lt;p&gt;Ubuntu on my laptop was crashing regularly and taking way too long to boot from the SSD.&lt;/p&gt;
+
+&lt;h1 id=&quot;editing-this-blog&quot;&gt;Editing this Blog&lt;/h1&gt;
+&lt;p&gt;Need: Clone git repo, apt-get install ruby ruby-dev, gem install bundler, bundle install&lt;br /&gt;
+Need: Production repo URL, so it can be pushed to&lt;/p&gt;
+
+&lt;h1 id=&quot;atom-ide&quot;&gt;Atom IDE&lt;/h1&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo add-apt-repository ppa:webupd8team/atom&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt update; sudo apt install atom&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;Source: http://tipsonubuntu.com/2016/08/05/install-atom-text-editor-ubuntu-16-04/&lt;/code&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;aliases&quot;&gt;Aliases&lt;/h1&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#Steve Aliases
+alias l='ls -ltrh --color=auto'
+alias gs='git status'
+alias gl='git log'
+alias gd='git diff'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;vim&quot;&gt;VIM&lt;/h1&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install vim&lt;/code&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;golang&quot;&gt;Golang&lt;/h1&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install golang-go&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi ~/.bashrc
+export GOPATH=~/prog/go
+export PATH=$PATH:~/prog/go/bin
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;thunderbird&quot;&gt;Thunderbird&lt;/h1&gt;
+&lt;p&gt;Don’t download all emails from IMAP server, only last 30 days
+&lt;code class=&quot;highlighter-rouge&quot;&gt;Source: https://support.mozilla.org/en-US/questions/1066286&lt;/code&gt;&lt;br /&gt;
+Why doesn’t this work, it downloaded all my emails.  Maybe because there weren’t that many of them?&lt;/p&gt;
+
+&lt;h1 id=&quot;servers&quot;&gt;Servers&lt;/h1&gt;
+&lt;p&gt;Need SSH Keys, Hostnames, Root Passwords, IP Addresses&lt;/p&gt;</content><author><name></name></author><summary type="html">Ubuntu on my laptop was crashing regularly and taking way too long to boot from the SSD. Editing this Blog Need: Clone git repo, apt-get install ruby ruby-dev, gem install bundler, bundle install Need: Production repo URL, so it can be pushed to</summary></entry><entry><title type="html">Semantic Versioning and Publishing Latest Release</title><link href="http://localhost:4000/2017/11/09/semantic-versioning-and-publishing-latest-release.html" rel="alternate" type="text/html" title="Semantic Versioning and Publishing Latest Release" /><published>2017-11-09T00:00:00-08:00</published><updated>2017-11-09T00:00:00-08:00</updated><id>http://localhost:4000/2017/11/09/semantic-versioning-and-publishing-latest-release</id><content type="html" xml:base="http://localhost:4000/2017/11/09/semantic-versioning-and-publishing-latest-release.html">&lt;p&gt;After I got Jenkins building my code, there was no semantic versioning so this is what happened:&lt;br /&gt;
+The built executable would have the same name every build so got overwritten.&lt;br /&gt;
+I had a version number but more at a higher level, like a release number.&lt;br /&gt;
+Now I need something to identify each build, ie. each commit.&lt;/p&gt;
+
+&lt;p&gt;So I did this in CMake:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;...
+set(THIS_BUILD_VERSION 0x2B30)
+...
+add_executable(myexename ${SOURCES} ${SOURCES_RECURSE} )
+
+EXEC_PROGRAM(
+&quot;echo $(git rev-parse --abbrev-ref HEAD)_$(git rev-parse --short HEAD)&quot; 
+OUTPUT_VARIABLE gitrepoinfo
+)
+
+set(output_exe_filename MY_EXE_PREFIX_${THIS_BUILD_VERSION}_${gitrepoinfo})
+set_target_properties(myexename PROPERTIES OUTPUT_NAME ${output_exe_filename})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;EXEC_PROGRAM is what worked for me , not the other execute_process or whatever.&lt;br /&gt;
+I echo 2 git commands to get the branch name and short commit ID.&lt;/p&gt;
+
+&lt;p&gt;Then I set the variable for the executable’s filename, and tell the target to be named by it.&lt;/p&gt;
+
+&lt;p&gt;This worked, so now every time I git push I get a new build identifying that commit.&lt;br /&gt;
+Now the problem is, the filenames are too long to type by hand so I need something 
+like “latest-version.out” as an easy reference.&lt;br /&gt;
+I tried to use symlinks, that didn’t work.&lt;/p&gt;
+
+&lt;p&gt;Simple solution for now is to have Jenkins zip up the build, name it latest.zip ,
+and publish that along with the non-zipped originals.&lt;br /&gt;
+That way the zip is always overwritten with the latest.zip, and the originals are still
+piling up for backup.&lt;/p&gt;</content><author><name></name></author><summary type="html">After I got Jenkins building my code, there was no semantic versioning so this is what happened: The built executable would have the same name every build so got overwritten. I had a version number but more at a higher level, like a release number. Now I need something to identify each build, ie. each commit. So I did this in CMake: ``` … set(THIS_BUILD_VERSION 0x2B30) … add_executable(myexename ${SOURCES} ${SOURCES_RECURSE} )</summary></entry><entry><title type="html">CMake redo</title><link href="http://localhost:4000/2017/11/08/cmake-redo.html" rel="alternate" type="text/html" title="CMake redo" /><published>2017-11-08T00:00:00-08:00</published><updated>2017-11-08T00:00:00-08:00</updated><id>http://localhost:4000/2017/11/08/cmake-redo</id><content type="html" xml:base="http://localhost:4000/2017/11/08/cmake-redo.html">&lt;p&gt;Running into so many little issues.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;External Libraries, git repos&lt;br /&gt;
+I have 2 libraries that are shared by multiple projects.
+I’ve experimented with linking to a prebuilt binary that is shared by multiple projects,
+or having each individual project compile the library source.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Linking to prebuilt worked before when I wasn’t automating my build.&lt;br /&gt;
+I just installed the libraries and used hard coded paths to connect everything up in my handwritten Makefile.&lt;br /&gt;
+Now I can’t do that, I want this on Jenkins and quick deploy.&lt;/p&gt;
+
+&lt;p&gt;So I am trying to build the source.&lt;br /&gt;
+I took the libraries out of the /src tree&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ExternalProject_Add(XYZ_COMMON_SOURCE
+    GIT_REPOSITORY &quot;https://steve@bitbucket.org/xyz/xyz_common_source.git&quot;
+    BUILD_COMMAND &quot;&quot;
+    UPDATE_COMMAND &quot;&quot;
+    CONFIGURE_COMMAND &quot;&quot;
+    INSTALL_COMMAND &quot;&quot;
+    PREFIX &quot;/tmp/lib/&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;`/tmp/lib is under the filesystem root, not a cmake root’&lt;/p&gt;
+
+&lt;p&gt;This allowed me to do this&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file(GLOB_RECURSE SOURCES_RECURSE
+    &quot;/tmp/lib/src/XYZ_COMMON_SOURCE/*.c&quot;
+    &quot;/tmp/lib/src/XYZ_COMMON_SOURCE/*.h&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;but-my-next-problem-is-some-of-these-source-files-have-header-dependencies--interface-header&quot;&gt;But my next problem is, some of these source files have header dependencies.  Interface header.&lt;/h1&gt;
+
+&lt;p&gt;One of the files in COMMON_SOURCE has a header, “IHAL_MYSERIAL.h”
+A hardware interface.&lt;br /&gt;
+The project I’m trying to build now doesn’t have that interface or use that source file.&lt;br /&gt;
+But CMake wants to build all the source files, and IHAL_MYSERIAL.h isn’t there.
+Eh, thinking again, the header should be in there.  I put it in.&lt;/p&gt;
+
+&lt;p&gt;OK got somewhere, just had to take out some files from the Primary project that
+were multiply defined with the common source.&lt;br /&gt;
+Previously I had avoided this by individually selecting each source file to be built.&lt;br /&gt;
+But now I’m building everything so there are conflicts due to that.&lt;/p&gt;
+
+&lt;h1 id=&quot;small-note&quot;&gt;Small Note,&lt;/h1&gt;
+&lt;p&gt;If the build fails I guess the artifacts are deleted?&lt;br /&gt;
+I had a GNU size command running after the linker step, but it failed due to the wrong path.&lt;br /&gt;
+When that happened there was no binary in the bin directory.&lt;br /&gt;
+But removing the size command entirely, the binary was there.  Also when fixing the wrong path,
+the binary was there.&lt;/p&gt;</content><author><name></name></author><summary type="html">Running into so many little issues.</summary></entry><entry><title type="html">Bitbucket Access Keys inside a Jenkins Container</title><link href="http://localhost:4000/2017/11/08/bitbucket-access-keys-inside-a-jenkins-container.html" rel="alternate" type="text/html" title="Bitbucket Access Keys inside a Jenkins Container" /><published>2017-11-08T00:00:00-08:00</published><updated>2017-11-08T00:00:00-08:00</updated><id>http://localhost:4000/2017/11/08/bitbucket-access-keys-inside-a-jenkins-container</id><content type="html" xml:base="http://localhost:4000/2017/11/08/bitbucket-access-keys-inside-a-jenkins-container.html">&lt;p&gt;Bit of extra work to get a container to talk to Bitbucket.&lt;br /&gt;
+This is necessary because Jenkins needs to pull private repos autmatically,
+so must use keys.&lt;br /&gt;
+The key could be baked in the image but then I can’t share it.&lt;br /&gt;
+So what I did was put in a global /etc/ssh/ssh_config that points to a key
+inside the shared data volume.  I simply stick the key in there.&lt;/p&gt;
+
+&lt;p&gt;First generate the key, then copy/paste it into bitbucket repo settings access key.
+Then copy the key to an accessible server.
+Then copy the key into the Docker host and then docker container.&lt;/p&gt;
+
+&lt;p&gt;ssh -i bitbucket_access_key git@bitbucket.org&lt;/p&gt;
+
+&lt;p&gt;to make sure the key works.&lt;/p&gt;
+
+&lt;p&gt;Then configure SSH to use the keys there.&lt;/p&gt;
+
+&lt;p&gt;Problem, the only shared volume is /var/jenkins_home in the container.  /etc is not persistent.
+We’ll have to bake it into the image?&lt;/p&gt;
+
+&lt;p&gt;Add this to the Dockerfile and add this file&lt;/p&gt;
+
+&lt;p&gt;Host bitbucket.org
+    HostName bitbucket.org
+    User steveODI
+    IdentityFile /var/jenkins_home/bitbucket_access_key&lt;/p&gt;
+
+&lt;p&gt;Dockerfile:
+COPY ssh_config /home/jenkins/.ssh/ssh_config&lt;/p&gt;
+
+&lt;p&gt;no,
+COPY ssh_config /etc/ssh/ssh_config&lt;/p&gt;</content><author><name></name></author><summary type="html">Bit of extra work to get a container to talk to Bitbucket. This is necessary because Jenkins needs to pull private repos autmatically, so must use keys. The key could be baked in the image but then I can’t share it. So what I did was put in a global /etc/ssh/ssh_config that points to a key inside the shared data volume. I simply stick the key in there.</summary></entry><entry><title type="html">jenkins and build inside a docker container</title><link href="http://localhost:4000/2017/10/27/jenkins-and-build-inside-a-docker-container.html" rel="alternate" type="text/html" title="jenkins and build inside a docker container" /><published>2017-10-27T00:00:00-07:00</published><updated>2017-10-27T00:00:00-07:00</updated><id>http://localhost:4000/2017/10/27/jenkins-and-build-inside-a-docker-container</id><content type="html" xml:base="http://localhost:4000/2017/10/27/jenkins-and-build-inside-a-docker-container.html">&lt;p&gt;Jenkins will be available through some URL.
+The build toolchain will be installed in the Dockerfile,
+on top of the jenkins image.&lt;/p&gt;
+
+&lt;p&gt;Toolchain is static but the code isn’t so the code building
+is done inside the container.  pulling the code, dependencies,
+building it, etc is a script run inside the container.&lt;/p&gt;
+
+&lt;p&gt;Installed docker on the fresh VM with the get docker script.&lt;br /&gt;
+Installed docker-compose also from docker.io hosted script.&lt;/p&gt;</content><author><name></name></author><summary type="html">Jenkins will be available through some URL. The build toolchain will be installed in the Dockerfile, on top of the jenkins image. Toolchain is static but the code isn’t so the code building is done inside the container. pulling the code, dependencies, building it, etc is a script run inside the container. Installed docker on the fresh VM with the get docker script. Installed docker-compose also from docker.io hosted script.</summary></entry><entry><title type="html">OpenVPN on Docker</title><link href="http://localhost:4000/2017/10/17/openvpn-on-docker.html" rel="alternate" type="text/html" title="OpenVPN on Docker" /><published>2017-10-17T00:00:00-07:00</published><updated>2017-10-17T00:00:00-07:00</updated><id>http://localhost:4000/2017/10/17/openvpn-on-docker</id><content type="html" xml:base="http://localhost:4000/2017/10/17/openvpn-on-docker.html">&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo curl -sSL https://get.docker.com/ | sudo sh
+sudo usermod -aG docker ubuntu
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;httpsgithubcomkylemannadocker-openvpn&quot;&gt;https://github.com/kylemanna/docker-openvpn&lt;/h1&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;OVPN_DATA=&quot;ovpn-data-example&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;The volume stores data generated by the following.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker volume create --name $OVPN_DATA
+  docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u udp://VPN.SERVERNAME.COM
+sudo ls /var/lib/docker/volumes/ovpn-data-example/_data/
+ccd  down.sh  openvpn.conf  ovpn_env.sh  up.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki
+ubuntu@ubuntu:~$ sudo ls /var/lib/docker/volumes/ovpn-data-example/_data/
+ccd  down.sh  openvpn.conf  ovpn_env.sh  pki  up.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run -v $OVPN_DATA:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN kylemanna/openvpn
+  docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn easyrsa build-client-full CLIENTNAME nopass
+  docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient CLIENTNAME &amp;gt; CLIENTNAME.ovpn
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ubuntu@ubuntu:~$ ls
+CLIENTNAME.ovpn 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;</content><author><name></name></author><summary type="html">sudo curl -sSL https://get.docker.com/ | sudo sh sudo usermod -aG docker ubuntu https://github.com/kylemanna/docker-openvpn OVPN_DATA=&quot;ovpn-data-example&quot; The volume stores data generated by the following. docker volume create --name $OVPN_DATA docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u udp://VPN.SERVERNAME.COM sudo ls /var/lib/docker/volumes/ovpn-data-example/_data/ ccd down.sh openvpn.conf ovpn_env.sh up.sh docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki ubuntu@ubuntu:~$ sudo ls /var/lib/docker/volumes/ovpn-data-example/_data/ ccd down.sh openvpn.conf ovpn_env.sh pki up.sh docker run -v $OVPN_DATA:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN kylemanna/openvpn docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn easyrsa build-client-full CLIENTNAME nopass docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient CLIENTNAME &amp;gt; CLIENTNAME.ovpn ubuntu@ubuntu:~$ ls CLIENTNAME.ovpn</summary></entry><entry><title type="html">Docker Swarm Beaglebone</title><link href="http://localhost:4000/2017/10/17/docker-swarm-beaglebone.html" rel="alternate" type="text/html" title="Docker Swarm Beaglebone" /><published>2017-10-17T00:00:00-07:00</published><updated>2017-10-17T00:00:00-07:00</updated><id>http://localhost:4000/2017/10/17/docker-swarm-beaglebone</id><content type="html" xml:base="http://localhost:4000/2017/10/17/docker-swarm-beaglebone.html">&lt;h1 id=&quot;first-the-swarm-manager&quot;&gt;First the Swarm Manager&lt;/h1&gt;
+&lt;p&gt;Physical access to the Beaglebone allowed a startup script to be installed,
+which would set up a reverse SSH tunnel to an Internet host.&lt;br /&gt;
+Then, install and configure the Docker Swarm.&lt;/p&gt;
+
+&lt;p&gt;The Swarm Manager needs to have a static IP on the LAN,
+so the Swarm Nodes can hard code that static IP.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-swarm-nodes-will-all-use-the-same-sd-card-image&quot;&gt;The Swarm Nodes will all use the same SD card image&lt;/h1&gt;
+&lt;p&gt;The filesystem in that SD card image can have a startup script with that
+Manager Static IP hard coded in.&lt;/p&gt;</content><author><name></name></author><summary type="html">First the Swarm Manager Physical access to the Beaglebone allowed a startup script to be installed, which would set up a reverse SSH tunnel to an Internet host. Then, install and configure the Docker Swarm. The Swarm Manager needs to have a static IP on the LAN, so the Swarm Nodes can hard code that static IP. The Swarm Nodes will all use the same SD card image The filesystem in that SD card image can have a startup script with that Manager Static IP hard coded in.</summary></entry><entry><title type="html">cpputest on docker</title><link href="http://localhost:4000/2017/10/10/cpputest-on-docker.html" rel="alternate" type="text/html" title="cpputest on docker" /><published>2017-10-10T00:00:00-07:00</published><updated>2017-10-10T00:00:00-07:00</updated><id>http://localhost:4000/2017/10/10/cpputest-on-docker</id><content type="html" xml:base="http://localhost:4000/2017/10/10/cpputest-on-docker.html">&lt;p&gt;I’m going to build debos_firmware with a docker container.&lt;br /&gt;
+I’ll start with apline linux, get a toolchain.&lt;br /&gt;
+Then have it clone the debos_firmware repo and build it.&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m going to build debos_firmware with a docker container. I’ll start with apline linux, get a toolchain. Then have it clone the debos_firmware repo and build it.</summary></entry><entry><title type="html">CMake and Gradle for ARM C/C++</title><link href="http://localhost:4000/2017/10/09/cmake-and-gradle-for-arm-c-c.html" rel="alternate" type="text/html" title="CMake and Gradle for ARM C/C++" /><published>2017-10-09T00:00:00-07:00</published><updated>2017-10-09T00:00:00-07:00</updated><id>http://localhost:4000/2017/10/09/cmake-and-gradle-for-arm-c-c</id><content type="html" xml:base="http://localhost:4000/2017/10/09/cmake-and-gradle-for-arm-c-c.html">&lt;p&gt;I’m trying to build my codebase in CMake or Gradle.&lt;br /&gt;
+Tried Gradle first.  At first glance there are way too many DSL keywords,
+I have no idea what they do and connecting the dots is insane.&lt;br /&gt;
+It’s the same frustration I get with python.  Never knowing what type anything is
+and always having to look up documentation before writing a single line.&lt;/p&gt;
+
+&lt;p&gt;Now trying CMake…&lt;/p&gt;
+
+&lt;p&gt;http://derekmolloy.ie/hello-world-introductions-to-cmake/&lt;/p&gt;
+
+&lt;p&gt;I started with this CMakeLists.txt&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cmake_minimum_required(VERSION 2.8)
+project(hello)
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+include_directories(&quot;${PROJECT_SOURCE_DIR}&quot;)
+add_executable(hello ${PROJECT_SOURCE_DIR}/src/main.c)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;To build,&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cmake .
+make
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Wow it actually tried to compile something.  No include directories were supplied.  Let’s add one.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;include_directories(myincludedir)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Works.  Now there’s another header that’s not inside the repo.&lt;br /&gt;
+Let’s add those.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;include_directories(&quot;../samd20_cmsis_headers&quot;)
+include_directories(&quot;../arm_cmsis_headers&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Next error, Error: no such instruction: `cpsie i’.&lt;br /&gt;
+I must not be compling with the arm gcc compiler.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now I get this error.  Found a solution from here.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://github.com/digitalbitbox/mcu/blob/master/arm.cmake
+# Avoid known bug in linux giving: 
+#    arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS &quot;&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;For the CFLAGS I used this syntax.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set(CMAKE_C_FLAGS &quot;-std=c99                      &quot;)
+string(APPEND CMAKE_C_FLAGS &quot;-Wall                         &quot;)
+string(APPEND CMAKE_C_FLAGS &quot;-Wextra                       &quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I used this to add directories containing source files to be compiled.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file(GLOB SOURCES
+    &quot;src/*.h&quot;
+    &quot;src/*.c&quot;
+    &quot;src/hal/*.c&quot;
+    &quot;src/hal/*.h&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;And I changed the executable to be built from those sources:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;add_executable(myname ${SOURCES})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I noticed the output of the GNU size command shows different sizes for the
+ELF output from the CMake build and the original Makefile build.
+  I realized I never specified the linker script.  Let’s do that.&lt;/p&gt;
+
+&lt;p&gt;Turns out I just stick it in the CMAKE_C_FLAGS , no need for a separate linker flags.&lt;/p&gt;
+
+&lt;p&gt;Added that and I get the desired output.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   text    data     bss     dec     hex filename     
+  3352      68    2584    6004    1774 bin/debos_firmware  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Seeing that exact same output on either build is… extremely releiving.&lt;/p&gt;
+
+&lt;h1 id=&quot;uh-now-im-trying-to-build-my-unit-test-executable&quot;&gt;Uh, now I’m trying to build my unit test executable.&lt;/h1&gt;
+
+&lt;p&gt;I got this far …&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file(GLOB TEST_SOURCES
+    &quot;test/*.h&quot;
+    &quot;test/*.c&quot;
+    &quot;test/test_runners/*.c&quot;
+    &quot;test/test_runners/*.h&quot;
+    &quot;mock/*.c&quot;
+    &quot;../Unity/src/*.c&quot;
+    &quot;src/*.c&quot;
+    &quot;src/hal/*.c&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;First issue I have to deal with:&lt;br /&gt;
+Multiple Definition error from the linker.&lt;br /&gt;
+As you see, I included the test/ directory and src/.
+Inside test there are some mocked objects.  The names collide with the ones from source.&lt;/p&gt;
+
+&lt;p&gt;A solution I’ve learned from various books is to compile the source into a library.
+When linking the test executable, the library will only be searched when the
+symbol is not found in the test objects.&lt;br /&gt;
+This hackish technique creates a priority of sorts, for names.  Test names first, production names second.&lt;/p&gt;
+
+&lt;p&gt;Now how do I do this with CMake?  Reimplement that above logic?&lt;br /&gt;
+My guess is Yes, because CMake just wraps make and it is make and gcc that are complaining
+about not finding the symbols.&lt;/p&gt;
+
+&lt;h1 id=&quot;create-a-static-library-of-the-application-code-and-link-it-to-the-test-exe&quot;&gt;Create a static library of the application code and link it to the test exe&lt;/h1&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;add_library(applib_debos_firmware STATIC ${SOURCES})
+add_executable(test_debos_firmware ${TEST_SOURCES})
+target_link_libraries(test_debos_firmware applib_debos_firmware )
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;First, the above CMakeLists.txt is inside the test/ directory.&lt;br /&gt;
+So I have CMakeLists.txt inside both src/ and test/.&lt;br /&gt;
+To build, I go inside a directory and run cmake, and the Makefile is generated in the directory.&lt;br /&gt;
+Since the Makefile is now autogenerated, I now have it in .gitignore.&lt;/p&gt;
+
+&lt;p&gt;The ${SOURCES} is a collection of source inside src/ , but does not include HAL.&lt;br /&gt;
+HAL code is generally not compilable on host.&lt;br /&gt;
+If there is a high level HAL like a UART driver then I’ll put that in src/ not hal/.&lt;/p&gt;
+
+&lt;h1 id=&quot;so-far-this-is-good--next-i-want-the-dependencies-pulled-in-automatically&quot;&gt;So far this is good.  Next I want the dependencies pulled in automatically.&lt;/h1&gt;
+
+&lt;p&gt;This particular project needs libraries:  unit test library, 
+target specific headers repositories.&lt;/p&gt;
+
+&lt;p&gt;Unit Test library is public URL, target specific headers are public git URL.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ExternalProject_Add(samd20_headers
+    GIT_REPOSITORY &quot;https://bitbucket.org/bootladder/samd20_cmsis_headers&quot;
+    BUILD_COMMAND &quot;&quot;
+    UPDATE_COMMAND &quot;&quot;
+    CONFIGURE_COMMAND &quot;&quot;
+    INSTALL_COMMAND &quot;&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This worked to get the repo downloaded.  The following showed up in my ls:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;drwxr-xr-x 4 steve supervisorusers 4.0K Oct 10 15:50 samd20_headers-prefix/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;What is this prefix business…  let’s put in a prefix.&lt;/p&gt;
+
+&lt;p&gt;If I put in a&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;PREFIX &quot;hello&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Then the repo is cloned, named hello.  what??&lt;br /&gt;
+Apparently it’s supposed to be this:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;PREFIX &quot;samd20_headers&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Why do I have to explicitly type the same name…&lt;/p&gt;
+
+&lt;h1 id=&quot;anyway-next-problem-is-the-include-path-is-no-longer-the-same&quot;&gt;Anyway, next problem is, the include path is no longer the same.&lt;/h1&gt;
+
+&lt;p&gt;I need to tell CMake to add include directories to the compiler command.&lt;/p&gt;
+
+&lt;h1 id=&quot;oh-prefix-is-for-where-the-external-project-is-installed--doesnt-have-to-be-inside-this-project&quot;&gt;Oh, prefix is for where the external project is installed.  Doesn’t have to be inside this project&lt;/h1&gt;
+
+&lt;h1 id=&quot;moving-on-to-the-test-build-auto-downloading-the-unity-test-framework&quot;&gt;Moving on to the test build, auto downloading the Unity test framework&lt;/h1&gt;
+
+&lt;p&gt;This one was tricky because it doesn’t provide a build script.
+It is intended for the library consumer to build the source.&lt;br /&gt;
+Also, the source is not in the top directory of the repo.&lt;/p&gt;
+
+&lt;p&gt;I solved it with a kludge, don’t like it:&lt;/p&gt;
+
+&lt;p&gt;First, this is how I added compiler include directories.&lt;br /&gt;
+Using install_dir as a global variable here…&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ExternalProject_Get_Property(samd20_headers install_dir)
+include_directories(${install_dir}/src/samd20_headers/)
+ExternalProject_Get_Property(arm_cmsis_headers install_dir)
+include_directories(${install_dir}/src/arm_cmsis_headers/)
+ExternalProject_Get_Property(unity install_dir)
+include_directories(${install_dir}/src/unity/src/)
+include_directories(${install_dir}/src/unity/extras/fixture/src/)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Notice at the end, for unity, there are 2 calls to include_directories().
+I guess it’s ok, it’s explicit and still relative to the ${install_dir}.&lt;/p&gt;
+
+&lt;p&gt;Later, in my list of source files, there’s another kludge.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file(GLOB TEST_SOURCES
+    &quot;*.h&quot;
+    &quot;*.c&quot;
+    &quot;hal/*.c&quot;
+    &quot;test_runners/*.c&quot;
+    &quot;test_runners/*.h&quot;
+    &quot;../../Unity/extras/fixture/src/*.c&quot;
+    &quot;../mock/*.c&quot;
+    &quot;../../Unity/src/*.c&quot;
+    &quot;${install_dir}/src/unity/src/*&quot;
+    &quot;${install_dir}/src/unity/extras/fixture/src/*&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;But same, I guess it’s OK, because the list is explicit and also relative to ${install_dir}.&lt;br /&gt;
+So every time this project is cloned and built it’ll work.&lt;br /&gt;
+One issue is the name install_dir is only valid when install_dir was just written to with the correct contents.&lt;/p&gt;
+
+&lt;h1 id=&quot;uhhh-a-similar-issue-build-doesnt-work-first-time-works-second-time&quot;&gt;Uhhh, a similar issue… Build doesn’t work first time, works second time?&lt;/h1&gt;
+
+&lt;p&gt;What’s happening here…&lt;/p&gt;
+
+&lt;p&gt;Same thing as before.  The Unity git repo was cloned, and then
+Make is supposed to compile the source as part of the build.&lt;br /&gt;
+But Make can’t find them.&lt;br /&gt;
+In this case, Make did not include those sources in the list of source files to be compiled.&lt;br /&gt;
+Make said “Scanning dependencies of…” and then compiled the sources, but the Unity sources weren’t.&lt;br /&gt;
+All I have to do to get the build to succeed next time is:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;touch CMakeLists.txt
+make
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;And it works; this time, it scans the dependencies, finds the Unity sources and builds them.&lt;/p&gt;
+
+&lt;h1 id=&quot;i-guess-im-not-supposed-to-try-to-do-this&quot;&gt;I guess I’m not supposed to try to do this?&lt;/h1&gt;
+
+&lt;p&gt;Why should I build the source ?  That means I have to know how to build it.&lt;br /&gt;
+Any changes to that repo will break my build and everyone else who does it this way.&lt;/p&gt;
+
+&lt;p&gt;What’s the alternative?  They can’t precompile unless they only supported a couple targets.&lt;br /&gt;
+They could include a Makefile or CMakeLists.txt.  CMake would work I guess but not Make.&lt;/p&gt;
+
+&lt;h1 id=&quot;lets-follow-this-one--httpwwwthrowtheswitchorgbuildcmake&quot;&gt;Let’s follow this one:  http://www.throwtheswitch.org/build/cmake&lt;/h1&gt;
+
+&lt;p&gt;Since it is literally what I’m trying to do.&lt;/p&gt;
+
+&lt;h1 id=&quot;eh-lets-get-ceedling-working-first&quot;&gt;Eh, let’s get Ceedling working first.&lt;/h1&gt;
+
+&lt;p&gt;Currently I had handwritten Unity tests.&lt;br /&gt;
+Ceedling does it a bit different.&lt;br /&gt;
+Each test.c file is linked into a test app and executed.&lt;br /&gt;
+It uses its own build system so anything that was in Make or CMake before
+is invalid.&lt;br /&gt;
+This means the linker and header dependencies on the production source.&lt;/p&gt;
+
+&lt;p&gt;To get the ceedling tests to work you have to put #include statements
+in the tests, which makes Ceedling pull in source files.&lt;br /&gt;
+Other than that seems OK.&lt;/p&gt;
+
+&lt;h1 id=&quot;problem-is-you-need-a-ruby-and-ceedling-installation&quot;&gt;Problem is you need a ruby and ceedling installation.&lt;/h1&gt;</content><author><name></name></author><summary type="html">I’m trying to build my codebase in CMake or Gradle. Tried Gradle first. At first glance there are way too many DSL keywords, I have no idea what they do and connecting the dots is insane. It’s the same frustration I get with python. Never knowing what type anything is and always having to look up documentation before writing a single line. Now trying CMake… http://derekmolloy.ie/hello-world-introductions-to-cmake/ I started with this CMakeLists.txt cmake_minimum_required(VERSION 2.8) project(hello) set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin) set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}) set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}) include_directories(&quot;${PROJECT_SOURCE_DIR}&quot;) add_executable(hello ${PROJECT_SOURCE_DIR}/src/main.c) To build, cmake . make Wow it actually tried to compile something. No include directories were supplied. Let’s add one. include_directories(myincludedir) Works. Now there’s another header that’s not inside the repo. Let’s add those. include_directories(&quot;../samd20_cmsis_headers&quot;) include_directories(&quot;../arm_cmsis_headers&quot;)</summary></entry><entry><title type="html">Reverse SSH access to beaglebone</title><link href="http://localhost:4000/2017/10/05/reverse-ssh-access-to-beaglebone.html" rel="alternate" type="text/html" title="Reverse SSH access to beaglebone" /><published>2017-10-05T00:00:00-07:00</published><updated>2017-10-05T00:00:00-07:00</updated><id>http://localhost:4000/2017/10/05/reverse-ssh-access-to-beaglebone</id><content type="html" xml:base="http://localhost:4000/2017/10/05/reverse-ssh-access-to-beaglebone.html">&lt;p&gt;I’m leaving for the weekend and I want access to my 2 beaglebones.&lt;br /&gt;
+1 is my system under test, the other controls a USB programmer
+that can flash a microcontroller on the SUT.&lt;/p&gt;
+
+&lt;p&gt;Following this guide http://xmodulo.com/access-linux-server-behind-nat-reverse-ssh-tunnel.html&lt;/p&gt;
+
+&lt;p&gt;First I’ll locally SSH into the beaglebone.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;homeserver~$ ssh -fN -R 10022:localhost:22 relayserver_user@1.1.1.1 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;-R for reverse tunnel.  Port 10022 on remote host is forwarded to port 22 on beaglebone&lt;/li&gt;
+  &lt;li&gt;10022 is arbitrary&lt;/li&gt;
+  &lt;li&gt;port 22 is the SSH port that beaglebone sshd is listening on&lt;/li&gt;
+  &lt;li&gt;-f for background&lt;/li&gt;
+  &lt;li&gt;-N for “don’t execute a command”&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Note:  I forgot that my VPS had disabled password logins; only permitted by key.&lt;br /&gt;
+I had only installed 1 key on the VPS:  for my main laptop.&lt;br /&gt;
+So to install 2 more keys, I SSHed into the VPS with my main laptop.&lt;br /&gt;
+Temporarily allowed password logins.&lt;br /&gt;
+Then used ssh-copy-id to install the keys on VPS.&lt;br /&gt;
+Finally, disable password logins again.&lt;/p&gt;
+
+&lt;p&gt;Last step is to add the command in rc.local.&lt;/p&gt;
+
+&lt;h1 id=&quot;couple-extra-details&quot;&gt;Couple extra details&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;One of the beaglebones was running SSH on port 6000.  So, I had to change the 22 to a 6000.
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;homeserver~$ ssh -fN -R 10022:localhost:6000 relayserver_user@1.1.1.1 
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;One of the beaglebones was only accepting SSH logins by key, but it only accepted one of a static set of keys.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This was annoying, I had to scp the key over to the VPS.  Then to login to the beaglebone thru the tunnel,
+I had to supply the key with ssh -i.&lt;/p&gt;
+
+&lt;h1 id=&quot;important-detail-for-having-2-tunnels&quot;&gt;Important detail for having 2+ tunnels&lt;/h1&gt;
+
+&lt;p&gt;The port 10022 is arbitrary but if there are 2 tunnels they can’t be both on 10022.&lt;br /&gt;
+So actually one of them was on 10023.&lt;br /&gt;
+When SSHing through the tunnel I specified which tunnel by specifying the port.&lt;/p&gt;
+
+&lt;h1 id=&quot;dang-the-ssh-connection-disconnected-overnight&quot;&gt;Dang, the SSH connection disconnected overnight.&lt;/h1&gt;
+
+&lt;p&gt;Using AutoSSH 
+https://www.everythingcli.org/ssh-tunnelling-for-fun-and-profit-autossh/&lt;/p&gt;
+
+&lt;p&gt;Looks promising, I just used standard config.&lt;br /&gt;
+Let’s see if it stays up!&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m leaving for the weekend and I want access to my 2 beaglebones. 1 is my system under test, the other controls a USB programmer that can flash a microcontroller on the SUT. Following this guide http://xmodulo.com/access-linux-server-behind-nat-reverse-ssh-tunnel.html First I’ll locally SSH into the beaglebone.</summary></entry></feed>
