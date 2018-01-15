@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-14T19:44:40-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-14T19:55:36-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">Bring up New Ubuntu System</title><link href="/2018/01/14/bring-up-new-ubuntu-system.html" rel="alternate" type="text/html" title="Bring up New Ubuntu System" /><published>2018-01-14T00:00:00-08:00</published><updated>2018-01-14T00:00:00-08:00</updated><id>/2018/01/14/bring-up-new-ubuntu-system</id><content type="html" xml:base="/2018/01/14/bring-up-new-ubuntu-system.html">&lt;p&gt;Ubuntu on my laptop was crashing regularly and taking way too long to boot from the SSD.&lt;/p&gt;
 
 &lt;h1 id=&quot;editing-this-blog&quot;&gt;Editing this Blog&lt;/h1&gt;
@@ -35,6 +35,16 @@ alias gd='git diff'
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi ~/.bashrc
 export GOPATH=~/prog/go
 export PATH=$PATH:~/prog/go/bin
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Wow are you effing serious?&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;go get -t -u ./...&lt;/code&gt; -u installs from the net, -t installs for tests.&lt;br /&gt;
+&lt;strong&gt;-t is not in man go get ???&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;misc&quot;&gt;Misc&lt;/h1&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git clone https://github.com/sstephenson/bats.git
+$ cd bats
+$ ./install.sh /usr/local
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 

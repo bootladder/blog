@@ -39,6 +39,16 @@ alias gd='git diff'
 vi ~/.bashrc
 export GOPATH=~/prog/go
 export PATH=$PATH:~/prog/go/bin
+```  
+Wow are you effing serious?  
+`go get -t -u ./...` -u installs from the net, -t installs for tests.  
+**-t is not in man go get ???**
+  
+# Misc  
+```
+$ git clone https://github.com/sstephenson/bats.git
+$ cd bats
+$ ./install.sh /usr/local
 ```
 
 # Thunderbird
