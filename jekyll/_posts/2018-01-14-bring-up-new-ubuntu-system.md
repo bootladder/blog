@@ -52,4 +52,5 @@ _Gnome Keyring_ turns out it reads the keys stored in ~/.ssh.  Confirmed, easy, 
 
 # Ubuntu Crap
 Disable Caps-Lock:  `sudo apt-get install gnome-tweak-tool`  , go to "Typing"  
+Enable Workspaces:  `Settings-->Appearance-->Behavior-->Enable Workspaces`
 
