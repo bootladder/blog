@@ -49,3 +49,7 @@ Why doesn't this work, it downloaded all my emails.  Maybe because there weren't
 # Servers
 Need SSH Keys, Hostnames, Root Passwords, IP Addresses  
 _Gnome Keyring_ turns out it reads the keys stored in ~/.ssh.  Confirmed, easy, just copy the keys into there.  Continue using ~/.ssh/config to specify which key per host
+
+# Ubuntu Crap
+Disable Caps-Lock:  `sudo apt-get install gnome-tweak-tool`  , go to "Typing"  
+
