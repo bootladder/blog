@@ -64,3 +64,5 @@ _Gnome Keyring_ turns out it reads the keys stored in ~/.ssh.  Confirmed, easy, 
 Disable Caps-Lock:  `sudo apt-get install gnome-tweak-tool`  , go to "Typing"  
 Enable Workspaces:  `Settings-->Appearance-->Behavior-->Enable Workspaces`
 
+# arm-none-eabi-gcc  
+`apt-get install gcc-arm-none-eabi`
