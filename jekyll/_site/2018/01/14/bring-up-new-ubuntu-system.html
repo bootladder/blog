@@ -133,6 +133,38 @@ Enable Workspaces:  <code class="highlighter-rouge">Settings--&gt;Appearance--&g
 <p><code class="highlighter-rouge">apt-get install xchat-gnome</code>
 <code class="highlighter-rouge">/msg nickserv register</code></p>
 
+<h1 id="synergy">Synergy</h1>
+<p><code class="highlighter-rouge">https://github.com/symless/synergy-core/wiki/Compiling</code></p>
+<div class="highlighter-rouge"><pre class="highlight"><code> git clone https://github.com/symless/synergy-core.git
+ cd synergy-core
+ mkdir build
+ cd build
+ cmake ..
+ make
+</code></pre>
+</div>
+<p>That worked well, now make a config file like this:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>section: screens
+        steve-T420:
+        steve-T420-ZoZ:
+        bob-pc:
+end
+section: links
+        steve-T420:
+                down = steve-T420-ZoZ
+                left = bob-pc
+        steve-T420-ZoZ:
+                up = steve-T420
+        bob-pc:
+                right = steve-T420
+end
+</code></pre>
+</div>
+<p>Then run it with this<br />
+<code class="highlighter-rouge">./synergys -f -c /etc/synergy.conf</code><br />
+Run the client like this<br />
+` synergyc -f 10.0.1.23`</p>
+
   </div>
 
   
