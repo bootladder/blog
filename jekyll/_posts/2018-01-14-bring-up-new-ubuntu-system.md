@@ -47,4 +47,5 @@ Don't download all emails from IMAP server, only last 30 days
 Why doesn't this work, it downloaded all my emails.  Maybe because there weren't that many of them?
 
 # Servers
-Need SSH Keys, Hostnames, Root Passwords, IP Addresses
+Need SSH Keys, Hostnames, Root Passwords, IP Addresses  
+_Gnome Keyring_ turns out it reads the keys stored in ~/.ssh
