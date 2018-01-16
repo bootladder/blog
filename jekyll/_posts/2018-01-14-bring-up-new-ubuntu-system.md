@@ -32,6 +32,12 @@ alias gd='git diff'
 
 # VIM
 `sudo apt-get install vim`
+```
+~/.vimrc
+set noexpandtab
+set tabstop=2
+set shiftwidth=2
+```
 
 # Golang
 `sudo apt-get install golang-go`  
