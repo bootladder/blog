@@ -46,9 +46,9 @@ Wow are you effing serious?
   
 # Misc  
 ```
-$ git clone https://github.com/sstephenson/bats.git
-$ cd bats
-$ ./install.sh /usr/local
+git clone https://github.com/sstephenson/bats.git
+cd bats
+./install.sh /usr/local
 ```
 
 # Thunderbird
