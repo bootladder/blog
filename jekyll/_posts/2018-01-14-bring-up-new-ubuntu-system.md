@@ -40,13 +40,22 @@ set shiftwidth=2
 ```
 
 # Golang
-`sudo apt-get install golang-go`  
+
+Copy pasted from instructions: https://golang.org/doc/install?download=go1.9.2.linux-amd64.tar.gz
 ```
-vi ~/.bashrc
-export GOPATH=~/prog/go
-export PATH=$PATH:~/prog/go/bin
-```  
-Wow are you effing serious?  
+Linux, Mac OS X, and FreeBSD tarballs
+
+Download the archive and extract it into /usr/local, creating a Go tree in /usr/local/go. For example:
+
+tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz
+
+(Typically these commands must be run as root or through sudo.)
+
+Add /usr/local/go/bin to the PATH environment variable. You can do this by adding this line to your /etc/profile (for a system-wide installation) or $HOME/.profile:
+
+export PATH=$PATH:/usr/local/go/bin
+```
+
 `go get -t -u ./...` -u installs from the net, -t installs for tests.  
 **-t is not in man go get ???**
   
@@ -68,7 +77,7 @@ _Gnome Keyring_ turns out it reads the keys stored in ~/.ssh.  Confirmed, easy, 
 
 # Ubuntu Crap
 Disable Caps-Lock:  `sudo apt-get install gnome-tweak-tool`  , go to "Typing"  
-Enable Workspaces:  `Settings-->Appearance-->Behavior-->Enable Workspaces`
+Eable Workspaces:  `Settings-->Appearance-->Behavior-->Enable Workspaces`
 
 # arm-none-eabi-gcc  
 `apt-get install gcc-arm-none-eabi`
@@ -87,6 +96,14 @@ Enable Workspaces:  `Settings-->Appearance-->Behavior-->Enable Workspaces`
  cmake ..
  make
 ```
+An Ubuntu 16 laptop didn't have libcurl so,  
+`apt-get install libcurl4-openssl-dev`  
+Also it didn't have XKBlib.h
+`apt-get install libx11-dev`  
+As other people have noticed you have to edit CMakeLists.txt to change path to find XKBLib.h  
+Change it to /usr/include.  
+Weird, CMake still can't find it, but if i do a rm -rf build and repeat the build again it works.  
+Then it can't find libxtst. `apt-get install libxtst-dev`  
 That worked well, now make a config file like this:  
 ```
 section: screens

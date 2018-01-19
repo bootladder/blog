@@ -102,14 +102,23 @@ set shiftwidth=2
 </div>
 
 <h1 id="golang">Golang</h1>
-<p><code class="highlighter-rouge">sudo apt-get install golang-go</code></p>
-<div class="highlighter-rouge"><pre class="highlight"><code>vi ~/.bashrc
-export GOPATH=~/prog/go
-export PATH=$PATH:~/prog/go/bin
+
+<p>Copy pasted from instructions: https://golang.org/doc/install?download=go1.9.2.linux-amd64.tar.gz</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>Linux, Mac OS X, and FreeBSD tarballs
+
+Download the archive and extract it into /usr/local, creating a Go tree in /usr/local/go. For example:
+
+tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz
+
+(Typically these commands must be run as root or through sudo.)
+
+Add /usr/local/go/bin to the PATH environment variable. You can do this by adding this line to your /etc/profile (for a system-wide installation) or $HOME/.profile:
+
+export PATH=$PATH:/usr/local/go/bin
 </code></pre>
 </div>
-<p>Wow are you effing serious?<br />
-<code class="highlighter-rouge">go get -t -u ./...</code> -u installs from the net, -t installs for tests.<br />
+
+<p><code class="highlighter-rouge">go get -t -u ./...</code> -u installs from the net, -t installs for tests.<br />
 <strong>-t is not in man go get ???</strong></p>
 
 <h1 id="misc">Misc</h1>
@@ -130,7 +139,7 @@ Why doesn’t this work, it downloaded all my emails.  Maybe because there weren
 
 <h1 id="ubuntu-crap">Ubuntu Crap</h1>
 <p>Disable Caps-Lock:  <code class="highlighter-rouge">sudo apt-get install gnome-tweak-tool</code>  , go to “Typing”<br />
-Enable Workspaces:  <code class="highlighter-rouge">Settings--&gt;Appearance--&gt;Behavior--&gt;Enable Workspaces</code></p>
+Eable Workspaces:  <code class="highlighter-rouge">Settings--&gt;Appearance--&gt;Behavior--&gt;Enable Workspaces</code></p>
 
 <h1 id="arm-none-eabi-gcc">arm-none-eabi-gcc</h1>
 <p><code class="highlighter-rouge">apt-get install gcc-arm-none-eabi</code></p>
@@ -149,7 +158,15 @@ Enable Workspaces:  <code class="highlighter-rouge">Settings--&gt;Appearance--&g
  make
 </code></pre>
 </div>
-<p>That worked well, now make a config file like this:</p>
+<p>An Ubuntu 16 laptop didn’t have libcurl so,<br />
+<code class="highlighter-rouge">apt-get install libcurl4-openssl-dev</code><br />
+Also it didn’t have XKBlib.h
+<code class="highlighter-rouge">apt-get install libx11-dev</code><br />
+As other people have noticed you have to edit CMakeLists.txt to change path to find XKBLib.h<br />
+Change it to /usr/include.<br />
+Weird, CMake still can’t find it, but if i do a rm -rf build and repeat the build again it works.<br />
+Then it can’t find libxtst. <code class="highlighter-rouge">apt-get install libxtst-dev</code><br />
+That worked well, now make a config file like this:</p>
 <div class="highlighter-rouge"><pre class="highlight"><code>section: screens
         steve-T420:
         steve-T420-ZoZ:

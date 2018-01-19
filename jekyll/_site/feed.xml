@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-16T20:25:39-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-19T13:43:01-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">arduino-cmake first try</title><link href="/2018/01/16/arduino-cmake-first-try.html" rel="alternate" type="text/html" title="arduino-cmake first try" /><published>2018-01-16T00:00:00-08:00</published><updated>2018-01-16T00:00:00-08:00</updated><id>/2018/01/16/arduino-cmake-first-try</id><content type="html" xml:base="/2018/01/16/arduino-cmake-first-try.html">&lt;p&gt;I cloned the repo.&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd example
 mkdir build
@@ -234,14 +234,23 @@ set shiftwidth=2
 &lt;/div&gt;
 
 &lt;h1 id=&quot;golang&quot;&gt;Golang&lt;/h1&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install golang-go&lt;/code&gt;&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi ~/.bashrc
-export GOPATH=~/prog/go
-export PATH=$PATH:~/prog/go/bin
+
+&lt;p&gt;Copy pasted from instructions: https://golang.org/doc/install?download=go1.9.2.linux-amd64.tar.gz&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Linux, Mac OS X, and FreeBSD tarballs
+
+Download the archive and extract it into /usr/local, creating a Go tree in /usr/local/go. For example:
+
+tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz
+
+(Typically these commands must be run as root or through sudo.)
+
+Add /usr/local/go/bin to the PATH environment variable. You can do this by adding this line to your /etc/profile (for a system-wide installation) or $HOME/.profile:
+
+export PATH=$PATH:/usr/local/go/bin
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;Wow are you effing serious?&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;go get -t -u ./...&lt;/code&gt; -u installs from the net, -t installs for tests.&lt;br /&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go get -t -u ./...&lt;/code&gt; -u installs from the net, -t installs for tests.&lt;br /&gt;
 &lt;strong&gt;-t is not in man go get ???&lt;/strong&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;misc&quot;&gt;Misc&lt;/h1&gt;
@@ -262,7 +271,7 @@ Why doesn’t this work, it downloaded all my emails.  Maybe because there weren
 
 &lt;h1 id=&quot;ubuntu-crap&quot;&gt;Ubuntu Crap&lt;/h1&gt;
 &lt;p&gt;Disable Caps-Lock:  &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install gnome-tweak-tool&lt;/code&gt;  , go to “Typing”&lt;br /&gt;
-Enable Workspaces:  &lt;code class=&quot;highlighter-rouge&quot;&gt;Settings--&amp;gt;Appearance--&amp;gt;Behavior--&amp;gt;Enable Workspaces&lt;/code&gt;&lt;/p&gt;
+Eable Workspaces:  &lt;code class=&quot;highlighter-rouge&quot;&gt;Settings--&amp;gt;Appearance--&amp;gt;Behavior--&amp;gt;Enable Workspaces&lt;/code&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;arm-none-eabi-gcc&quot;&gt;arm-none-eabi-gcc&lt;/h1&gt;
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get install gcc-arm-none-eabi&lt;/code&gt;&lt;/p&gt;
@@ -281,7 +290,15 @@ Enable Workspaces:  &lt;code class=&quot;highlighter-rouge&quot;&gt;Settings--&a
  make
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;That worked well, now make a config file like this:&lt;/p&gt;
+&lt;p&gt;An Ubuntu 16 laptop didn’t have libcurl so,&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get install libcurl4-openssl-dev&lt;/code&gt;&lt;br /&gt;
+Also it didn’t have XKBlib.h
+&lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get install libx11-dev&lt;/code&gt;&lt;br /&gt;
+As other people have noticed you have to edit CMakeLists.txt to change path to find XKBLib.h&lt;br /&gt;
+Change it to /usr/include.&lt;br /&gt;
+Weird, CMake still can’t find it, but if i do a rm -rf build and repeat the build again it works.&lt;br /&gt;
+Then it can’t find libxtst. &lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get install libxtst-dev&lt;/code&gt;&lt;br /&gt;
+That worked well, now make a config file like this:&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;section: screens
         steve-T420:
         steve-T420-ZoZ:
