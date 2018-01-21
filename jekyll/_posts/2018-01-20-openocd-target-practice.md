@@ -2,6 +2,105 @@
 layout: post
 title: OpenOCD Target Practice
 ---
+# How to actually write the flash?  I've never used GDB.
+First start the OpenOCD server.  This is what I see:  `Info : at91samd20j18.cpu: hardware has 4 breakpoints, 2 watchpoints`
+Then connect to the server with gdb.  Run the gdb command and then at the prompt type this:  `(gdb) target remote localhost:3333`  
+I'm using arm-none-eabi-gdb.  If I just run native gdb, I get this output
+```
+Info : accepting 'gdb' connection from 3333
+undefined debug reason 7 - target needs reset
+Error: CMSIS-DAP: Write Error (0x04)
+Error: CMSIS-DAP: Write Error (0x04)
+Error: CMSIS-DAP: Write Error (0x04)
+Error: CMSIS-DAP: Write Error (0x04)
+```
+But if I run arm-none-eabi-gdb, I get this
+```
+Info : accepting 'gdb' connection from 3333
+undefined debug reason 7 - target needs reset
+```
+Now that I'm connected let's Read some memory addresses.  
+```
+(gdb) x 0x3FF00
+0x3ff00:	0xdeadbeef
+(gdb) x 0x3FE00
+0x3fe00:	0x11456708
+``` 
+Great!  Seeing deadbeef is good; it had to come from the target's flash.  
+Interesting, if I supply a bogus address it handles nicely.  This is the output of the OpenOCD server after doing a `(gdb) x 90000000`.
+```
+Error: CMSIS-DAP: Write Error (0x04)
+Polling target at91samd20j18.cpu failed, GDB will be halted. Polling again in 100ms
+Polling target at91samd20j18.cpu succeeded again
+```
+Let's try to write something.  Oh dang, doesn't work.
+```
+(gdb) x 0x3f100
+0x3f100:	0xffffffff
+(gdb) set {int}0x3f100 = 0xdeadbeef
+Writing to flash memory forbidden in this context
+```
+Now let's go to the OpenOCD manual and look at their example.  It says to run gdb with an .elf file.  Let's do that.  Dang.  Same error.  
+  
+But, OpenOCD manual shows using the `load` command.  That worked!
+```
+(gdb) set {int}0x3F100=0xdeadbeef
+Writing to flash memory forbidden in this context
+(gdb) load
+Loading section .text, size 0xfea0 lma 0x0
+Loading section .debug_breadcrumbs, size 0x4 lma 0xfea0
+Loading section .relocate, size 0x110 lma 0xfea4
+Start address 0x74b8, load size 65460
+Transfer rate: 1 KB/sec, 9351 bytes/write.
+```
+Well atleast I can write to RAM.
+```
+(gdb) set {int}0x20006000=0xdeadbeef
+(gdb) x 0x20006000
+0x20006000:	0xdeadbeef
+```
+OK, here's another lead.
+```
+(gdb) monitor flash probe 0
+flash 'at91samd' found at 0x00000000
+```
+This shows that the flash bank 0 is found at address 0x0.  This is correct.  
+Another thing I can do is erase_check
+```
+(gdb) monitor flash erase_check 0
+successfully checked erase state
+	#  0: 0x00000000 (0x4000 16kB) not erased
+	#  1: 0x00004000 (0x4000 16kB) not erased
+	#  2: 0x00008000 (0x4000 16kB) not erased
+	#  3: 0x0000c000 (0x4000 16kB) not erased
+	#  4: 0x00010000 (0x4000 16kB) erased
+	#  5: 0x00014000 (0x4000 16kB) erased
+	#  6: 0x00018000 (0x4000 16kB) erased
+	#  7: 0x0001c000 (0x4000 16kB) erased
+	#  8: 0x00020000 (0x4000 16kB) erased
+	#  9: 0x00024000 (0x4000 16kB) erased
+	# 10: 0x00028000 (0x4000 16kB) erased
+	# 11: 0x0002c000 (0x4000 16kB) erased
+	# 12: 0x00030000 (0x4000 16kB) erased
+	# 13: 0x00034000 (0x4000 16kB) erased
+	# 14: 0x00038000 (0x4000 16kB) erased
+	# 15: 0x0003c000 (0x4000 16kB) not erased
+```
+While this is correct, I already know that the page size is 64 bytes and the erase row size is 4 pages, 256 bytes.  Definitely not 16kB.
+  
+I learned here, that when I say `(gdb) monitor flash erase_check 0` , what happens is, monitor tells gdb to pass `flash erase_check 0` to OpenOCD.  So flash erase_check is an OpenOCD command, documented in the manual.
+We can do
+* flash erase_sector num first last
+* flash erase_address [pad] [unlock] address length
+* flash fillw address word length 
+* flash fillh address halfword length 
+* flash fillb address byte length
+* flash write_bank num filename [offset]
+* program filename [verify] [reset] [exit] [offset]
+
+# What happens with multiple debug interfaces on 1 host?
+
+
 
 # SAMD20 Custom Board with Atmel-ICE
 ```
