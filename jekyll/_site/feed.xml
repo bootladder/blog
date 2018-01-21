@@ -1,5 +1,136 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-19T13:43:01-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">arduino-cmake first try</title><link href="/2018/01/16/arduino-cmake-first-try.html" rel="alternate" type="text/html" title="arduino-cmake first try" /><published>2018-01-16T00:00:00-08:00</published><updated>2018-01-16T00:00:00-08:00</updated><id>/2018/01/16/arduino-cmake-first-try</id><content type="html" xml:base="/2018/01/16/arduino-cmake-first-try.html">&lt;p&gt;I cloned the repo.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-20T17:20:51-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">OpenOCD Target Practice</title><link href="/2018/01/20/openocd-target-practice.html" rel="alternate" type="text/html" title="OpenOCD Target Practice" /><published>2018-01-20T00:00:00-08:00</published><updated>2018-01-20T00:00:00-08:00</updated><id>/2018/01/20/openocd-target-practice</id><content type="html" xml:base="/2018/01/20/openocd-target-practice.html">&lt;h1 id=&quot;samd20-custom-board-with-atmel-ice&quot;&gt;SAMD20 Custom Board with Atmel-ICE&lt;/h1&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Atmel-ICE JTAG/SWD in-circuit debugger.
+interface cmsis-dap
+cmsis_dap_vid_pid 0x03eb 0x2141
+
+# Chip info
+set CHIPNAME at91samd20j18
+source [find target/at91samdXX.cfg]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;This is the output from lsusb -v:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Bus 001 Device 002: ID 03eb:2141 Atmel Corp. 
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass          239 Miscellaneous Device
+  bDeviceSubClass         2 ?
+  bDeviceProtocol         1 Interface Association
+  bMaxPacketSize0        64
+  idVendor           0x03eb Atmel Corp.
+  idProduct          0x2141 
+  bcdDevice            1.01
+  iManufacturer           1 Atmel Corp.
+  iProduct                2 Atmel-ICE CMSIS-DAP
+  iSerial                 3 J41800075898
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Let’s just see what happens if I change those IDs.  Interesting, it still works fine, even if I delete the whole line cmsis_dap_vid_pid 0x03eb 0x2141.&lt;br /&gt;
+Next with that whole line deleted, I put a spelling mistake,&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;interface cmsis-dapABC&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Open On-Chip Debugger 0.8.0 (2014-10-20-23:18)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.sourceforge.net/doc/doxygen/bugs.html
+Error: The specified debug interface was not found (cmsis-dapz)
+The following debug interfaces are available:
+1: parport
+2: dummy
+3: ftdi
+4: usb_blaster
+5: amt_jtagaccel
+6: ep93xx
+7: at91rm9200
+8: gw16012
+9: usbprog
+10: jlink
+11: vsllink
+12: rlink
+13: ulink
+14: arm-jtag-ew
+15: buspirate
+16: remote_bitbang
+17: hla
+18: osbdm
+19: opendous
+20: aice
+21: bcm2835gpio
+22: cmsis-dap
+Runtime Error: incorrect_openocd.cfg:2: 
+in procedure 'script' 
+at file &quot;embedded:startup.tcl&quot;, line 58
+in procedure 'interface' called at file &quot;incorrect_openocd.cfg&quot;, line 2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;So here we see the “Interfaces” we can choose.&lt;br /&gt;
+Next I examined the Chip Info.&lt;br /&gt;
+Deleting the line  &lt;code class=&quot;highlighter-rouge&quot;&gt;set CHIPNAME at91samd20j18&lt;/code&gt; had no change, even setting the name to a bogus value did not affect anything.&lt;br /&gt;
+So clearly the important lines are&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;interface cmsis-dap
+source [find target/at91samdXX.cfg]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;So, what is inside target/at91samdXX.cfg ?&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#
+# samdXX devices only support SWD transports.
+#
+source [find target/swj-dp.tcl]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;OK, what is SWJ-DP ?  What is SWJ?  Let’s see the file.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ARM Debug Interface V5 (ADI_V5) utility
+# ... Mostly for SWJ-DP (not SW-DP or JTAG-DP, since
+# SW-DP and JTAG-DP targets don't need to switch based
+# on which transport is active.
+...
+...
+if [catch {transport select}] {
+  echo &quot;Error: unable to select a session transport. Can't continue.&quot;
+  shutdown
+}
+
+proc swj_newdap {chip tag args} {
+ if [using_hla] {
+     eval hla newtap $chip $tag $args
+ } elseif [using_jtag] {
+     eval jtag newtap $chip $tag $args
+ } elseif [using_swd] {
+     eval swd newdap $chip $tag $args
+ }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;The comment at the top explains, SWJ is for debug interfaces that support both JTAG and SWD.  My Atmel-ICE is one of those.&lt;br /&gt;
+proc swj_newdap is just a switch to select the command, in my case it would be using_swd so &lt;code class=&quot;highlighter-rouge&quot;&gt;eval swd newdap $chip $tag $args&lt;/code&gt;.&lt;br /&gt;
+Hmm where is &lt;code class=&quot;highlighter-rouge&quot;&gt;using_swd&lt;/code&gt; defined, and what is &lt;code class=&quot;highlighter-rouge&quot;&gt;swd newdap&lt;/code&gt; ?&lt;br /&gt;
+Back to at91samdXX.cfg , we see this line:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;swj_newdap $_CHIPNAME cpu -irlen 4 -expected-id $_CPUTAPID
+
+set _TARGETNAME $_CHIPNAME.cpu
+target create $_TARGETNAME cortex_m -endian $_ENDIAN -chain-position $_TARGETNAME
+
+$_TARGETNAME configure -work-area-phys 0x20000000 -work-area-size $_WORKAREASIZE -work-area-backup 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;swj_newdap takes 3 args, chip tag args.  What’s a tag?  Whatever.&lt;br /&gt;
+Then there’s &lt;code class=&quot;highlighter-rouge&quot;&gt;target create $_TARGETNAME ...&lt;/code&gt;&lt;br /&gt;
+We’re configuring a cortex_m CPU with endianness.&lt;br /&gt;
+Then configuring it with a RAM work area?  don’t know what that’s for… does it clobber app ram?&lt;/p&gt;
+
+&lt;p&gt;Then at the end there’s this:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set _FLASHNAME $_CHIPNAME.flash
+flash bank $_FLASHNAME at91samd 0x00000000 0 1 1 $_TARGETNAME
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;I guess we are supplying this information to GDB?&lt;/p&gt;
+
+&lt;h1 id=&quot;samd20-custom-board-with-samd20-xplained-pro&quot;&gt;SAMD20 Custom Board with SAMD20 XPlained Pro&lt;/h1&gt;
+&lt;h1 id=&quot;samd20-xplained-pro-self&quot;&gt;SAMD20 XPlained Pro Self&lt;/h1&gt;
+&lt;h1 id=&quot;samd10-xplained&quot;&gt;SAMD10 XPLained&lt;/h1&gt;
+&lt;h1 id=&quot;samd21-xplained&quot;&gt;SAMD21 XPLained&lt;/h1&gt;
+&lt;h1 id=&quot;arduino-leo&quot;&gt;Arduino Leo&lt;/h1&gt;</content><author><name></name></author><summary type="html">SAMD20 Custom Board with Atmel-ICE ``` Atmel-ICE JTAG/SWD in-circuit debugger. interface cmsis-dap cmsis_dap_vid_pid 0x03eb 0x2141</summary></entry><entry><title type="html">arduino-cmake first try</title><link href="/2018/01/16/arduino-cmake-first-try.html" rel="alternate" type="text/html" title="arduino-cmake first try" /><published>2018-01-16T00:00:00-08:00</published><updated>2018-01-16T00:00:00-08:00</updated><id>/2018/01/16/arduino-cmake-first-try</id><content type="html" xml:base="/2018/01/16/arduino-cmake-first-try.html">&lt;p&gt;I cloned the repo.&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd example
 mkdir build
 cmake ..
@@ -487,265 +618,4 @@ so the Swarm Nodes can hard code that static IP.&lt;/p&gt;
 &lt;p&gt;The filesystem in that SD card image can have a startup script with that
 Manager Static IP hard coded in.&lt;/p&gt;</content><author><name></name></author><summary type="html">First the Swarm Manager Physical access to the Beaglebone allowed a startup script to be installed, which would set up a reverse SSH tunnel to an Internet host. Then, install and configure the Docker Swarm. The Swarm Manager needs to have a static IP on the LAN, so the Swarm Nodes can hard code that static IP. The Swarm Nodes will all use the same SD card image The filesystem in that SD card image can have a startup script with that Manager Static IP hard coded in.</summary></entry><entry><title type="html">cpputest on docker</title><link href="/2017/10/10/cpputest-on-docker.html" rel="alternate" type="text/html" title="cpputest on docker" /><published>2017-10-10T00:00:00-07:00</published><updated>2017-10-10T00:00:00-07:00</updated><id>/2017/10/10/cpputest-on-docker</id><content type="html" xml:base="/2017/10/10/cpputest-on-docker.html">&lt;p&gt;I’m going to build debos_firmware with a docker container.&lt;br /&gt;
 I’ll start with apline linux, get a toolchain.&lt;br /&gt;
-Then have it clone the debos_firmware repo and build it.&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m going to build debos_firmware with a docker container. I’ll start with apline linux, get a toolchain. Then have it clone the debos_firmware repo and build it.</summary></entry><entry><title type="html">CMake and Gradle for ARM C/C++</title><link href="/2017/10/09/cmake-and-gradle-for-arm-c-c.html" rel="alternate" type="text/html" title="CMake and Gradle for ARM C/C++" /><published>2017-10-09T00:00:00-07:00</published><updated>2017-10-09T00:00:00-07:00</updated><id>/2017/10/09/cmake-and-gradle-for-arm-c-c</id><content type="html" xml:base="/2017/10/09/cmake-and-gradle-for-arm-c-c.html">&lt;p&gt;I’m trying to build my codebase in CMake or Gradle.&lt;br /&gt;
-Tried Gradle first.  At first glance there are way too many DSL keywords,
-I have no idea what they do and connecting the dots is insane.&lt;br /&gt;
-It’s the same frustration I get with python.  Never knowing what type anything is
-and always having to look up documentation before writing a single line.&lt;/p&gt;
-
-&lt;p&gt;Now trying CMake…&lt;/p&gt;
-
-&lt;p&gt;http://derekmolloy.ie/hello-world-introductions-to-cmake/&lt;/p&gt;
-
-&lt;p&gt;I started with this CMakeLists.txt&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cmake_minimum_required(VERSION 2.8)
-project(hello)
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-include_directories(&quot;${PROJECT_SOURCE_DIR}&quot;)
-add_executable(hello ${PROJECT_SOURCE_DIR}/src/main.c)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;To build,&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cmake .
-make
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Wow it actually tried to compile something.  No include directories were supplied.  Let’s add one.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;include_directories(myincludedir)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Works.  Now there’s another header that’s not inside the repo.&lt;br /&gt;
-Let’s add those.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;include_directories(&quot;../samd20_cmsis_headers&quot;)
-include_directories(&quot;../arm_cmsis_headers&quot;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Next error, Error: no such instruction: `cpsie i’.&lt;br /&gt;
-I must not be compling with the arm gcc compiler.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set(CMAKE_C_COMPILER arm-none-eabi-gcc)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Now I get this error.  Found a solution from here.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://github.com/digitalbitbox/mcu/blob/master/arm.cmake
-# Avoid known bug in linux giving: 
-#    arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
-set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS &quot;&quot;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;For the CFLAGS I used this syntax.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set(CMAKE_C_FLAGS &quot;-std=c99                      &quot;)
-string(APPEND CMAKE_C_FLAGS &quot;-Wall                         &quot;)
-string(APPEND CMAKE_C_FLAGS &quot;-Wextra                       &quot;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;I used this to add directories containing source files to be compiled.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file(GLOB SOURCES
-    &quot;src/*.h&quot;
-    &quot;src/*.c&quot;
-    &quot;src/hal/*.c&quot;
-    &quot;src/hal/*.h&quot;
-)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;And I changed the executable to be built from those sources:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;add_executable(myname ${SOURCES})
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;I noticed the output of the GNU size command shows different sizes for the
-ELF output from the CMake build and the original Makefile build.
-  I realized I never specified the linker script.  Let’s do that.&lt;/p&gt;
-
-&lt;p&gt;Turns out I just stick it in the CMAKE_C_FLAGS , no need for a separate linker flags.&lt;/p&gt;
-
-&lt;p&gt;Added that and I get the desired output.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   text    data     bss     dec     hex filename     
-  3352      68    2584    6004    1774 bin/debos_firmware  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Seeing that exact same output on either build is… extremely releiving.&lt;/p&gt;
-
-&lt;h1 id=&quot;uh-now-im-trying-to-build-my-unit-test-executable&quot;&gt;Uh, now I’m trying to build my unit test executable.&lt;/h1&gt;
-
-&lt;p&gt;I got this far …&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file(GLOB TEST_SOURCES
-    &quot;test/*.h&quot;
-    &quot;test/*.c&quot;
-    &quot;test/test_runners/*.c&quot;
-    &quot;test/test_runners/*.h&quot;
-    &quot;mock/*.c&quot;
-    &quot;../Unity/src/*.c&quot;
-    &quot;src/*.c&quot;
-    &quot;src/hal/*.c&quot;
-)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;First issue I have to deal with:&lt;br /&gt;
-Multiple Definition error from the linker.&lt;br /&gt;
-As you see, I included the test/ directory and src/.
-Inside test there are some mocked objects.  The names collide with the ones from source.&lt;/p&gt;
-
-&lt;p&gt;A solution I’ve learned from various books is to compile the source into a library.
-When linking the test executable, the library will only be searched when the
-symbol is not found in the test objects.&lt;br /&gt;
-This hackish technique creates a priority of sorts, for names.  Test names first, production names second.&lt;/p&gt;
-
-&lt;p&gt;Now how do I do this with CMake?  Reimplement that above logic?&lt;br /&gt;
-My guess is Yes, because CMake just wraps make and it is make and gcc that are complaining
-about not finding the symbols.&lt;/p&gt;
-
-&lt;h1 id=&quot;create-a-static-library-of-the-application-code-and-link-it-to-the-test-exe&quot;&gt;Create a static library of the application code and link it to the test exe&lt;/h1&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;add_library(applib_debos_firmware STATIC ${SOURCES})
-add_executable(test_debos_firmware ${TEST_SOURCES})
-target_link_libraries(test_debos_firmware applib_debos_firmware )
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;First, the above CMakeLists.txt is inside the test/ directory.&lt;br /&gt;
-So I have CMakeLists.txt inside both src/ and test/.&lt;br /&gt;
-To build, I go inside a directory and run cmake, and the Makefile is generated in the directory.&lt;br /&gt;
-Since the Makefile is now autogenerated, I now have it in .gitignore.&lt;/p&gt;
-
-&lt;p&gt;The ${SOURCES} is a collection of source inside src/ , but does not include HAL.&lt;br /&gt;
-HAL code is generally not compilable on host.&lt;br /&gt;
-If there is a high level HAL like a UART driver then I’ll put that in src/ not hal/.&lt;/p&gt;
-
-&lt;h1 id=&quot;so-far-this-is-good--next-i-want-the-dependencies-pulled-in-automatically&quot;&gt;So far this is good.  Next I want the dependencies pulled in automatically.&lt;/h1&gt;
-
-&lt;p&gt;This particular project needs libraries:  unit test library, 
-target specific headers repositories.&lt;/p&gt;
-
-&lt;p&gt;Unit Test library is public URL, target specific headers are public git URL.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ExternalProject_Add(samd20_headers
-    GIT_REPOSITORY &quot;https://bitbucket.org/bootladder/samd20_cmsis_headers&quot;
-    BUILD_COMMAND &quot;&quot;
-    UPDATE_COMMAND &quot;&quot;
-    CONFIGURE_COMMAND &quot;&quot;
-    INSTALL_COMMAND &quot;&quot;
-)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;This worked to get the repo downloaded.  The following showed up in my ls:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;drwxr-xr-x 4 steve supervisorusers 4.0K Oct 10 15:50 samd20_headers-prefix/
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;What is this prefix business…  let’s put in a prefix.&lt;/p&gt;
-
-&lt;p&gt;If I put in a&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;PREFIX &quot;hello&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Then the repo is cloned, named hello.  what??&lt;br /&gt;
-Apparently it’s supposed to be this:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;PREFIX &quot;samd20_headers&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Why do I have to explicitly type the same name…&lt;/p&gt;
-
-&lt;h1 id=&quot;anyway-next-problem-is-the-include-path-is-no-longer-the-same&quot;&gt;Anyway, next problem is, the include path is no longer the same.&lt;/h1&gt;
-
-&lt;p&gt;I need to tell CMake to add include directories to the compiler command.&lt;/p&gt;
-
-&lt;h1 id=&quot;oh-prefix-is-for-where-the-external-project-is-installed--doesnt-have-to-be-inside-this-project&quot;&gt;Oh, prefix is for where the external project is installed.  Doesn’t have to be inside this project&lt;/h1&gt;
-
-&lt;h1 id=&quot;moving-on-to-the-test-build-auto-downloading-the-unity-test-framework&quot;&gt;Moving on to the test build, auto downloading the Unity test framework&lt;/h1&gt;
-
-&lt;p&gt;This one was tricky because it doesn’t provide a build script.
-It is intended for the library consumer to build the source.&lt;br /&gt;
-Also, the source is not in the top directory of the repo.&lt;/p&gt;
-
-&lt;p&gt;I solved it with a kludge, don’t like it:&lt;/p&gt;
-
-&lt;p&gt;First, this is how I added compiler include directories.&lt;br /&gt;
-Using install_dir as a global variable here…&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ExternalProject_Get_Property(samd20_headers install_dir)
-include_directories(${install_dir}/src/samd20_headers/)
-ExternalProject_Get_Property(arm_cmsis_headers install_dir)
-include_directories(${install_dir}/src/arm_cmsis_headers/)
-ExternalProject_Get_Property(unity install_dir)
-include_directories(${install_dir}/src/unity/src/)
-include_directories(${install_dir}/src/unity/extras/fixture/src/)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Notice at the end, for unity, there are 2 calls to include_directories().
-I guess it’s ok, it’s explicit and still relative to the ${install_dir}.&lt;/p&gt;
-
-&lt;p&gt;Later, in my list of source files, there’s another kludge.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file(GLOB TEST_SOURCES
-    &quot;*.h&quot;
-    &quot;*.c&quot;
-    &quot;hal/*.c&quot;
-    &quot;test_runners/*.c&quot;
-    &quot;test_runners/*.h&quot;
-    &quot;../../Unity/extras/fixture/src/*.c&quot;
-    &quot;../mock/*.c&quot;
-    &quot;../../Unity/src/*.c&quot;
-    &quot;${install_dir}/src/unity/src/*&quot;
-    &quot;${install_dir}/src/unity/extras/fixture/src/*&quot;
-)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;But same, I guess it’s OK, because the list is explicit and also relative to ${install_dir}.&lt;br /&gt;
-So every time this project is cloned and built it’ll work.&lt;br /&gt;
-One issue is the name install_dir is only valid when install_dir was just written to with the correct contents.&lt;/p&gt;
-
-&lt;h1 id=&quot;uhhh-a-similar-issue-build-doesnt-work-first-time-works-second-time&quot;&gt;Uhhh, a similar issue… Build doesn’t work first time, works second time?&lt;/h1&gt;
-
-&lt;p&gt;What’s happening here…&lt;/p&gt;
-
-&lt;p&gt;Same thing as before.  The Unity git repo was cloned, and then
-Make is supposed to compile the source as part of the build.&lt;br /&gt;
-But Make can’t find them.&lt;br /&gt;
-In this case, Make did not include those sources in the list of source files to be compiled.&lt;br /&gt;
-Make said “Scanning dependencies of…” and then compiled the sources, but the Unity sources weren’t.&lt;br /&gt;
-All I have to do to get the build to succeed next time is:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;touch CMakeLists.txt
-make
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;And it works; this time, it scans the dependencies, finds the Unity sources and builds them.&lt;/p&gt;
-
-&lt;h1 id=&quot;i-guess-im-not-supposed-to-try-to-do-this&quot;&gt;I guess I’m not supposed to try to do this?&lt;/h1&gt;
-
-&lt;p&gt;Why should I build the source ?  That means I have to know how to build it.&lt;br /&gt;
-Any changes to that repo will break my build and everyone else who does it this way.&lt;/p&gt;
-
-&lt;p&gt;What’s the alternative?  They can’t precompile unless they only supported a couple targets.&lt;br /&gt;
-They could include a Makefile or CMakeLists.txt.  CMake would work I guess but not Make.&lt;/p&gt;
-
-&lt;h1 id=&quot;lets-follow-this-one--httpwwwthrowtheswitchorgbuildcmake&quot;&gt;Let’s follow this one:  http://www.throwtheswitch.org/build/cmake&lt;/h1&gt;
-
-&lt;p&gt;Since it is literally what I’m trying to do.&lt;/p&gt;
-
-&lt;h1 id=&quot;eh-lets-get-ceedling-working-first&quot;&gt;Eh, let’s get Ceedling working first.&lt;/h1&gt;
-
-&lt;p&gt;Currently I had handwritten Unity tests.&lt;br /&gt;
-Ceedling does it a bit different.&lt;br /&gt;
-Each test.c file is linked into a test app and executed.&lt;br /&gt;
-It uses its own build system so anything that was in Make or CMake before
-is invalid.&lt;br /&gt;
-This means the linker and header dependencies on the production source.&lt;/p&gt;
-
-&lt;p&gt;To get the ceedling tests to work you have to put #include statements
-in the tests, which makes Ceedling pull in source files.&lt;br /&gt;
-Other than that seems OK.&lt;/p&gt;
-
-&lt;h1 id=&quot;problem-is-you-need-a-ruby-and-ceedling-installation&quot;&gt;Problem is you need a ruby and ceedling installation.&lt;/h1&gt;</content><author><name></name></author><summary type="html">I’m trying to build my codebase in CMake or Gradle. Tried Gradle first. At first glance there are way too many DSL keywords, I have no idea what they do and connecting the dots is insane. It’s the same frustration I get with python. Never knowing what type anything is and always having to look up documentation before writing a single line. Now trying CMake… http://derekmolloy.ie/hello-world-introductions-to-cmake/ I started with this CMakeLists.txt cmake_minimum_required(VERSION 2.8) project(hello) set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin) set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}) set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}) include_directories(&quot;${PROJECT_SOURCE_DIR}&quot;) add_executable(hello ${PROJECT_SOURCE_DIR}/src/main.c) To build, cmake . make Wow it actually tried to compile something. No include directories were supplied. Let’s add one. include_directories(myincludedir) Works. Now there’s another header that’s not inside the repo. Let’s add those. include_directories(&quot;../samd20_cmsis_headers&quot;) include_directories(&quot;../arm_cmsis_headers&quot;)</summary></entry></feed>
+Then have it clone the debos_firmware repo and build it.&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m going to build debos_firmware with a docker container. I’ll start with apline linux, get a toolchain. Then have it clone the debos_firmware repo and build it.</summary></entry></feed>
