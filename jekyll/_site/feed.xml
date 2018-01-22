@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-21T21:21:55-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-21T22:26:43-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">Jenkins Job Migration (ie. Jenkins uses too much RAM)</title><link href="/2018/01/21/jenkins-uses-too-much-ram.html" rel="alternate" type="text/html" title="Jenkins Job Migration (ie. Jenkins uses too much RAM)" /><published>2018-01-21T00:00:00-08:00</published><updated>2018-01-21T00:00:00-08:00</updated><id>/2018/01/21/jenkins-uses-too-much-ram</id><content type="html" xml:base="/2018/01/21/jenkins-uses-too-much-ram.html">&lt;p&gt;Dang, I finally figured out why my Docker containers were failing shortly after starting.&lt;br /&gt;
 That Error Code 137, Out of Memory.&lt;br /&gt;
 Really it’s my stupid Redmine container that’s taking up 30% of my 1GB RAM.  But I can’t do anything about that.&lt;br /&gt;
@@ -555,6 +555,23 @@ alias l='ls -ltrh --color=auto'
 alias gs='git status'
 alias gl='git log'
 alias gd='git diff'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;random-color-command-prompt&quot;&gt;Random Color Command Prompt&lt;/h1&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---
+...inside .bashrc
+---
+function nextcolor
+{
+    mycolor=$(($RANDOM % 7 + 31))
+    echo $mycolor
+}
+if [ &quot;$color_prompt&quot; = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;$(nextcolor)m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 

@@ -30,6 +30,23 @@ alias gl='git log'
 alias gd='git diff'
 ```
 
+# Random Color Command Prompt
+```
+---
+...inside .bashrc
+---
+function nextcolor
+{
+    mycolor=$(($RANDOM % 7 + 31))
+    echo $mycolor
+}
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;$(nextcolor)m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+```
+
 # VIM
 `sudo apt-get install vim`
 ```

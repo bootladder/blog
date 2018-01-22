@@ -92,6 +92,23 @@ alias gd='git diff'
 </code></pre>
 </div>
 
+<h1 id="random-color-command-prompt">Random Color Command Prompt</h1>
+<div class="highlighter-rouge"><pre class="highlight"><code>---
+...inside .bashrc
+---
+function nextcolor
+{
+    mycolor=$(($RANDOM % 7 + 31))
+    echo $mycolor
+}
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;$(nextcolor)m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+</code></pre>
+</div>
+
 <h1 id="vim">VIM</h1>
 <p><code class="highlighter-rouge">sudo apt-get install vim</code></p>
 <div class="highlighter-rouge"><pre class="highlight"><code>~/.vimrc
