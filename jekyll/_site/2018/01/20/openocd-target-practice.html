@@ -297,6 +297,43 @@ flash bank $_FLASHNAME at91samd 0x00000000 0 1 1 $_TARGETNAME
 <h1 id="samd21-xplained">SAMD21 XPLained</h1>
 <h1 id="arduino-leo">Arduino Leo</h1>
 
+<h1 id="how-does-the-raspberry-pi-gpio-driver-interface-work">How does the Raspberry Pi GPIO Driver Interface work?</h1>
+<p>It’s the bcm2835gpio Debug Interface.
+It says See interface/raspberrypi-native.cfg for a sample config and pinout.<br />
+Let’s take a look.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>interface bcm2835gpio
+
+# Transition delay calculation: SPEED_COEFF/khz - SPEED_OFFSET
+# These depend on system clock, calibrated for stock 700MHz
+# bcm2835gpio_speed SPEED_COEFF SPEED_OFFSET
+bcm2835gpio_speed_coeffs 113714 28
+
+# Each of the JTAG lines need a gpio number set: tck tms tdi tdo
+# Header pin numbers: 23 22 19 21
+bcm2835gpio_jtag_nums 11 25 10 9
+</code></pre>
+</div>
+<p>Interesting, there’s another one.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>
+interface sysfsgpio
+
+# Each of the JTAG lines need a gpio number set: tck tms tdi tdo
+# Header pin numbers: 23 22 19 21
+sysfsgpio_jtag_nums 11 25 10 9
+
+# At least one of srst or trst needs to be specified
+# Header pin numbers: TRST - 26, SRST - 18
+sysfsgpio_trst_num 7
+# sysfsgpio_srst_num 24
+</code></pre>
+</div>
+<p>Notice the pin numbers for JTAG are the same.<br />
+OK, bcm2835 is more directly accessing the hardware.<br />
+But sysfsgpio sounds very interesting, like maybe I can port it to the Beaglebone?</p>
+
+<h1 id="references-links">References, Links</h1>
+<p>http://thehackerworkshop.com/?tag=openocd</p>
+
   </div>
 
   

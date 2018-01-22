@@ -1,5 +1,62 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-20T18:42:18-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">OpenOCD Target Practice</title><link href="/2018/01/20/openocd-target-practice.html" rel="alternate" type="text/html" title="OpenOCD Target Practice" /><published>2018-01-20T00:00:00-08:00</published><updated>2018-01-20T00:00:00-08:00</updated><id>/2018/01/20/openocd-target-practice</id><content type="html" xml:base="/2018/01/20/openocd-target-practice.html">&lt;h1 id=&quot;how-to-actually-write-the-flash--ive-never-used-gdb&quot;&gt;How to actually write the flash?  I’ve never used GDB.&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-21T20:33:12-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Jenkins uses too much RAM</title><link href="/2018/01/21/jenkins-uses-too-much-ram.html" rel="alternate" type="text/html" title="Jenkins uses too much RAM" /><published>2018-01-21T00:00:00-08:00</published><updated>2018-01-21T00:00:00-08:00</updated><id>/2018/01/21/jenkins-uses-too-much-ram</id><content type="html" xml:base="/2018/01/21/jenkins-uses-too-much-ram.html">&lt;p&gt;Dang, I finally figured out why my Docker containers were failing shortly after starting.&lt;br /&gt;
+That Error Code 137, Out of Memory.&lt;br /&gt;
+Really it’s my stupid Redmine container that’s taking up 30% of my 1GB RAM.  But I can’t do anything about that.&lt;br /&gt;
+Jenkins I can consolidate the 3 instances into 1.&lt;br /&gt;
+Previously I had 1 Jenkins per toolchain, ie. 1 for arm-linux , 1 for arm-none, 1 for golang, etc.  I liked this because it keeps the toolchain installs independent.&lt;br /&gt;
+Now I have to use 1 Jenkins container with all the toolchains inside of it.&lt;/p&gt;</content><author><name></name></author><summary type="html">Dang, I finally figured out why my Docker containers were failing shortly after starting. That Error Code 137, Out of Memory. Really it’s my stupid Redmine container that’s taking up 30% of my 1GB RAM. But I can’t do anything about that. Jenkins I can consolidate the 3 instances into 1. Previously I had 1 Jenkins per toolchain, ie. 1 for arm-linux , 1 for arm-none, 1 for golang, etc. I liked this because it keeps the toolchain installs independent. Now I have to use 1 Jenkins container with all the toolchains inside of it.</summary></entry><entry><title type="html">Debugging a Bootloader with GDB and OpenOCD</title><link href="/2018/01/21/debugging-a-bootloader-with-gdb-and-openocd.html" rel="alternate" type="text/html" title="Debugging a Bootloader with GDB and OpenOCD" /><published>2018-01-21T00:00:00-08:00</published><updated>2018-01-21T00:00:00-08:00</updated><id>/2018/01/21/debugging-a-bootloader-with-gdb-and-openocd</id><content type="html" xml:base="/2018/01/21/debugging-a-bootloader-with-gdb-and-openocd.html">&lt;p&gt;I have a working build of a bootloader.  Let’s flash it.  I have a binary and an ELF.  First let’s flash the binary.&lt;br /&gt;
+I’m using a SAMD20 custom board with an Atmel-ICE driven by a Beaglebone running OpenOCD, and I’m driving the Beaglebone with SSH.
+Let’s configure the Beaglebone’s OpenOCD conf.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Hmm, arm-none-eabi gcc and gdb are 700mb disk.  No thanks?&lt;/strong&gt;&lt;br /&gt;
+Let’s see what we can do with telnet.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;telnet localhost 4444
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Cool, halt and reset work.&lt;br /&gt;
+To read some memory use these&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; mdw 0x3ff00
+0x0003ff00: 2110002a 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Let’s load an image&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; load_image /tmp/binarg1
+8180 bytes written at address 0x00000000
+downloaded 8180 bytes in 0.327776s (24.371 KiB/s)
+&amp;gt; reset  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Looks like it worked.  Interestingly there is no LED toggle on the debugger.  I guess edbg puts it in but OpenOCD doesn’t.&lt;/p&gt;
+
+&lt;p&gt;Let’s look at the vector table.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; dump_image /tmp/bindump1 0x0 0x100
+dumped 256 bytes in 0.011345s (22.036 KiB/s)
+-------
+-------
+debian@FFNBeagle-A-0:/tmp$ od -tx1 -w4 -Ax bindump1 -v
+000000 00 80 00 20
+000004 25 07 00 00
+000008 65 07 00 00
+00000c 0d 07 00 00
+000010 00 00 00 00
+000014 00 00 00 00
+000018 00 00 00 00
+00001c 00 00 00 00
+000020 00 00 00 00
+000024 00 00 00 00
+000028 00 00 00 00
+00002c 65 07 00 00
+000030 00 00 00 00
+000034 00 00 00 00
+000038 65 07 00 00
+00003c 65 07 00 00
+000040 65 07 00 00
+000044 65 07 00 00
+000048 65 07 00 00
+00004c f1 06 00 00
+000050 fd 05 00 00
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;</content><author><name></name></author><summary type="html">I have a working build of a bootloader. Let’s flash it. I have a binary and an ELF. First let’s flash the binary. I’m using a SAMD20 custom board with an Atmel-ICE driven by a Beaglebone running OpenOCD, and I’m driving the Beaglebone with SSH. Let’s configure the Beaglebone’s OpenOCD conf.</summary></entry><entry><title type="html">OpenOCD Target Practice</title><link href="/2018/01/20/openocd-target-practice.html" rel="alternate" type="text/html" title="OpenOCD Target Practice" /><published>2018-01-20T00:00:00-08:00</published><updated>2018-01-20T00:00:00-08:00</updated><id>/2018/01/20/openocd-target-practice</id><content type="html" xml:base="/2018/01/20/openocd-target-practice.html">&lt;h1 id=&quot;how-to-actually-write-the-flash--ive-never-used-gdb&quot;&gt;How to actually write the flash?  I’ve never used GDB.&lt;/h1&gt;
 &lt;p&gt;First start the OpenOCD server.  This is what I see:  &lt;code class=&quot;highlighter-rouge&quot;&gt;Info : at91samd20j18.cpu: hardware has 4 breakpoints, 2 watchpoints&lt;/code&gt;
 Then connect to the server with gdb.  Run the gdb command and then at the prompt type this:  &lt;code class=&quot;highlighter-rouge&quot;&gt;(gdb) target remote localhost:3333&lt;/code&gt;&lt;br /&gt;
 I’m using arm-none-eabi-gdb.  If I just run native gdb, I get this output&lt;/p&gt;
@@ -230,7 +287,44 @@ flash bank $_FLASHNAME at91samd 0x00000000 0 1 1 $_TARGETNAME
 &lt;h1 id=&quot;samd20-xplained-pro-self&quot;&gt;SAMD20 XPlained Pro Self&lt;/h1&gt;
 &lt;h1 id=&quot;samd10-xplained&quot;&gt;SAMD10 XPLained&lt;/h1&gt;
 &lt;h1 id=&quot;samd21-xplained&quot;&gt;SAMD21 XPLained&lt;/h1&gt;
-&lt;h1 id=&quot;arduino-leo&quot;&gt;Arduino Leo&lt;/h1&gt;</content><author><name></name></author><summary type="html">How to actually write the flash? I’ve never used GDB. First start the OpenOCD server. This is what I see: Info : at91samd20j18.cpu: hardware has 4 breakpoints, 2 watchpoints Then connect to the server with gdb. Run the gdb command and then at the prompt type this: (gdb) target remote localhost:3333 I’m using arm-none-eabi-gdb. If I just run native gdb, I get this output Info : accepting 'gdb' connection from 3333 undefined debug reason 7 - target needs reset Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) But if I run arm-none-eabi-gdb, I get this Info : accepting 'gdb' connection from 3333 undefined debug reason 7 - target needs reset Now that I’m connected let’s Read some memory addresses. (gdb) x 0x3FF00 0x3ff00: 0xdeadbeef (gdb) x 0x3FE00 0x3fe00: 0x11456708 Great! Seeing deadbeef is good; it had to come from the target’s flash. Interesting, if I supply a bogus address it handles nicely. This is the output of the OpenOCD server after doing a (gdb) x 90000000. Error: CMSIS-DAP: Write Error (0x04) Polling target at91samd20j18.cpu failed, GDB will be halted. Polling again in 100ms Polling target at91samd20j18.cpu succeeded again Let’s try to write something. Oh dang, doesn’t work. (gdb) x 0x3f100 0x3f100: 0xffffffff (gdb) set {int}0x3f100 = 0xdeadbeef Writing to flash memory forbidden in this context Now let’s go to the OpenOCD manual and look at their example. It says to run gdb with an .elf file. Let’s do that. Dang. Same error. But, OpenOCD manual shows using the load command. That worked! (gdb) set {int}0x3F100=0xdeadbeef Writing to flash memory forbidden in this context (gdb) load Loading section .text, size 0xfea0 lma 0x0 Loading section .debug_breadcrumbs, size 0x4 lma 0xfea0 Loading section .relocate, size 0x110 lma 0xfea4 Start address 0x74b8, load size 65460 Transfer rate: 1 KB/sec, 9351 bytes/write. Well atleast I can write to RAM. (gdb) set {int}0x20006000=0xdeadbeef (gdb) x 0x20006000 0x20006000: 0xdeadbeef OK, here’s another lead. (gdb) monitor flash probe 0 flash 'at91samd' found at 0x00000000 This shows that the flash bank 0 is found at address 0x0. This is correct. Another thing I can do is erase_check (gdb) monitor flash erase_check 0 successfully checked erase state # 0: 0x00000000 (0x4000 16kB) not erased # 1: 0x00004000 (0x4000 16kB) not erased # 2: 0x00008000 (0x4000 16kB) not erased # 3: 0x0000c000 (0x4000 16kB) not erased # 4: 0x00010000 (0x4000 16kB) erased # 5: 0x00014000 (0x4000 16kB) erased # 6: 0x00018000 (0x4000 16kB) erased # 7: 0x0001c000 (0x4000 16kB) erased # 8: 0x00020000 (0x4000 16kB) erased # 9: 0x00024000 (0x4000 16kB) erased # 10: 0x00028000 (0x4000 16kB) erased # 11: 0x0002c000 (0x4000 16kB) erased # 12: 0x00030000 (0x4000 16kB) erased # 13: 0x00034000 (0x4000 16kB) erased # 14: 0x00038000 (0x4000 16kB) erased # 15: 0x0003c000 (0x4000 16kB) not erased While this is correct, I already know that the page size is 64 bytes and the erase row size is 4 pages, 256 bytes. Definitely not 16kB. I learned here, that when I say (gdb) monitor flash erase_check 0 , what happens is, monitor tells gdb to pass flash erase_check 0 to OpenOCD. So flash erase_check is an OpenOCD command, documented in the manual. We can do flash erase_sector num first last flash erase_address [pad] [unlock] address length flash fillw address word length flash fillh address halfword length flash fillb address byte length flash write_bank num filename [offset] program filename [verify] [reset] [exit] [offset]</summary></entry><entry><title type="html">arduino-cmake first try</title><link href="/2018/01/16/arduino-cmake-first-try.html" rel="alternate" type="text/html" title="arduino-cmake first try" /><published>2018-01-16T00:00:00-08:00</published><updated>2018-01-16T00:00:00-08:00</updated><id>/2018/01/16/arduino-cmake-first-try</id><content type="html" xml:base="/2018/01/16/arduino-cmake-first-try.html">&lt;p&gt;I cloned the repo.&lt;/p&gt;
+&lt;h1 id=&quot;arduino-leo&quot;&gt;Arduino Leo&lt;/h1&gt;
+
+&lt;h1 id=&quot;how-does-the-raspberry-pi-gpio-driver-interface-work&quot;&gt;How does the Raspberry Pi GPIO Driver Interface work?&lt;/h1&gt;
+&lt;p&gt;It’s the bcm2835gpio Debug Interface.
+It says See interface/raspberrypi-native.cfg for a sample config and pinout.&lt;br /&gt;
+Let’s take a look.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;interface bcm2835gpio
+
+# Transition delay calculation: SPEED_COEFF/khz - SPEED_OFFSET
+# These depend on system clock, calibrated for stock 700MHz
+# bcm2835gpio_speed SPEED_COEFF SPEED_OFFSET
+bcm2835gpio_speed_coeffs 113714 28
+
+# Each of the JTAG lines need a gpio number set: tck tms tdi tdo
+# Header pin numbers: 23 22 19 21
+bcm2835gpio_jtag_nums 11 25 10 9
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Interesting, there’s another one.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+interface sysfsgpio
+
+# Each of the JTAG lines need a gpio number set: tck tms tdi tdo
+# Header pin numbers: 23 22 19 21
+sysfsgpio_jtag_nums 11 25 10 9
+
+# At least one of srst or trst needs to be specified
+# Header pin numbers: TRST - 26, SRST - 18
+sysfsgpio_trst_num 7
+# sysfsgpio_srst_num 24
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Notice the pin numbers for JTAG are the same.&lt;br /&gt;
+OK, bcm2835 is more directly accessing the hardware.&lt;br /&gt;
+But sysfsgpio sounds very interesting, like maybe I can port it to the Beaglebone?&lt;/p&gt;
+
+&lt;h1 id=&quot;references-links&quot;&gt;References, Links&lt;/h1&gt;
+&lt;p&gt;http://thehackerworkshop.com/?tag=openocd&lt;/p&gt;</content><author><name></name></author><summary type="html">How to actually write the flash? I’ve never used GDB. First start the OpenOCD server. This is what I see: Info : at91samd20j18.cpu: hardware has 4 breakpoints, 2 watchpoints Then connect to the server with gdb. Run the gdb command and then at the prompt type this: (gdb) target remote localhost:3333 I’m using arm-none-eabi-gdb. If I just run native gdb, I get this output Info : accepting 'gdb' connection from 3333 undefined debug reason 7 - target needs reset Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) But if I run arm-none-eabi-gdb, I get this Info : accepting 'gdb' connection from 3333 undefined debug reason 7 - target needs reset Now that I’m connected let’s Read some memory addresses. (gdb) x 0x3FF00 0x3ff00: 0xdeadbeef (gdb) x 0x3FE00 0x3fe00: 0x11456708 Great! Seeing deadbeef is good; it had to come from the target’s flash. Interesting, if I supply a bogus address it handles nicely. This is the output of the OpenOCD server after doing a (gdb) x 90000000. Error: CMSIS-DAP: Write Error (0x04) Polling target at91samd20j18.cpu failed, GDB will be halted. Polling again in 100ms Polling target at91samd20j18.cpu succeeded again Let’s try to write something. Oh dang, doesn’t work. (gdb) x 0x3f100 0x3f100: 0xffffffff (gdb) set {int}0x3f100 = 0xdeadbeef Writing to flash memory forbidden in this context Now let’s go to the OpenOCD manual and look at their example. It says to run gdb with an .elf file. Let’s do that. Dang. Same error. But, OpenOCD manual shows using the load command. That worked! (gdb) set {int}0x3F100=0xdeadbeef Writing to flash memory forbidden in this context (gdb) load Loading section .text, size 0xfea0 lma 0x0 Loading section .debug_breadcrumbs, size 0x4 lma 0xfea0 Loading section .relocate, size 0x110 lma 0xfea4 Start address 0x74b8, load size 65460 Transfer rate: 1 KB/sec, 9351 bytes/write. Well atleast I can write to RAM. (gdb) set {int}0x20006000=0xdeadbeef (gdb) x 0x20006000 0x20006000: 0xdeadbeef OK, here’s another lead. (gdb) monitor flash probe 0 flash 'at91samd' found at 0x00000000 This shows that the flash bank 0 is found at address 0x0. This is correct. Another thing I can do is erase_check (gdb) monitor flash erase_check 0 successfully checked erase state # 0: 0x00000000 (0x4000 16kB) not erased # 1: 0x00004000 (0x4000 16kB) not erased # 2: 0x00008000 (0x4000 16kB) not erased # 3: 0x0000c000 (0x4000 16kB) not erased # 4: 0x00010000 (0x4000 16kB) erased # 5: 0x00014000 (0x4000 16kB) erased # 6: 0x00018000 (0x4000 16kB) erased # 7: 0x0001c000 (0x4000 16kB) erased # 8: 0x00020000 (0x4000 16kB) erased # 9: 0x00024000 (0x4000 16kB) erased # 10: 0x00028000 (0x4000 16kB) erased # 11: 0x0002c000 (0x4000 16kB) erased # 12: 0x00030000 (0x4000 16kB) erased # 13: 0x00034000 (0x4000 16kB) erased # 14: 0x00038000 (0x4000 16kB) erased # 15: 0x0003c000 (0x4000 16kB) not erased While this is correct, I already know that the page size is 64 bytes and the erase row size is 4 pages, 256 bytes. Definitely not 16kB. I learned here, that when I say (gdb) monitor flash erase_check 0 , what happens is, monitor tells gdb to pass flash erase_check 0 to OpenOCD. So flash erase_check is an OpenOCD command, documented in the manual. We can do flash erase_sector num first last flash erase_address [pad] [unlock] address length flash fillw address word length flash fillh address halfword length flash fillb address byte length flash write_bank num filename [offset] program filename [verify] [reset] [exit] [offset]</summary></entry><entry><title type="html">arduino-cmake first try</title><link href="/2018/01/16/arduino-cmake-first-try.html" rel="alternate" type="text/html" title="arduino-cmake first try" /><published>2018-01-16T00:00:00-08:00</published><updated>2018-01-16T00:00:00-08:00</updated><id>/2018/01/16/arduino-cmake-first-try</id><content type="html" xml:base="/2018/01/16/arduino-cmake-first-try.html">&lt;p&gt;I cloned the repo.&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd example
 mkdir build
 cmake ..
@@ -461,6 +555,7 @@ alias gd='git diff'
 set noexpandtab
 set tabstop=2
 set shiftwidth=2
+set clipboard=unnamedplus
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
@@ -706,16 +801,4 @@ ccd  down.sh  openvpn.conf  ovpn_env.sh  pki  up.sh
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ubuntu@ubuntu:~$ ls
 CLIENTNAME.ovpn 
 &lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;</content><author><name></name></author><summary type="html">sudo curl -sSL https://get.docker.com/ | sudo sh sudo usermod -aG docker ubuntu https://github.com/kylemanna/docker-openvpn OVPN_DATA=&quot;ovpn-data-example&quot; The volume stores data generated by the following. docker volume create --name $OVPN_DATA docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u udp://VPN.SERVERNAME.COM sudo ls /var/lib/docker/volumes/ovpn-data-example/_data/ ccd down.sh openvpn.conf ovpn_env.sh up.sh docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki ubuntu@ubuntu:~$ sudo ls /var/lib/docker/volumes/ovpn-data-example/_data/ ccd down.sh openvpn.conf ovpn_env.sh pki up.sh docker run -v $OVPN_DATA:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN kylemanna/openvpn docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn easyrsa build-client-full CLIENTNAME nopass docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient CLIENTNAME &amp;gt; CLIENTNAME.ovpn ubuntu@ubuntu:~$ ls CLIENTNAME.ovpn</summary></entry><entry><title type="html">Docker Swarm Beaglebone</title><link href="/2017/10/17/docker-swarm-beaglebone.html" rel="alternate" type="text/html" title="Docker Swarm Beaglebone" /><published>2017-10-17T00:00:00-07:00</published><updated>2017-10-17T00:00:00-07:00</updated><id>/2017/10/17/docker-swarm-beaglebone</id><content type="html" xml:base="/2017/10/17/docker-swarm-beaglebone.html">&lt;h1 id=&quot;first-the-swarm-manager&quot;&gt;First the Swarm Manager&lt;/h1&gt;
-&lt;p&gt;Physical access to the Beaglebone allowed a startup script to be installed,
-which would set up a reverse SSH tunnel to an Internet host.&lt;br /&gt;
-Then, install and configure the Docker Swarm.&lt;/p&gt;
-
-&lt;p&gt;The Swarm Manager needs to have a static IP on the LAN,
-so the Swarm Nodes can hard code that static IP.&lt;/p&gt;
-
-&lt;h1 id=&quot;the-swarm-nodes-will-all-use-the-same-sd-card-image&quot;&gt;The Swarm Nodes will all use the same SD card image&lt;/h1&gt;
-&lt;p&gt;The filesystem in that SD card image can have a startup script with that
-Manager Static IP hard coded in.&lt;/p&gt;</content><author><name></name></author><summary type="html">First the Swarm Manager Physical access to the Beaglebone allowed a startup script to be installed, which would set up a reverse SSH tunnel to an Internet host. Then, install and configure the Docker Swarm. The Swarm Manager needs to have a static IP on the LAN, so the Swarm Nodes can hard code that static IP. The Swarm Nodes will all use the same SD card image The filesystem in that SD card image can have a startup script with that Manager Static IP hard coded in.</summary></entry><entry><title type="html">cpputest on docker</title><link href="/2017/10/10/cpputest-on-docker.html" rel="alternate" type="text/html" title="cpputest on docker" /><published>2017-10-10T00:00:00-07:00</published><updated>2017-10-10T00:00:00-07:00</updated><id>/2017/10/10/cpputest-on-docker</id><content type="html" xml:base="/2017/10/10/cpputest-on-docker.html">&lt;p&gt;I’m going to build debos_firmware with a docker container.&lt;br /&gt;
-I’ll start with apline linux, get a toolchain.&lt;br /&gt;
-Then have it clone the debos_firmware repo and build it.&lt;/p&gt;</content><author><name></name></author><summary type="html">I’m going to build debos_firmware with a docker container. I’ll start with apline linux, get a toolchain. Then have it clone the debos_firmware repo and build it.</summary></entry></feed>
+&lt;/div&gt;</content><author><name></name></author><summary type="html">sudo curl -sSL https://get.docker.com/ | sudo sh sudo usermod -aG docker ubuntu https://github.com/kylemanna/docker-openvpn OVPN_DATA=&quot;ovpn-data-example&quot; The volume stores data generated by the following. docker volume create --name $OVPN_DATA docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u udp://VPN.SERVERNAME.COM sudo ls /var/lib/docker/volumes/ovpn-data-example/_data/ ccd down.sh openvpn.conf ovpn_env.sh up.sh docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki ubuntu@ubuntu:~$ sudo ls /var/lib/docker/volumes/ovpn-data-example/_data/ ccd down.sh openvpn.conf ovpn_env.sh pki up.sh docker run -v $OVPN_DATA:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN kylemanna/openvpn docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn easyrsa build-client-full CLIENTNAME nopass docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient CLIENTNAME &amp;gt; CLIENTNAME.ovpn ubuntu@ubuntu:~$ ls CLIENTNAME.ovpn</summary></entry></feed>

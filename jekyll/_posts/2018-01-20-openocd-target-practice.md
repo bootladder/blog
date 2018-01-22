@@ -236,3 +236,41 @@ I guess we are supplying this information to GDB?
 # SAMD10 XPLained
 # SAMD21 XPLained
 # Arduino Leo
+
+# How does the Raspberry Pi GPIO Driver Interface work?
+It's the bcm2835gpio Debug Interface.
+It says See interface/raspberrypi-native.cfg for a sample config and pinout.  
+Let's take a look.
+```
+interface bcm2835gpio
+
+# Transition delay calculation: SPEED_COEFF/khz - SPEED_OFFSET
+# These depend on system clock, calibrated for stock 700MHz
+# bcm2835gpio_speed SPEED_COEFF SPEED_OFFSET
+bcm2835gpio_speed_coeffs 113714 28
+
+# Each of the JTAG lines need a gpio number set: tck tms tdi tdo
+# Header pin numbers: 23 22 19 21
+bcm2835gpio_jtag_nums 11 25 10 9
+```
+Interesting, there's another one.
+```
+
+interface sysfsgpio
+
+# Each of the JTAG lines need a gpio number set: tck tms tdi tdo
+# Header pin numbers: 23 22 19 21
+sysfsgpio_jtag_nums 11 25 10 9
+
+# At least one of srst or trst needs to be specified
+# Header pin numbers: TRST - 26, SRST - 18
+sysfsgpio_trst_num 7
+# sysfsgpio_srst_num 24
+```
+Notice the pin numbers for JTAG are the same.  
+OK, bcm2835 is more directly accessing the hardware.  
+But sysfsgpio sounds very interesting, like maybe I can port it to the Beaglebone?
+
+
+# References, Links
+http://thehackerworkshop.com/?tag=openocd
