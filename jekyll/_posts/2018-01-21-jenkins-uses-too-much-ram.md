@@ -16,4 +16,8 @@ So let's open the Dockerfile and install some toolchains.
   
 Well it works, pretty obvious.  
   
-Just remember folks, 1GB RAM is easily plenty and easily nothing.  Pay attention to how much your stupid high level frameworks and languages use.
+Just remember folks, 1GB RAM is easily plenty and easily nothing.  Pay attention to how much your stupid high level frameworks and languages use.  
+  
+# Consolidating the "publish" directories
+
+I'm using Jenkins to build my binaries and then publish them somewhere.  I tried both SSH (scp) and web server (wget) and the annoying thing is the hard coded paths.  Basically when I had 3 Jenkins instances they each published to a place with a different name.  But now they're all 1 instance, publishing to a place with a new name different from all 3.  And, all the jobs refer to some named place to publish the built binaries.  So that means I have to change every job to publish to a ne place.
