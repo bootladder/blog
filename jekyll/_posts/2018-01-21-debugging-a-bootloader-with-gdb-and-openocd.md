@@ -58,4 +58,17 @@ debian@FFNBeagle-A-0:/tmp$ od -tx1 -w4 -Ax bindump1 -v
   
 # Weird problem, what is going on?
 As I said, I have a working bootloader and a working application that can be bootloaded and run.  I used edbg, which always worked flawlessly when -p for programming, -e for erasing.  After the firmware is flashed, the application is loaded by serial port, ttyUSB.  
-Very weird, I used OpenOCD to flash the bootloader firmware, it was OK, then I used ttyUSB to load the application, that was also OK, but then when I reset the target, it would jump to the application and hit some hard fault or something and reset.  WTF is OpenOCD doing differently?  I'm not even using OpenOCD for erasing anymore, I use edbg because I know for sure it erases, so it must be the programming.  I'm using binary images, not ELF's so it really should just dump the memory, I don't see how there could be a difference.
+Very weird, I used OpenOCD to flash the bootloader firmware, it was OK, then I used ttyUSB to load the application, that was also OK, but then when I reset the target, it would jump to the application and hit some hard fault or something and reset.  WTF is OpenOCD doing differently?  I'm not even using OpenOCD for erasing anymore, I use edbg because I know for sure it erases, so it must be the programming.  I'm using binary images, not ELF's so it really should just dump the memory, I don't see how there could be a difference.  
+Well, I know the next thing to try.  Try all the different commands for writing flash memory from a file.  I was using load_image blah.bin , where my blah.bin should start at address 0x0 so no more parameters are supplied to load_image
+  
+OK, before I do that, I should be able to find out what exactly went wrong by analyzing the flash memory contents on target.  
+It looks like the bootloader is OK but then fails to jump to the application.  Let's check the pointers.  
+
+The app loads from 0x2000, and puts a pointer to while(1) at 0x2100.
+```
+> mdw 0x2100
+0x00002100: 00002229 
+```
+Check the listing for address 2229, that is in app space, check the app listing file.  Well this is weird, jenkins appears to be building a different binary from my laptop.  GCC version is different.  Crap.  We're going to have to make Jenkins a single point of truth here, and I'll have to publish the linker map file so I can view it on my laptop.  
+  
+Well not sure what's happening but things seem to be working on OpenOCD again.
