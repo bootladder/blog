@@ -87,3 +87,32 @@ To check that the bare metal app is built correct, I will do the following:
 - Check that startup code points to and calls main().  
 - Check that main() points to and calls app().  
 - Check that the calls to Checkpoint() are stubbed out.
+  
+# 1. add_subdirectory() in CMakeLists.txt inside platform/ 
+# 2. copy halStartup.c, linkerscript.ld, CMakeLists.txt from the working target   
+Now let's see what the build says.  Dang it's a tricky one!  
+```
+CMake Error at /usr/share/cmake-3.5/Modules/ExternalProject.cmake:2405 (add_custom_target):
+  add_custom_target cannot create target "samd20_headers" because another
+  target with the same name already exists.  The existing target is a custom
+  target created in source directory
+  "/home/steve/prog/debos/debos_sniffer/platform/samd20_debos".  See
+  documentation for policy CMP0002 for more details.
+Call Stack (most recent call first):
+  platform/samd20_baremetal/CMakeLists.txt:69 (ExternalProject_Add)
+```
+So, both CMakeLists.txt are identical, so I didn't expect it to work anyway.  We see here it was because of ExternalProject_Add.  
+The target "samd20_headers" already exists.  
+Well, since the 2 projects use exactly the same library, let's try to move the ExternalProject_Add up a level.  So remove the duplicated calls to ExternalProject_Add and stick it in the CMakeLists.txt 1 level up.
+  
+Cool, I did that and the I got an error that I was actually expecting.
+```
+CMake Error at platform/samd20_baremetal/CMakeLists.txt:117 (add_executable):
+  add_executable cannot create target "debos_sniffer" because another target
+  with the same name already exists.  The existing target is an executable
+  created in source directory
+  "/home/steve/prog/debos/debos_sniffer/platform/samd20_debos".  See
+  documentation for policy CMP0002 for more details.
+```
+This is obviously the re-use of the executable's name, debos_sniffer.  That has to change.  
+Woah cool looks like they both built!  
