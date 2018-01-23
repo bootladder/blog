@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-22T18:14:01-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-01-22T18:22:11-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">CMake: Building an App for Multiple Targets</title><link href="/2018/01/22/cmake-building-an-app-for-multiple-targets.html" rel="alternate" type="text/html" title="CMake: Building an App for Multiple Targets" /><published>2018-01-22T00:00:00-08:00</published><updated>2018-01-22T00:00:00-08:00</updated><id>/2018/01/22/cmake-building-an-app-for-multiple-targets</id><content type="html" xml:base="/2018/01/22/cmake-building-an-app-for-multiple-targets.html">&lt;p&gt;I have an application, it’s a sniffer.&lt;br /&gt;
 I want it to run on bare metal, on an OS, and on multiple CPU targets.&lt;br /&gt;
 Basically anything with a SPI port and the radio should be able to run this.&lt;br /&gt;
@@ -66,14 +66,26 @@ add_subdirectory(samd20_debos)
 +#    &quot;hal/*.h&quot;
 +#)
 +
-+set(SOURCES   ${CMAKE_SOURCE_DIR}/src/app.c
++set(SOURCES   ${CMAKE_SOURCE_DIR}/src/app.c  
 +							${CMAKE_SOURCE_DIR}/src/my_memcpy.c 
 +	 ) 
 +
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;p&gt;Here you see I replaced file(GLOB SOURCES …) with set(SOURCES …),
-as recommended by people.  Notice I’m specifying more exactly where the source is; the previous file(GLOB SOURCES …) worked when CMakeLists.txt was inside the directory with the source.&lt;/p&gt;</content><author><name></name></author><summary type="html">I have an application, it’s a sniffer. I want it to run on bare metal, on an OS, and on multiple CPU targets. Basically anything with a SPI port and the radio should be able to run this. OK, looks like it worked. Here’s what I learned: steve@steve-ThinkPad-T420:~/prog/debos/debos_sniffer$ tree . ├── build.sh ├── CMakeLists.txt ├── Makefile ├── platform │   ├── CMakeLists.txt │   ├── samd20_baremetal │   └── samd20_debos │   ├── atsamd20j18.ld │   ├── CMakeLists.txt │   └── halStartup.c ├── README.md ├── src │   ├── app.c │   ├── my_memcpy.c │   ├── my_memcpy.h │   └── System.h └── tool ├── sniffer_parser_lwmesh.py └── sniffer_reader.py ``` The Top Level CMakeLists.txt cmake_minimum_required(VERSION 3.5)</summary></entry><entry><title type="html">Jenkins Job Migration (ie. Jenkins uses too much RAM)</title><link href="/2018/01/21/jenkins-uses-too-much-ram.html" rel="alternate" type="text/html" title="Jenkins Job Migration (ie. Jenkins uses too much RAM)" /><published>2018-01-21T00:00:00-08:00</published><updated>2018-01-21T00:00:00-08:00</updated><id>/2018/01/21/jenkins-uses-too-much-ram</id><content type="html" xml:base="/2018/01/21/jenkins-uses-too-much-ram.html">&lt;p&gt;Dang, I finally figured out why my Docker containers were failing shortly after starting.&lt;br /&gt;
+as recommended by people.  Notice I’m specifying more exactly where the source is; the previous file(GLOB SOURCES …) worked when CMakeLists.txt was inside the directory with the source.&lt;/p&gt;
+
+&lt;h1 id=&quot;ok-now-that-i-have-the-original-target-built-and-working-i-can-add-another-target&quot;&gt;OK now that I have the original target built and working, I can add another target.&lt;/h1&gt;
+&lt;p&gt;This is the bare metal target.  It’s basically the same thing except:&lt;br /&gt;
+App vector table has to be correct; these are Reset Vector and ISRs.  This app doesn’t use any ISRs so it can’t go too horribly wrong.&lt;/p&gt;
+
+&lt;p&gt;To check that the bare metal app is built correct, I will do the following:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Check that Reset Vector points to startup code.&lt;/li&gt;
+  &lt;li&gt;Check that startup code points to and calls main().&lt;/li&gt;
+  &lt;li&gt;Check that main() points to and calls app().&lt;/li&gt;
+  &lt;li&gt;Check that the calls to Checkpoint() are stubbed out.&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">I have an application, it’s a sniffer. I want it to run on bare metal, on an OS, and on multiple CPU targets. Basically anything with a SPI port and the radio should be able to run this. OK, looks like it worked. Here’s what I learned: steve@steve-ThinkPad-T420:~/prog/debos/debos_sniffer$ tree . ├── build.sh ├── CMakeLists.txt ├── Makefile ├── platform │   ├── CMakeLists.txt │   ├── samd20_baremetal │   └── samd20_debos │   ├── atsamd20j18.ld │   ├── CMakeLists.txt │   └── halStartup.c ├── README.md ├── src │   ├── app.c │   ├── my_memcpy.c │   ├── my_memcpy.h │   └── System.h └── tool ├── sniffer_parser_lwmesh.py └── sniffer_reader.py ``` The Top Level CMakeLists.txt cmake_minimum_required(VERSION 3.5)</summary></entry><entry><title type="html">Jenkins Job Migration (ie. Jenkins uses too much RAM)</title><link href="/2018/01/21/jenkins-uses-too-much-ram.html" rel="alternate" type="text/html" title="Jenkins Job Migration (ie. Jenkins uses too much RAM)" /><published>2018-01-21T00:00:00-08:00</published><updated>2018-01-21T00:00:00-08:00</updated><id>/2018/01/21/jenkins-uses-too-much-ram</id><content type="html" xml:base="/2018/01/21/jenkins-uses-too-much-ram.html">&lt;p&gt;Dang, I finally figured out why my Docker containers were failing shortly after starting.&lt;br /&gt;
 That Error Code 137, Out of Memory.&lt;br /&gt;
 Really it’s my stupid Redmine container that’s taking up 30% of my 1GB RAM.  But I can’t do anything about that.&lt;br /&gt;
 Jenkins I can consolidate the 3 instances into 1.&lt;br /&gt;

@@ -131,7 +131,7 @@ add_subdirectory(samd20_debos)
 +#    "hal/*.h"
 +#)
 +
-+set(SOURCES   ${CMAKE_SOURCE_DIR}/src/app.c
++set(SOURCES   ${CMAKE_SOURCE_DIR}/src/app.c  
 +							${CMAKE_SOURCE_DIR}/src/my_memcpy.c 
 +	 ) 
 +
@@ -139,6 +139,18 @@ add_subdirectory(samd20_debos)
 </div>
 <p>Here you see I replaced file(GLOB SOURCES …) with set(SOURCES …),
 as recommended by people.  Notice I’m specifying more exactly where the source is; the previous file(GLOB SOURCES …) worked when CMakeLists.txt was inside the directory with the source.</p>
+
+<h1 id="ok-now-that-i-have-the-original-target-built-and-working-i-can-add-another-target">OK now that I have the original target built and working, I can add another target.</h1>
+<p>This is the bare metal target.  It’s basically the same thing except:<br />
+App vector table has to be correct; these are Reset Vector and ISRs.  This app doesn’t use any ISRs so it can’t go too horribly wrong.</p>
+
+<p>To check that the bare metal app is built correct, I will do the following:</p>
+<ul>
+  <li>Check that Reset Vector points to startup code.</li>
+  <li>Check that startup code points to and calls main().</li>
+  <li>Check that main() points to and calls app().</li>
+  <li>Check that the calls to Checkpoint() are stubbed out.</li>
+</ul>
 
   </div>
 

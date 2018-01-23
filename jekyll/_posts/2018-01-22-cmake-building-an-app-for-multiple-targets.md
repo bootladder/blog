@@ -70,10 +70,20 @@ Here's another interesting one.  Before when CMAKE_BINARY_DIR was set to ${CMAKE
 +#    "hal/*.h"
 +#)
 +
-+set(SOURCES   ${CMAKE_SOURCE_DIR}/src/app.c
++set(SOURCES   ${CMAKE_SOURCE_DIR}/src/app.c  
 +							${CMAKE_SOURCE_DIR}/src/my_memcpy.c 
 +	 ) 
 +
 ```
 Here you see I replaced file(GLOB SOURCES ...) with set(SOURCES ...),
 as recommended by people.  Notice I'm specifying more exactly where the source is; the previous file(GLOB SOURCES ...) worked when CMakeLists.txt was inside the directory with the source.
+  
+# OK now that I have the original target built and working, I can add another target.  
+This is the bare metal target.  It's basically the same thing except:  
+App vector table has to be correct; these are Reset Vector and ISRs.  This app doesn't use any ISRs so it can't go too horribly wrong.  
+  
+To check that the bare metal app is built correct, I will do the following:  
+- Check that Reset Vector points to startup code.  
+- Check that startup code points to and calls main().  
+- Check that main() points to and calls app().  
+- Check that the calls to Checkpoint() are stubbed out.
