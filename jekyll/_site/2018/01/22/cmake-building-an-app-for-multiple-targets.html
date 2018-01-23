@@ -124,22 +124,21 @@ add_subdirectory(samd20_debos)
 </div>
 <p>Here’s another interesting one.  Before when CMAKE_BINARY_DIR was set to ${CMAKE_SOURCE_DIR}/bin, the custom command worked by specifying bin/debos_sniffer.  This is bin/ at the top level, where .git/ is.  But now, the compiled binary shows up in build/platform/samd20_debos/ , and somehow it is found by just specifying debos_sniffer.</p>
 
-<p>``` +#file(GLOB SOURCES
-+#    “<em>.h”
-+#    “</em>.c”
-+#    “hal/<em>.c”
-+#    “hal/</em>.h”
+<div class="highlighter-rouge"><pre class="highlight"><code>+#file(GLOB SOURCES
++#    "*.h"
++#    "*.c"
++#    "hal/*.c"
++#    "hal/*.h"
 +#)
 +
-+set(SOURCES   ${CMAKE_SOURCE_DIR}/src/app.c</p>
-<ul>
-  <li>${CMAKE_SOURCE_DIR}/src/my_memcpy.c</li>
-  <li>) 
++set(SOURCES   ${CMAKE_SOURCE_DIR}/src/app.c
++							${CMAKE_SOURCE_DIR}/src/my_memcpy.c 
++	 ) 
 +
-```
-Here you see I replaced file(GLOB SOURCES …) with set(SOURCES …),
-as recommended by people.  Notice I’m specifying more exactly where the source is; the previous file(GLOB SOURCES …) worked when CMakeLists.txt was inside the directory with the source.</li>
-</ul>
+</code></pre>
+</div>
+<p>Here you see I replaced file(GLOB SOURCES …) with set(SOURCES …),
+as recommended by people.  Notice I’m specifying more exactly where the source is; the previous file(GLOB SOURCES …) worked when CMakeLists.txt was inside the directory with the source.</p>
 
   </div>
 

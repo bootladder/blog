@@ -62,7 +62,8 @@ I commented those out, I need to figure out whether I'm supposed to set them mys
 ```
 Here's another interesting one.  Before when CMAKE_BINARY_DIR was set to ${CMAKE_SOURCE_DIR}/bin, the custom command worked by specifying bin/debos_sniffer.  This is bin/ at the top level, where .git/ is.  But now, the compiled binary shows up in build/platform/samd20_debos/ , and somehow it is found by just specifying debos_sniffer.
 
-``` +#file(GLOB SOURCES
+``` 
++#file(GLOB SOURCES
 +#    "*.h"
 +#    "*.c"
 +#    "hal/*.c"
