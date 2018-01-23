@@ -181,6 +181,15 @@ Well, since the 2 projects use exactly the same library, let’s try to move the
 <p>This is obviously the re-use of the executable’s name, debos_sniffer.  That has to change.<br />
 Woah cool looks like they both built!</p>
 
+<h1 id="lets-open-up-hopper-and-see-what-it-looks-like">Let’s open up Hopper and see what it looks like</h1>
+
+<p>For an ARM Cortex M0+ the Reset Vector is located at address 0x4.<br />
+I got a 0xd9220000, and changing from bad-endian to good-endian, I get the address 0x22d9.  What is that…? <code class="highlighter-rouge">HAL_IrqHandlerReset</code> Yes!  That’s my startup code.  Now, does it call main?  Hopper says it does.  Now, does main call app() in an infinite loop?  Yes!</p>
+
+<p>OK now for the tricky part.  The Bootloaded version used a function called Checkpoint() which would take a string and some flags, and use the Bootloader’s UART interface to output the bytes, turn on LED, halt the CPU or whatever.<br />
+The app itself doesn’t configure any serial out.  Also, the Checkpoint() function doesn’t exist so calling it would be bad.<br />
+So, this is not going to be very eventful, since a sniffer literally just outputs serial and nothing else.</p>
+
   </div>
 
   
