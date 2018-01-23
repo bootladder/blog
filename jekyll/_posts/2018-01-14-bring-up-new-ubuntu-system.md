@@ -143,3 +143,7 @@ Then run it with this
 `./synergys -f -c /etc/synergy.conf`  
 Run the client like this  
 ` synergyc -f 10.0.1.23`
+
+# Hopper
+Just download the .deb, Ubuntu software manager fails miserably as usual, but doing this apparently makes it work  
+` sudo dpkg -i Hopper-v4-4.3.12-Linux.deb `
