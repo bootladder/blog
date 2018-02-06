@@ -190,6 +190,13 @@ I got a 0xd9220000, and changing from bad-endian to good-endian, I get the addre
 The app itself doesn’t configure any serial out.  Also, the Checkpoint() function doesn’t exist so calling it would be bad.<br />
 So, this is not going to be very eventful, since a sniffer literally just outputs serial and nothing else.</p>
 
+<h1 id="well-just-for-fun-lets-add-a-led-toggle-at-the-app-level">Well just for fun, let’s add a LED toggle at the App level.</h1>
+<p>To do this, I will bring in some app code that turns on a LED of a different color.  There are 3 LEDs with different colors on the board that I have.  The Bootloader has control of 1 of them.  So let’s have the app turn on the other one, that tells us the app is in control.</p>
+
+<p>OK that compiled, but now I’m back to my Jenkins issue.  When I push the repo, Jenkins will build it, which will create 2 sets of compiler outputs, one for bootloaded one for bare metal.</p>
+
+<p>I want to be able to grab either binary without typing out a long ass pathname.</p>
+
   </div>
 
   

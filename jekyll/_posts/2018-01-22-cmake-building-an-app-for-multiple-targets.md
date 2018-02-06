@@ -124,4 +124,11 @@ I got a 0xd9220000, and changing from bad-endian to good-endian, I get the addre
   
 OK now for the tricky part.  The Bootloaded version used a function called Checkpoint() which would take a string and some flags, and use the Bootloader's UART interface to output the bytes, turn on LED, halt the CPU or whatever.  
 The app itself doesn't configure any serial out.  Also, the Checkpoint() function doesn't exist so calling it would be bad.  
-So, this is not going to be very eventful, since a sniffer literally just outputs serial and nothing else.
+So, this is not going to be very eventful, since a sniffer literally just outputs serial and nothing else.  
+  
+# Well just for fun, let's add a LED toggle at the App level.  
+To do this, I will bring in some app code that turns on a LED of a different color.  There are 3 LEDs with different colors on the board that I have.  The Bootloader has control of 1 of them.  So let's have the app turn on the other one, that tells us the app is in control.
+  
+OK that compiled, but now I'm back to my Jenkins issue.  When I push the repo, Jenkins will build it, which will create 2 sets of compiler outputs, one for bootloaded one for bare metal.
+  
+I want to be able to grab either binary without typing out a long ass pathname.
