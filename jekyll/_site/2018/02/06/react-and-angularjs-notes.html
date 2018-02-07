@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>React and AngularJS Notes</title>
-  <meta name="description" content="AngularJS First you have this: &amp;lt;html ng-app=&quot;todoApp&quot;&amp;gt; And eventually this: &amp;lt;div ng-controller=&quot;TodoListController as todoList&quot;&amp;gt; Then in the .js ...">
+  <meta name="description" content="React A component is a self-contained module that renders some output ** For example, a button. A component might include one or more other components in its...">
 
   <link rel="stylesheet" href="/assets/main.css">
   <link rel="canonical" href="/2018/02/06/react-and-angularjs-notes.html">
@@ -64,7 +64,43 @@
   </header>
 
   <div class="post-content" itemprop="articleBody">
-    <h1 id="angularjs">AngularJS</h1>
+    <h1 id="react">React</h1>
+<ul>
+  <li>A component is a self-contained module that renders some output
+** For example, a button.  A component might include one or more other components in its output.  eg. a Form.</li>
+  <li>Wow, this caching thing on index.html is pretty terrible for a new user.</li>
+  <li>All components have a <code class="highlighter-rouge">render</code> function that SPECIFIES what the HTML output of the COMPONENT is.</li>
+  <li>JSX: JS Extension, allows writing JS that LOOKS LIKE HTML
+    <div class="highlighter-rouge"><pre class="highlight"><code>class HelloWorld extends React.Component {
+  render() {  //The component has a RENDER Function
+ return (  //The render function RETURNS HTML
+   &lt;h1 className='large'&gt;Hello World&lt;/h1&gt;  //THIS IS NOT ACTUALLY HTML
+ );
+  }
+}
+</code></pre>
+    </div>
+  </li>
+  <li>h1 className GETS CONVERTED TO class.  This is because CLASS IS A RESERVED JS KEYWORD.</li>
+  <li>JSX is very convenient notation for writing nested HTML snippets</li>
+  <li>In order to load React from <script></script> , ie. client side, the following is needeed:</li>
+  <li>react.min.js , react-dom.min.js, babel-core@x.x.x/browser.min.js</li>
+  <li>Babel is a library for transpiling ES6 to ES5.</li>
+  <li>Inside the body we have the following:
+    <div class="highlighter-rouge"><pre class="highlight"><code>&lt;script type="text/babel"&gt;
+var app = &lt;h1&gt;Hello world&lt;/h1&gt;
+var mountComponent = document.querySelector('#app');
+ReactDOM.render(app, mountComponent);
+&lt;/script&gt;
+</code></pre>
+    </div>
+  </li>
+  <li>This tells Bable to convert the above ES6 into ES5</li>
+  <li>render() :  <code class="highlighter-rouge">ReactDOM.render(&lt;what&gt;, &lt;where&gt;)</code></li>
+  <li>Interesting, in this case the WHERE is #app.  In other tutorials it was document root.</li>
+</ul>
+
+<h1 id="angularjs">AngularJS</h1>
 <p>First you have this:  <code class="highlighter-rouge"><span class="nt">&lt;html</span> <span class="na">ng-app=</span><span class="s">"todoApp"</span><span class="nt">&gt;</span></code><br />
 And eventually this:  <code class="highlighter-rouge">&lt;div ng-controller="TodoListController as todoList"&gt;</code>
 Then in the .js you have:</p>

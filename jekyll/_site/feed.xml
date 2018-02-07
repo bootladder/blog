@@ -1,5 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-02-06T13:30:58-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">React and AngularJS Notes</title><link href="/2018/02/06/react-and-angularjs-notes.html" rel="alternate" type="text/html" title="React and AngularJS Notes" /><published>2018-02-06T00:00:00-08:00</published><updated>2018-02-06T00:00:00-08:00</updated><id>/2018/02/06/react-and-angularjs-notes</id><content type="html" xml:base="/2018/02/06/react-and-angularjs-notes.html">&lt;h1 id=&quot;angularjs&quot;&gt;AngularJS&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-02-06T20:19:20-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">React and AngularJS Notes</title><link href="/2018/02/06/react-and-angularjs-notes.html" rel="alternate" type="text/html" title="React and AngularJS Notes" /><published>2018-02-06T00:00:00-08:00</published><updated>2018-02-06T00:00:00-08:00</updated><id>/2018/02/06/react-and-angularjs-notes</id><content type="html" xml:base="/2018/02/06/react-and-angularjs-notes.html">&lt;h1 id=&quot;react&quot;&gt;React&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;A component is a self-contained module that renders some output
+** For example, a button.  A component might include one or more other components in its output.  eg. a Form.&lt;/li&gt;
+  &lt;li&gt;Wow, this caching thing on index.html is pretty terrible for a new user.&lt;/li&gt;
+  &lt;li&gt;All components have a &lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt; function that SPECIFIES what the HTML output of the COMPONENT is.&lt;/li&gt;
+  &lt;li&gt;JSX: JS Extension, allows writing JS that LOOKS LIKE HTML
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class HelloWorld extends React.Component {
+  render() {  //The component has a RENDER Function
+ return (  //The render function RETURNS HTML
+   &amp;lt;h1 className='large'&amp;gt;Hello World&amp;lt;/h1&amp;gt;  //THIS IS NOT ACTUALLY HTML
+ );
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;h1 className GETS CONVERTED TO class.  This is because CLASS IS A RESERVED JS KEYWORD.&lt;/li&gt;
+  &lt;li&gt;JSX is very convenient notation for writing nested HTML snippets&lt;/li&gt;
+  &lt;li&gt;In order to load React from &lt;script&gt;&lt;/script&gt; , ie. client side, the following is needeed:&lt;/li&gt;
+  &lt;li&gt;react.min.js , react-dom.min.js, babel-core@x.x.x/browser.min.js&lt;/li&gt;
+  &lt;li&gt;Babel is a library for transpiling ES6 to ES5.&lt;/li&gt;
+  &lt;li&gt;Inside the body we have the following:
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;script type=&quot;text/babel&quot;&amp;gt;
+var app = &amp;lt;h1&amp;gt;Hello world&amp;lt;/h1&amp;gt;
+var mountComponent = document.querySelector('#app');
+ReactDOM.render(app, mountComponent);
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;This tells Bable to convert the above ES6 into ES5&lt;/li&gt;
+  &lt;li&gt;render() :  &lt;code class=&quot;highlighter-rouge&quot;&gt;ReactDOM.render(&amp;lt;what&amp;gt;, &amp;lt;where&amp;gt;)&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Interesting, in this case the WHERE is #app.  In other tutorials it was document root.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;angularjs&quot;&gt;AngularJS&lt;/h1&gt;
 &lt;p&gt;First you have this:  &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-app=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;todoApp&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;br /&gt;
 And eventually this:  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;div ng-controller=&quot;TodoListController as todoList&quot;&amp;gt;&lt;/code&gt;
 Then in the .js you have:&lt;/p&gt;
@@ -17,7 +53,7 @@ In order to use $http requests, the controller is passed $http.  As in this:&lt;
 &lt;p&gt;$http will give &lt;code class=&quot;highlighter-rouge&quot;&gt;No 'Access-Control-Allow-Origin' header is present on the requested resource.'&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Meh, I don’t like it.&lt;/em&gt;&lt;br /&gt;
-&lt;em&gt;As soon as I found out how much has changed over the versions I immediately quit.  I’m not going to bother learning the history when I already think it sucks&lt;/em&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">AngularJS First you have this: &amp;lt;html ng-app=&quot;todoApp&quot;&amp;gt; And eventually this: &amp;lt;div ng-controller=&quot;TodoListController as todoList&quot;&amp;gt; Then in the .js you have: angular.module('todoApp', []) .controller('TodoListController', function() { The names have to match. &amp;lt;html ng-app=&quot;todoApp&quot;&amp;gt; Does not have to be at the top, or in a html tag. In order to use $http requests, the controller is passed $http. As in this: angular.module('myapp', []) .controller('myController', function($http) { $http will give No 'Access-Control-Allow-Origin' header is present on the requested resource.'</summary></entry><entry><title type="html">CMake: Building an App for Multiple Targets</title><link href="/2018/01/22/cmake-building-an-app-for-multiple-targets.html" rel="alternate" type="text/html" title="CMake: Building an App for Multiple Targets" /><published>2018-01-22T00:00:00-08:00</published><updated>2018-01-22T00:00:00-08:00</updated><id>/2018/01/22/cmake-building-an-app-for-multiple-targets</id><content type="html" xml:base="/2018/01/22/cmake-building-an-app-for-multiple-targets.html">&lt;p&gt;I have an application, it’s a sniffer.&lt;br /&gt;
+&lt;em&gt;As soon as I found out how much has changed over the versions I immediately quit.  I’m not going to bother learning the history when I already think it sucks&lt;/em&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">React A component is a self-contained module that renders some output ** For example, a button. A component might include one or more other components in its output. eg. a Form. Wow, this caching thing on index.html is pretty terrible for a new user. All components have a render function that SPECIFIES what the HTML output of the COMPONENT is. JSX: JS Extension, allows writing JS that LOOKS LIKE HTML class HelloWorld extends React.Component { render() { //The component has a RENDER Function return ( //The render function RETURNS HTML &amp;lt;h1 className='large'&amp;gt;Hello World&amp;lt;/h1&amp;gt; //THIS IS NOT ACTUALLY HTML ); } } h1 className GETS CONVERTED TO class. This is because CLASS IS A RESERVED JS KEYWORD. JSX is very convenient notation for writing nested HTML snippets In order to load React from , ie. client side, the following is needeed: react.min.js , react-dom.min.js, babel-core@x.x.x/browser.min.js Babel is a library for transpiling ES6 to ES5. Inside the body we have the following: &amp;lt;script type=&quot;text/babel&quot;&amp;gt; var app = &amp;lt;h1&amp;gt;Hello world&amp;lt;/h1&amp;gt; var mountComponent = document.querySelector('#app'); ReactDOM.render(app, mountComponent); &amp;lt;/script&amp;gt; This tells Bable to convert the above ES6 into ES5 render() : ReactDOM.render(&amp;lt;what&amp;gt;, &amp;lt;where&amp;gt;) Interesting, in this case the WHERE is #app. In other tutorials it was document root.</summary></entry><entry><title type="html">CMake: Building an App for Multiple Targets</title><link href="/2018/01/22/cmake-building-an-app-for-multiple-targets.html" rel="alternate" type="text/html" title="CMake: Building an App for Multiple Targets" /><published>2018-01-22T00:00:00-08:00</published><updated>2018-01-22T00:00:00-08:00</updated><id>/2018/01/22/cmake-building-an-app-for-multiple-targets</id><content type="html" xml:base="/2018/01/22/cmake-building-an-app-for-multiple-targets.html">&lt;p&gt;I have an application, it’s a sniffer.&lt;br /&gt;
 I want it to run on bare metal, on an OS, and on multiple CPU targets.&lt;br /&gt;
 Basically anything with a SPI port and the radio should be able to run this.&lt;br /&gt;
 OK, looks like it worked.  Here’s what I learned:&lt;/p&gt;
