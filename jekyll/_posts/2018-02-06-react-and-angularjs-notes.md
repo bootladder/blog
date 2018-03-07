@@ -33,9 +33,50 @@ ReactDOM.render(app, mountComponent);
 * This tells Bable to convert the above ES6 into ES5
 * render() :  `ReactDOM.render(<what>, <where>)`
 * Interesting, in this case the WHERE is #app.  In other tutorials it was document root.
+* In the above snippet, app is a HTML snippet, directly passed into render().
+* Another way to do it is this:  `ReactDOM.render(<App />, mount);` Where App is a class like class HelloWorld
+* Ah, this makes sense why I struggled with the meta tags.  They go inside head.  In
+   these examples, the rendering goes to document root or a #hash section.
+* As a test, I should be able to call render() twice in a row and get 2 components to render.
+** Cool.  After doing that I saw that, if render() is called twice in a row on the same DOM mount (what's it called?)
+  This is intuitive, the DOM mount gets overwritten.  Using 2 div tags with different classes, render() can be called on each of them.
+* A "Wrapper" component combines multiple components.  The Wrapper will have divs with classnames.  
+  The Wrapper will nest other divs inside those divs, with classnames.  Those child components 
+  can be used in the Parent by tag notation.
+```
+class App extends React.Component {
+  render() {
+    return (
+      <div className="notificationsFrame">
+        <div className="panel">
+          <Header />
+          <Content />
+        </div>
+      </div>
+    )
+  }
+}
+```
+# To add data ie. props to a component
+* Write something like this:  `<Header title="My Header">` It is picked up by the Component liek this:  
+```
+<span className="title">
+  {this.props.title}
+</span>
+```
+# https://reactjs.org/tutorial/tutorial.html was informative
+# https://reactjs.org/docs/state-and-lifecycle.html
+* I need to learn how setting state works.
+* Do I need a constructor to have this.state?
+* Is this.setState() the only way to set state? (except initializing state in constructor?)
+* This is what I'm doing:
+** In render() I am using {this.state.mystatevar}
+** In componentDidMount() I am using this.setState{mystatevar:myval};
+** But the console says error: cannot read property mystatevar of null.
+** It appears the answer is Yes, you have to declare the different state variables in the constructor
 
-
-
+# Uggh, I don't know how to separate the JS into different .js files.
+# All I want is a index.html and a index.js
 
 
 

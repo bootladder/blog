@@ -98,7 +98,53 @@ ReactDOM.render(app, mountComponent);
   <li>This tells Bable to convert the above ES6 into ES5</li>
   <li>render() :  <code class="highlighter-rouge">ReactDOM.render(&lt;what&gt;, &lt;where&gt;)</code></li>
   <li>Interesting, in this case the WHERE is #app.  In other tutorials it was document root.</li>
+  <li>In the above snippet, app is a HTML snippet, directly passed into render().</li>
+  <li>Another way to do it is this:  <code class="highlighter-rouge">ReactDOM.render(&lt;App /&gt;, mount);</code> Where App is a class like class HelloWorld</li>
+  <li>Ah, this makes sense why I struggled with the meta tags.  They go inside head.  In
+ these examples, the rendering goes to document root or a #hash section.</li>
+  <li>As a test, I should be able to call render() twice in a row and get 2 components to render.
+** Cool.  After doing that I saw that, if render() is called twice in a row on the same DOM mount (what’s it called?)
+This is intuitive, the DOM mount gets overwritten.  Using 2 div tags with different classes, render() can be called on each of them.</li>
+  <li>A “Wrapper” component combines multiple components.  The Wrapper will have divs with classnames.<br />
+The Wrapper will nest other divs inside those divs, with classnames.  Those child components 
+can be used in the Parent by tag notation.
+    <div class="highlighter-rouge"><pre class="highlight"><code>class App extends React.Component {
+render() {
+  return (
+    &lt;div className="notificationsFrame"&gt;
+      &lt;div className="panel"&gt;
+        &lt;Header /&gt;
+        &lt;Content /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  )
+}
+}
+</code></pre>
+    </div>
+    <h1 id="to-add-data-ie-props-to-a-component">To add data ie. props to a component</h1>
+  </li>
+  <li>Write something like this:  <code class="highlighter-rouge">&lt;Header title="My Header"&gt;</code> It is picked up by the Component liek this:
+    <div class="highlighter-rouge"><pre class="highlight"><code>&lt;span className="title"&gt;
+{this.props.title}
+&lt;/span&gt;
+</code></pre>
+    </div>
+    <h1 id="httpsreactjsorgtutorialtutorialhtml-was-informative">https://reactjs.org/tutorial/tutorial.html was informative</h1>
+    <h1 id="httpsreactjsorgdocsstate-and-lifecyclehtml">https://reactjs.org/docs/state-and-lifecycle.html</h1>
+  </li>
+  <li>I need to learn how setting state works.</li>
+  <li>Do I need a constructor to have this.state?</li>
+  <li>Is this.setState() the only way to set state? (except initializing state in constructor?)</li>
+  <li>This is what I’m doing:
+** In render() I am using {this.state.mystatevar}
+** In componentDidMount() I am using this.setState{mystatevar:myval};
+** But the console says error: cannot read property mystatevar of null.
+** It appears the answer is Yes, you have to declare the different state variables in the constructor</li>
 </ul>
+
+<h1 id="uggh-i-dont-know-how-to-separate-the-js-into-different-js-files">Uggh, I don’t know how to separate the JS into different .js files.</h1>
+<h1 id="all-i-want-is-a-indexhtml-and-a-indexjs">All I want is a index.html and a index.js</h1>
 
 <h1 id="angularjs">AngularJS</h1>
 <p>First you have this:  <code class="highlighter-rouge"><span class="nt">&lt;html</span> <span class="na">ng-app=</span><span class="s">"todoApp"</span><span class="nt">&gt;</span></code><br />

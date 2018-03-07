@@ -1,5 +1,103 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-02-06T20:19:20-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">React and AngularJS Notes</title><link href="/2018/02/06/react-and-angularjs-notes.html" rel="alternate" type="text/html" title="React and AngularJS Notes" /><published>2018-02-06T00:00:00-08:00</published><updated>2018-02-06T00:00:00-08:00</updated><id>/2018/02/06/react-and-angularjs-notes</id><content type="html" xml:base="/2018/02/06/react-and-angularjs-notes.html">&lt;h1 id=&quot;react&quot;&gt;React&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-07T15:30:15-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Javascript Notes: The Relearning</title><link href="/2018/03/07/javascript-notes-the-relearning.html" rel="alternate" type="text/html" title="Javascript Notes: The Relearning" /><published>2018-03-07T00:00:00-08:00</published><updated>2018-03-07T00:00:00-08:00</updated><id>/2018/03/07/javascript-notes-the-relearning</id><content type="html" xml:base="/2018/03/07/javascript-notes-the-relearning.html">&lt;p&gt;Learning to use this demo: https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/audio-recording.html&lt;br /&gt;
+Starting from the top… What is this?  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, minimum-scale=1.0&quot;&amp;gt;&lt;/code&gt;  ah of course, it’s for mobile devices.  https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary&lt;/p&gt;
+
+&lt;p&gt;What is this?  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;div&amp;gt;&amp;lt;audio controls autoplay&amp;gt;&amp;lt;/audio&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;  It’s the audio widget, which I did not know was an HTML tag.  &lt;code class=&quot;highlighter-rouge&quot;&gt;controls&lt;/code&gt; shows the play, seek, volume controls, &lt;code class=&quot;highlighter-rouge&quot;&gt;autoplay&lt;/code&gt; plays without pressing play.&lt;/p&gt;
+
+&lt;p&gt;What is this?  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script src=&quot;https://webrtc.github.io/adapter/adapter-latest.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;   Oh… we need to use this adapter for cross browser compatibility, insulating us from name changes.&lt;/p&gt;
+
+&lt;p&gt;Why does the demo code declare vars all over the place… Let’s move them to the top.  Demo still works.&lt;/p&gt;
+
+&lt;p&gt;So.. the control flow here is convoluted, impossible to read top to bottom.  Let’s start from pressing the “Start Recording” button.  Using the inspector I see the button has a click event.  I see where this is set, and I’ll move it to the top.  Ah finally some sense; all the click handlers are set in a block.  So I’ll just move all the click handlers to the top.&lt;/p&gt;
+
+&lt;p&gt;Alright, the btnStartRecording.onclick.  This smells bad, I’m pretty sure?&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;btnStartRecording.onclick = function() {
+    this.disabled = true;
+    this.style.border = '';
+    this.style.fontSize = '';
+
+    if (!microphone) {
+        captureMicrophone(function(mic) {
+            microphone = mic;
+
+// Different behavior for Safari?
+            if(isSafari) {
+                replaceAudio();
+
+                audio.muted = true;
+                setSrcObject(microphone, audio);
+                audio.play();
+
+                btnStartRecording.disabled = false;
+                btnStartRecording.style.border = '1px solid red';
+                btnStartRecording.style.fontSize = '150%';
+
+                alert('Please click startRecording button again. First time we tried to access your microphone. Now we will record it.');
+                return;
+//Return from calling function inside callback?  What?
+            }
+
+//Calling this function again, using a helper named click which,
+//instead of calling the function, sends another click event?
+            click(btnStartRecording);
+        });
+        return;
+    }
+console.log(&quot;\ndid we get here?\n&quot;);
+    replaceAudio();
+
+    audio.muted = true;
+    setSrcObject(microphone, audio);
+    audio.play();
+
+    var options = {
+        type: 'audio',
+        numberOfAudioChannels: isEdge ? 1 : 2,
+        checkForInactiveTracks: true,
+        bufferSize: 16384
+    };
+
+    if(navigator.platform &amp;amp;&amp;amp; navigator.platform.toString().toLowerCase().indexOf('win') === -1) {
+        options.sampleRate = 48000; // or 44100 or remove this line for default
+    }
+
+    if(recorder) {
+        recorder.destroy();
+        recorder = null;
+    }
+
+    recorder = RecordRTC(microphone, options);
+
+    recorder.startRecording();
+
+    btnStopRecording.disabled = false;
+    btnDownloadRecording.disabled = true;
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;</content><author><name></name></author><summary type="html">Learning to use this demo: https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/audio-recording.html Starting from the top… What is this? &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, minimum-scale=1.0&quot;&amp;gt; ah of course, it’s for mobile devices. https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary What is this? &amp;lt;div&amp;gt;&amp;lt;audio controls autoplay&amp;gt;&amp;lt;/audio&amp;gt;&amp;lt;/div&amp;gt; It’s the audio widget, which I did not know was an HTML tag. controls shows the play, seek, volume controls, autoplay plays without pressing play. What is this? &amp;lt;script src=&quot;https://webrtc.github.io/adapter/adapter-latest.js&quot;&amp;gt;&amp;lt;/script&amp;gt; Oh… we need to use this adapter for cross browser compatibility, insulating us from name changes. Why does the demo code declare vars all over the place… Let’s move them to the top. Demo still works. So.. the control flow here is convoluted, impossible to read top to bottom. Let’s start from pressing the “Start Recording” button. Using the inspector I see the button has a click event. I see where this is set, and I’ll move it to the top. Ah finally some sense; all the click handlers are set in a block. So I’ll just move all the click handlers to the top. Alright, the btnStartRecording.onclick. This smells bad, I’m pretty sure? ``` btnStartRecording.onclick = function() { this.disabled = true; this.style.border = ‘’; this.style.fontSize = ‘’;</summary></entry><entry><title type="html">Remove Secret Data from Old git Commits not yet pushed</title><link href="/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed.html" rel="alternate" type="text/html" title="Remove Secret Data from Old git Commits not yet pushed" /><published>2018-02-09T00:00:00-08:00</published><updated>2018-02-09T00:00:00-08:00</updated><id>/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed</id><content type="html" xml:base="/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed.html">&lt;p&gt;I didn’t push to the remote yet. The very initial commit of my repo has an API token in it.&lt;br /&gt;
+My current verison still has that API token in it.&lt;br /&gt;
+I want to replace the token at the initial commit, then I want to rebase all the other commits after that.&lt;br /&gt;
+To do this, I’ll make a dummy branch at master so I don’t lose that branch.&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;git branch dummybranch&lt;/code&gt;&lt;br /&gt;
+Then I’ll &lt;code class=&quot;highlighter-rouge&quot;&gt;git checkout init_commit_sha1&lt;/code&gt;&lt;br /&gt;
+Then make a branch to name it, &lt;code class=&quot;highlighter-rouge&quot;&gt;git branch initcommit&lt;/code&gt;.&lt;br /&gt;
+Then I will modify code here, removing the secret data.&lt;br /&gt;
+Oops!  I’m stupid.  I need to remove the initial commit from the history.&lt;/p&gt;
+
+&lt;p&gt;So, now my plan is to create a new repository, starting with the working copy of the initial commit, but with no commits in this new repository yet.&lt;br /&gt;
+Then I will add my bad repo as a remote, fetch all the commits, and 
+hopefully see a way to rebase the commits.&lt;/p&gt;
+
+&lt;p&gt;Crap !  Turns out I have commits in the middle of the history that
+has another occurrence of the secret data, then a commit where gofmt
+indented the line with the secret data.&lt;br /&gt;
+You know what, I’ll go with the Internet’s advice.  I’ll squash all the commits
+into 1 commit, totally wasting all my history but whatever.&lt;br /&gt;
+What I’ll do is add a new commit after master that removes all occurrences
+of the secret data.  Then I’ll squash everything, so the secret data is not in that squashed commit.&lt;/p&gt;
+
+&lt;p&gt;Crap !  The squashed commit contains a deletion of an occurrence of the secret data!&lt;br /&gt;
+Well dang, I don’t know what to do.  I’ll just give up, start a new repo history from where I’m at now, after removing all occurrences of the secret data.&lt;/p&gt;</content><author><name></name></author><summary type="html">I didn’t push to the remote yet. The very initial commit of my repo has an API token in it. My current verison still has that API token in it. I want to replace the token at the initial commit, then I want to rebase all the other commits after that. To do this, I’ll make a dummy branch at master so I don’t lose that branch. git branch dummybranch Then I’ll git checkout init_commit_sha1 Then make a branch to name it, git branch initcommit. Then I will modify code here, removing the secret data. Oops! I’m stupid. I need to remove the initial commit from the history. So, now my plan is to create a new repository, starting with the working copy of the initial commit, but with no commits in this new repository yet. Then I will add my bad repo as a remote, fetch all the commits, and hopefully see a way to rebase the commits. Crap ! Turns out I have commits in the middle of the history that has another occurrence of the secret data, then a commit where gofmt indented the line with the secret data. You know what, I’ll go with the Internet’s advice. I’ll squash all the commits into 1 commit, totally wasting all my history but whatever. What I’ll do is add a new commit after master that removes all occurrences of the secret data. Then I’ll squash everything, so the secret data is not in that squashed commit. Crap ! The squashed commit contains a deletion of an occurrence of the secret data! Well dang, I don’t know what to do. I’ll just give up, start a new repo history from where I’m at now, after removing all occurrences of the secret data.</summary></entry><entry><title type="html">React and AngularJS Notes</title><link href="/2018/02/06/react-and-angularjs-notes.html" rel="alternate" type="text/html" title="React and AngularJS Notes" /><published>2018-02-06T00:00:00-08:00</published><updated>2018-02-06T00:00:00-08:00</updated><id>/2018/02/06/react-and-angularjs-notes</id><content type="html" xml:base="/2018/02/06/react-and-angularjs-notes.html">&lt;h1 id=&quot;react&quot;&gt;React&lt;/h1&gt;
 &lt;ul&gt;
   &lt;li&gt;A component is a self-contained module that renders some output
 ** For example, a button.  A component might include one or more other components in its output.  eg. a Form.&lt;/li&gt;
@@ -33,7 +131,53 @@ ReactDOM.render(app, mountComponent);
   &lt;li&gt;This tells Bable to convert the above ES6 into ES5&lt;/li&gt;
   &lt;li&gt;render() :  &lt;code class=&quot;highlighter-rouge&quot;&gt;ReactDOM.render(&amp;lt;what&amp;gt;, &amp;lt;where&amp;gt;)&lt;/code&gt;&lt;/li&gt;
   &lt;li&gt;Interesting, in this case the WHERE is #app.  In other tutorials it was document root.&lt;/li&gt;
+  &lt;li&gt;In the above snippet, app is a HTML snippet, directly passed into render().&lt;/li&gt;
+  &lt;li&gt;Another way to do it is this:  &lt;code class=&quot;highlighter-rouge&quot;&gt;ReactDOM.render(&amp;lt;App /&amp;gt;, mount);&lt;/code&gt; Where App is a class like class HelloWorld&lt;/li&gt;
+  &lt;li&gt;Ah, this makes sense why I struggled with the meta tags.  They go inside head.  In
+ these examples, the rendering goes to document root or a #hash section.&lt;/li&gt;
+  &lt;li&gt;As a test, I should be able to call render() twice in a row and get 2 components to render.
+** Cool.  After doing that I saw that, if render() is called twice in a row on the same DOM mount (what’s it called?)
+This is intuitive, the DOM mount gets overwritten.  Using 2 div tags with different classes, render() can be called on each of them.&lt;/li&gt;
+  &lt;li&gt;A “Wrapper” component combines multiple components.  The Wrapper will have divs with classnames.&lt;br /&gt;
+The Wrapper will nest other divs inside those divs, with classnames.  Those child components 
+can be used in the Parent by tag notation.
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class App extends React.Component {
+render() {
+  return (
+    &amp;lt;div className=&quot;notificationsFrame&quot;&amp;gt;
+      &amp;lt;div className=&quot;panel&quot;&amp;gt;
+        &amp;lt;Header /&amp;gt;
+        &amp;lt;Content /&amp;gt;
+      &amp;lt;/div&amp;gt;
+    &amp;lt;/div&amp;gt;
+  )
+}
+}
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+    &lt;h1 id=&quot;to-add-data-ie-props-to-a-component&quot;&gt;To add data ie. props to a component&lt;/h1&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Write something like this:  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;Header title=&quot;My Header&quot;&amp;gt;&lt;/code&gt; It is picked up by the Component liek this:
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;span className=&quot;title&quot;&amp;gt;
+{this.props.title}
+&amp;lt;/span&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+    &lt;h1 id=&quot;httpsreactjsorgtutorialtutorialhtml-was-informative&quot;&gt;https://reactjs.org/tutorial/tutorial.html was informative&lt;/h1&gt;
+    &lt;h1 id=&quot;httpsreactjsorgdocsstate-and-lifecyclehtml&quot;&gt;https://reactjs.org/docs/state-and-lifecycle.html&lt;/h1&gt;
+  &lt;/li&gt;
+  &lt;li&gt;I need to learn how setting state works.&lt;/li&gt;
+  &lt;li&gt;Do I need a constructor to have this.state?&lt;/li&gt;
+  &lt;li&gt;Is this.setState() the only way to set state? (except initializing state in constructor?)&lt;/li&gt;
+  &lt;li&gt;This is what I’m doing:
+** In render() I am using {this.state.mystatevar}
+** In componentDidMount() I am using this.setState{mystatevar:myval};
+** But the console says error: cannot read property mystatevar of null.
+** It appears the answer is Yes, you have to declare the different state variables in the constructor&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;h1 id=&quot;uggh-i-dont-know-how-to-separate-the-js-into-different-js-files&quot;&gt;Uggh, I don’t know how to separate the JS into different .js files.&lt;/h1&gt;
+&lt;h1 id=&quot;all-i-want-is-a-indexhtml-and-a-indexjs&quot;&gt;All I want is a index.html and a index.js&lt;/h1&gt;
 
 &lt;h1 id=&quot;angularjs&quot;&gt;AngularJS&lt;/h1&gt;
 &lt;p&gt;First you have this:  &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-app=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;todoApp&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;br /&gt;
@@ -53,7 +197,7 @@ In order to use $http requests, the controller is passed $http.  As in this:&lt;
 &lt;p&gt;$http will give &lt;code class=&quot;highlighter-rouge&quot;&gt;No 'Access-Control-Allow-Origin' header is present on the requested resource.'&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Meh, I don’t like it.&lt;/em&gt;&lt;br /&gt;
-&lt;em&gt;As soon as I found out how much has changed over the versions I immediately quit.  I’m not going to bother learning the history when I already think it sucks&lt;/em&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">React A component is a self-contained module that renders some output ** For example, a button. A component might include one or more other components in its output. eg. a Form. Wow, this caching thing on index.html is pretty terrible for a new user. All components have a render function that SPECIFIES what the HTML output of the COMPONENT is. JSX: JS Extension, allows writing JS that LOOKS LIKE HTML class HelloWorld extends React.Component { render() { //The component has a RENDER Function return ( //The render function RETURNS HTML &amp;lt;h1 className='large'&amp;gt;Hello World&amp;lt;/h1&amp;gt; //THIS IS NOT ACTUALLY HTML ); } } h1 className GETS CONVERTED TO class. This is because CLASS IS A RESERVED JS KEYWORD. JSX is very convenient notation for writing nested HTML snippets In order to load React from , ie. client side, the following is needeed: react.min.js , react-dom.min.js, babel-core@x.x.x/browser.min.js Babel is a library for transpiling ES6 to ES5. Inside the body we have the following: &amp;lt;script type=&quot;text/babel&quot;&amp;gt; var app = &amp;lt;h1&amp;gt;Hello world&amp;lt;/h1&amp;gt; var mountComponent = document.querySelector('#app'); ReactDOM.render(app, mountComponent); &amp;lt;/script&amp;gt; This tells Bable to convert the above ES6 into ES5 render() : ReactDOM.render(&amp;lt;what&amp;gt;, &amp;lt;where&amp;gt;) Interesting, in this case the WHERE is #app. In other tutorials it was document root.</summary></entry><entry><title type="html">CMake: Building an App for Multiple Targets</title><link href="/2018/01/22/cmake-building-an-app-for-multiple-targets.html" rel="alternate" type="text/html" title="CMake: Building an App for Multiple Targets" /><published>2018-01-22T00:00:00-08:00</published><updated>2018-01-22T00:00:00-08:00</updated><id>/2018/01/22/cmake-building-an-app-for-multiple-targets</id><content type="html" xml:base="/2018/01/22/cmake-building-an-app-for-multiple-targets.html">&lt;p&gt;I have an application, it’s a sniffer.&lt;br /&gt;
+&lt;em&gt;As soon as I found out how much has changed over the versions I immediately quit.  I’m not going to bother learning the history when I already think it sucks&lt;/em&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">React A component is a self-contained module that renders some output ** For example, a button. A component might include one or more other components in its output. eg. a Form. Wow, this caching thing on index.html is pretty terrible for a new user. All components have a render function that SPECIFIES what the HTML output of the COMPONENT is. JSX: JS Extension, allows writing JS that LOOKS LIKE HTML class HelloWorld extends React.Component { render() { //The component has a RENDER Function return ( //The render function RETURNS HTML &amp;lt;h1 className='large'&amp;gt;Hello World&amp;lt;/h1&amp;gt; //THIS IS NOT ACTUALLY HTML ); } } h1 className GETS CONVERTED TO class. This is because CLASS IS A RESERVED JS KEYWORD. JSX is very convenient notation for writing nested HTML snippets In order to load React from , ie. client side, the following is needeed: react.min.js , react-dom.min.js, babel-core@x.x.x/browser.min.js Babel is a library for transpiling ES6 to ES5. Inside the body we have the following: &amp;lt;script type=&quot;text/babel&quot;&amp;gt; var app = &amp;lt;h1&amp;gt;Hello world&amp;lt;/h1&amp;gt; var mountComponent = document.querySelector('#app'); ReactDOM.render(app, mountComponent); &amp;lt;/script&amp;gt; This tells Bable to convert the above ES6 into ES5 render() : ReactDOM.render(&amp;lt;what&amp;gt;, &amp;lt;where&amp;gt;) Interesting, in this case the WHERE is #app. In other tutorials it was document root. In the above snippet, app is a HTML snippet, directly passed into render(). Another way to do it is this: ReactDOM.render(&amp;lt;App /&amp;gt;, mount); Where App is a class like class HelloWorld Ah, this makes sense why I struggled with the meta tags. They go inside head. In these examples, the rendering goes to document root or a #hash section. As a test, I should be able to call render() twice in a row and get 2 components to render. ** Cool. After doing that I saw that, if render() is called twice in a row on the same DOM mount (what’s it called?) This is intuitive, the DOM mount gets overwritten. Using 2 div tags with different classes, render() can be called on each of them. A “Wrapper” component combines multiple components. The Wrapper will have divs with classnames. The Wrapper will nest other divs inside those divs, with classnames. Those child components can be used in the Parent by tag notation. class App extends React.Component { render() { return ( &amp;lt;div className=&quot;notificationsFrame&quot;&amp;gt; &amp;lt;div className=&quot;panel&quot;&amp;gt; &amp;lt;Header /&amp;gt; &amp;lt;Content /&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; ) } } To add data ie. props to a component Write something like this: &amp;lt;Header title=&quot;My Header&quot;&amp;gt; It is picked up by the Component liek this: &amp;lt;span className=&quot;title&quot;&amp;gt; {this.props.title} &amp;lt;/span&amp;gt; https://reactjs.org/tutorial/tutorial.html was informative https://reactjs.org/docs/state-and-lifecycle.html I need to learn how setting state works. Do I need a constructor to have this.state? Is this.setState() the only way to set state? (except initializing state in constructor?) This is what I’m doing: ** In render() I am using {this.state.mystatevar} ** In componentDidMount() I am using this.setState{mystatevar:myval}; ** But the console says error: cannot read property mystatevar of null. ** It appears the answer is Yes, you have to declare the different state variables in the constructor</summary></entry><entry><title type="html">CMake: Building an App for Multiple Targets</title><link href="/2018/01/22/cmake-building-an-app-for-multiple-targets.html" rel="alternate" type="text/html" title="CMake: Building an App for Multiple Targets" /><published>2018-01-22T00:00:00-08:00</published><updated>2018-01-22T00:00:00-08:00</updated><id>/2018/01/22/cmake-building-an-app-for-multiple-targets</id><content type="html" xml:base="/2018/01/22/cmake-building-an-app-for-multiple-targets.html">&lt;p&gt;I have an application, it’s a sniffer.&lt;br /&gt;
 I want it to run on bare metal, on an OS, and on multiple CPU targets.&lt;br /&gt;
 Basically anything with a SPI port and the radio should be able to run this.&lt;br /&gt;
 OK, looks like it worked.  Here’s what I learned:&lt;/p&gt;
@@ -827,6 +971,9 @@ Why doesn’t this work, it downloaded all my emails.  Maybe because there weren
 &lt;p&gt;Disable Caps-Lock:  &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install gnome-tweak-tool&lt;/code&gt;  , go to “Typing”&lt;br /&gt;
 Eable Workspaces:  &lt;code class=&quot;highlighter-rouge&quot;&gt;Settings--&amp;gt;Appearance--&amp;gt;Behavior--&amp;gt;Enable Workspaces&lt;/code&gt;&lt;/p&gt;
 
+&lt;h1 id=&quot;x-i3-bind-capslock-to-windows-key-super&quot;&gt;X, i3, Bind Capslock to Windows Key (Super)&lt;/h1&gt;
+&lt;p&gt;setxkbmap -option caps:super&lt;/p&gt;
+
 &lt;h1 id=&quot;arm-none-eabi-gcc&quot;&gt;arm-none-eabi-gcc&lt;/h1&gt;
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get install gcc-arm-none-eabi&lt;/code&gt;&lt;/p&gt;
 
@@ -910,88 +1057,4 @@ I tried to use symlinks, that didn’t work.&lt;/p&gt;
 &lt;p&gt;Simple solution for now is to have Jenkins zip up the build, name it latest.zip ,
 and publish that along with the non-zipped originals.&lt;br /&gt;
 That way the zip is always overwritten with the latest.zip, and the originals are still
-piling up for backup.&lt;/p&gt;</content><author><name></name></author><summary type="html">After I got Jenkins building my code, there was no semantic versioning so this is what happened: The built executable would have the same name every build so got overwritten. I had a version number but more at a higher level, like a release number. Now I need something to identify each build, ie. each commit. So I did this in CMake: ``` … set(THIS_BUILD_VERSION 0x2B30) … add_executable(myexename ${SOURCES} ${SOURCES_RECURSE} )</summary></entry><entry><title type="html">CMake redo</title><link href="/2017/11/08/cmake-redo.html" rel="alternate" type="text/html" title="CMake redo" /><published>2017-11-08T00:00:00-08:00</published><updated>2017-11-08T00:00:00-08:00</updated><id>/2017/11/08/cmake-redo</id><content type="html" xml:base="/2017/11/08/cmake-redo.html">&lt;p&gt;Running into so many little issues.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;External Libraries, git repos&lt;br /&gt;
-I have 2 libraries that are shared by multiple projects.
-I’ve experimented with linking to a prebuilt binary that is shared by multiple projects,
-or having each individual project compile the library source.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Linking to prebuilt worked before when I wasn’t automating my build.&lt;br /&gt;
-I just installed the libraries and used hard coded paths to connect everything up in my handwritten Makefile.&lt;br /&gt;
-Now I can’t do that, I want this on Jenkins and quick deploy.&lt;/p&gt;
-
-&lt;p&gt;So I am trying to build the source.&lt;br /&gt;
-I took the libraries out of the /src tree&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ExternalProject_Add(XYZ_COMMON_SOURCE
-    GIT_REPOSITORY &quot;https://steve@bitbucket.org/xyz/xyz_common_source.git&quot;
-    BUILD_COMMAND &quot;&quot;
-    UPDATE_COMMAND &quot;&quot;
-    CONFIGURE_COMMAND &quot;&quot;
-    INSTALL_COMMAND &quot;&quot;
-    PREFIX &quot;/tmp/lib/&quot;
-)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;`/tmp/lib is under the filesystem root, not a cmake root’&lt;/p&gt;
-
-&lt;p&gt;This allowed me to do this&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file(GLOB_RECURSE SOURCES_RECURSE
-    &quot;/tmp/lib/src/XYZ_COMMON_SOURCE/*.c&quot;
-    &quot;/tmp/lib/src/XYZ_COMMON_SOURCE/*.h&quot;
-)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h1 id=&quot;but-my-next-problem-is-some-of-these-source-files-have-header-dependencies--interface-header&quot;&gt;But my next problem is, some of these source files have header dependencies.  Interface header.&lt;/h1&gt;
-
-&lt;p&gt;One of the files in COMMON_SOURCE has a header, “IHAL_MYSERIAL.h”
-A hardware interface.&lt;br /&gt;
-The project I’m trying to build now doesn’t have that interface or use that source file.&lt;br /&gt;
-But CMake wants to build all the source files, and IHAL_MYSERIAL.h isn’t there.
-Eh, thinking again, the header should be in there.  I put it in.&lt;/p&gt;
-
-&lt;p&gt;OK got somewhere, just had to take out some files from the Primary project that
-were multiply defined with the common source.&lt;br /&gt;
-Previously I had avoided this by individually selecting each source file to be built.&lt;br /&gt;
-But now I’m building everything so there are conflicts due to that.&lt;/p&gt;
-
-&lt;h1 id=&quot;small-note&quot;&gt;Small Note,&lt;/h1&gt;
-&lt;p&gt;If the build fails I guess the artifacts are deleted?&lt;br /&gt;
-I had a GNU size command running after the linker step, but it failed due to the wrong path.&lt;br /&gt;
-When that happened there was no binary in the bin directory.&lt;br /&gt;
-But removing the size command entirely, the binary was there.  Also when fixing the wrong path,
-the binary was there.&lt;/p&gt;</content><author><name></name></author><summary type="html">Running into so many little issues.</summary></entry><entry><title type="html">Bitbucket Access Keys inside a Jenkins Container</title><link href="/2017/11/08/bitbucket-access-keys-inside-a-jenkins-container.html" rel="alternate" type="text/html" title="Bitbucket Access Keys inside a Jenkins Container" /><published>2017-11-08T00:00:00-08:00</published><updated>2017-11-08T00:00:00-08:00</updated><id>/2017/11/08/bitbucket-access-keys-inside-a-jenkins-container</id><content type="html" xml:base="/2017/11/08/bitbucket-access-keys-inside-a-jenkins-container.html">&lt;p&gt;Bit of extra work to get a container to talk to Bitbucket.&lt;br /&gt;
-This is necessary because Jenkins needs to pull private repos autmatically,
-so must use keys.&lt;br /&gt;
-The key could be baked in the image but then I can’t share it.&lt;br /&gt;
-So what I did was put in a global /etc/ssh/ssh_config that points to a key
-inside the shared data volume.  I simply stick the key in there.&lt;/p&gt;
-
-&lt;p&gt;First generate the key, then copy/paste it into bitbucket repo settings access key.
-Then copy the key to an accessible server.
-Then copy the key into the Docker host and then docker container.&lt;/p&gt;
-
-&lt;p&gt;ssh -i bitbucket_access_key git@bitbucket.org&lt;/p&gt;
-
-&lt;p&gt;to make sure the key works.&lt;/p&gt;
-
-&lt;p&gt;Then configure SSH to use the keys there.&lt;/p&gt;
-
-&lt;p&gt;Problem, the only shared volume is /var/jenkins_home in the container.  /etc is not persistent.
-We’ll have to bake it into the image?&lt;/p&gt;
-
-&lt;p&gt;Add this to the Dockerfile and add this file&lt;/p&gt;
-
-&lt;p&gt;Host bitbucket.org
-    HostName bitbucket.org
-    User steveODI
-    IdentityFile /var/jenkins_home/bitbucket_access_key&lt;/p&gt;
-
-&lt;p&gt;Dockerfile:
-COPY ssh_config /home/jenkins/.ssh/ssh_config&lt;/p&gt;
-
-&lt;p&gt;no,
-COPY ssh_config /etc/ssh/ssh_config&lt;/p&gt;</content><author><name></name></author><summary type="html">Bit of extra work to get a container to talk to Bitbucket. This is necessary because Jenkins needs to pull private repos autmatically, so must use keys. The key could be baked in the image but then I can’t share it. So what I did was put in a global /etc/ssh/ssh_config that points to a key inside the shared data volume. I simply stick the key in there.</summary></entry></feed>
+piling up for backup.&lt;/p&gt;</content><author><name></name></author><summary type="html">After I got Jenkins building my code, there was no semantic versioning so this is what happened: The built executable would have the same name every build so got overwritten. I had a version number but more at a higher level, like a release number. Now I need something to identify each build, ie. each commit. So I did this in CMake: ``` … set(THIS_BUILD_VERSION 0x2B30) … add_executable(myexename ${SOURCES} ${SOURCES_RECURSE} )</summary></entry></feed>
