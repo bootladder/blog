@@ -24,7 +24,7 @@ btnStartRecording.onclick = function() {
         captureMicrophone(function(mic) {
             microphone = mic;
 
-// Different behavior for Safari?
+// Different behavior for Safari?  Changes button style, does an alert?
             if(isSafari) {
                 replaceAudio();
 
@@ -43,6 +43,8 @@ btnStartRecording.onclick = function() {
 
 //Calling this function again, using a helper named click which,
 //instead of calling the function, sends another click event?
+//Hmm, maybe because we want the call to happen asynchronous to this
+//function call we're currently in, as opposed to recursive?
             click(btnStartRecording);
         });
         return;
@@ -78,5 +80,10 @@ console.log("\ndid we get here?\n");
     btnDownloadRecording.disabled = true;
 };
 ```
+What happens when I Do Not Allow access to the microphone?  The console.log does not get logged.  
+  
+First I refresh the page. Then click the button.  The microphone is null so captureMicrophone() is called.  captureMicrophone() sets the Release Button (a global variable) to not disabled.  captureMicrophone() then checks that same microphone global, which is still null at this time.  Then tries to getUserMedia(), and since I Do Not Allow, we get the alert.  Ah.. at this point the function returns, but Does Not call the Callback!  So, the Start Recording click handler returns, and that's the end of the story.  
 
 
+
+//note, what is naviggator?
