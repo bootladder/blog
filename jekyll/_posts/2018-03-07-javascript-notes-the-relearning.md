@@ -84,6 +84,23 @@ What happens when I Do Not Allow access to the microphone?  The console.log does
   
 First I refresh the page. Then click the button.  The microphone is null so captureMicrophone() is called.  captureMicrophone() sets the Release Button (a global variable) to not disabled.  captureMicrophone() then checks that same microphone global, which is still null at this time.  Then tries to getUserMedia(), and since I Do Not Allow, we get the alert.  Ah.. at this point the function returns, but Does Not call the Callback!  So, the Start Recording click handler returns, and that's the end of the story.  
 
+Now, what happens when I Allow Access to the microphone?  
+Here we see the real magic, navigator.mediaDevices.getUserMedia() , which appears to take some configuration object?  On success the callback is called, with the mic being passed in from getUserMedia?  Then in the callback, if it's safari the user is required to press the button again, but otherwise the click() helper function generates another click event.  This time, the global variable microphone is not-null, so we go on to the end of the function where the recording actually happens.  
+  
+replaceAudio() , don't know why this is necessary, it replaces the <audio> tag with a new one, with optional src to be specified.  Why not just use the existing one without replacing it? 
+  
+setSrcObject() is a RecordRTC function, does it attach the microphone to the <audio> widget?  and then audio.play() moves the seeker and changes the play button to a pause button.  audio.muted=true is there, to stop playback during record, which would cause feedback.
+  
+Then, if there's a recorder it is destroyed, and then we create the RecordRTC object and start recording.
 
-
-//note, what is naviggator?
+#note, what is navigator?
+The navigator object contains information about the browser.  
+In this demo we see
+```
+navigator.platform        == 'win'
+navigator.mediaDevices
+navigator.mediaDevices.getUserMedia
+navigator.userAgent       == 'Safari'
+navigator.msSaveOrOpenBlob
+navigator.msSaveBlob
+```
