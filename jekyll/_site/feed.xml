@@ -1,5 +1,103 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-07T16:15:08-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Javascript Notes: The Relearning</title><link href="/2018/03/07/javascript-notes-the-relearning.html" rel="alternate" type="text/html" title="Javascript Notes: The Relearning" /><published>2018-03-07T00:00:00-08:00</published><updated>2018-03-07T00:00:00-08:00</updated><id>/2018/03/07/javascript-notes-the-relearning</id><content type="html" xml:base="/2018/03/07/javascript-notes-the-relearning.html">&lt;p&gt;Learning to use this demo: https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/audio-recording.html&lt;br /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-09T15:08:28-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Janus Notes</title><link href="/2018/03/09/janus-notes.html" rel="alternate" type="text/html" title="Janus Notes" /><published>2018-03-09T00:00:00-08:00</published><updated>2018-03-09T00:00:00-08:00</updated><id>/2018/03/09/janus-notes</id><content type="html" xml:base="/2018/03/09/janus-notes.html">&lt;p&gt;It appears that Janus is what I want.  I may have to apply browser-side recording, but first I’ll see how far Janus goes with server side.&lt;br /&gt;
+Apparently, browsers can connect peer to peer to a Janus server.&lt;/p&gt;
+
+&lt;p&gt;Obviously with all the acquisitions happening in this space, I’d like my app to be independent of Janus, source-wise and functionality-wise.&lt;/p&gt;
+
+&lt;p&gt;Well I guess the first thing to do is install it on a server.&lt;br /&gt;
+Let’s compile it for fun.&lt;/p&gt;
+
+&lt;h1 id=&quot;compiling-janus-from-the-readme&quot;&gt;Compiling Janus (from the README)&lt;/h1&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone https://github.com/meetecho/janus-gateway.git
+cd janus-gateway
+sh autogen.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;My debian 8 VPS didn’t have autoreconf.  &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install autoconf&lt;/code&gt;&lt;br /&gt;
+Then got this error &lt;code class=&quot;highlighter-rouge&quot;&gt;configure.ac:5: error: possibly undefined macro: AC_ENABLE_SHARED&lt;/code&gt;  , &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install libtool&lt;/code&gt;  &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install gettext&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install pkg-config&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;./configure --prefix=/opt/janus --disable-websockets --disable-data-channels --disable-rabbitmq --disable-mqtt&lt;/code&gt;&lt;br /&gt;
+Now tells me the packages I’m missing.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;No package 'glib-2.0' found
+No package 'nice' found
+No package 'jansson' found
+No package 'libssl' found
+No package 'libcrypto' found
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Hmm, didn’t know about jansson, that’s cool, a JSON library in C.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apt install glib-2.0
+sudo apt install libjansson-dev
+sudo apt install libnice-dev
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Oh, somehow I missed this, I’ll just run the one liner from the README&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	aptitude install libmicrohttpd-dev libjansson-dev libnice-dev \
+		libssl-dev libsrtp-dev libsofia-sip-ua-dev libglib2.0-dev \
+		libopus-dev libogg-dev libcurl4-openssl-dev pkg-config gengetopt \
+		libtool automake
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;As mentioned in README, apt install libsrtp didn’t work.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	wget https://github.com/cisco/libsrtp/archive/v1.5.4.tar.gz
+	tar xfv v1.5.4.tar.gz
+	cd libsrtp-1.5.4
+	./configure --prefix=/usr --enable-openssl
+	make shared_library &amp;amp;&amp;amp; sudo make install
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Nice, here’s my configure output&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;libsrtp version:           1.5.x
+SSL/crypto library:        OpenSSL
+DTLS set-timeout:          not available
+DataChannels support:      no
+Recordings post-processor: no
+TURN REST API client:      yes
+Doxygen documentation:     no
+Transports:
+    REST (HTTP/HTTPS):     yes
+    WebSockets:            no
+    RabbitMQ:              no
+    MQTT:                  no
+    Unix Sockets:          yes
+Plugins:
+    Echo Test:             yes
+    Streaming:             yes
+    Video Call:            yes
+    SIP Gateway (Sofia):   yes
+    SIP Gateway (libre):   no
+    NoSIP (RTP Bridge):    yes
+    Audio Bridge:          yes
+    Video Room:            yes
+    Voice Mail:            yes
+    Record&amp;amp;Play:           yes
+    Text Room:             yes
+Event handlers:
+    Sample event handler:  yes
+    RabbitMQ event handler:no
+JavaScript modules:        no
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Alright, a make, sudo make install, sudo make configs all worked!&lt;/p&gt;
+
+&lt;p&gt;OK, now how do I connect to Janus?&lt;/p&gt;
+
+&lt;h1 id=&quot;connecting-to-janus&quot;&gt;Connecting to Janus&lt;/h1&gt;
+
+&lt;p&gt;I’m running the audiobridge demo.  The audiobridge.js has a hard coded URL for the Janus server.  I’m using this locally, ie. file:// , which I know only works on Firefox right now.  But this code won’t work…&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;var server = null;
+if(window.location.protocol === 'http:')
+  server = &quot;http://&quot; + window.location.hostname + &quot;:8088/janus&quot;;
+else
+  server = &quot;https://&quot; + window.location.hostname + &quot;:8089/janus&quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;So I will change this to set server = http://myexplicitURL:8088 ?&lt;/p&gt;
+
+&lt;p&gt;Oh, first I have to run Janus.  It says &lt;code class=&quot;highlighter-rouge&quot;&gt;HTTP webserver started (port 8088, /janus path listener)...&lt;/code&gt;
+Oh nice, some debugging help.  I point my browser to mydomain:8088 and it says Invalid URL.  Then I try mydomain:8088/janus and I get Invalid session.  That looks good!  Let’s change the audiobridge.js to that.&lt;/p&gt;
+
+&lt;p&gt;Oh snap!  Getting some good logs in the console.&lt;br /&gt;
+Dang, I can’t connect another peer because I loaded this locally.  Instead of bothering to copy the files to another machine, I should just serve them.&lt;/p&gt;</content><author><name></name></author><summary type="html">It appears that Janus is what I want. I may have to apply browser-side recording, but first I’ll see how far Janus goes with server side. Apparently, browsers can connect peer to peer to a Janus server. Obviously with all the acquisitions happening in this space, I’d like my app to be independent of Janus, source-wise and functionality-wise.</summary></entry><entry><title type="html">Javascript Notes: The Relearning</title><link href="/2018/03/07/javascript-notes-the-relearning.html" rel="alternate" type="text/html" title="Javascript Notes: The Relearning" /><published>2018-03-07T00:00:00-08:00</published><updated>2018-03-07T00:00:00-08:00</updated><id>/2018/03/07/javascript-notes-the-relearning</id><content type="html" xml:base="/2018/03/07/javascript-notes-the-relearning.html">&lt;p&gt;Learning to use this demo: https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/audio-recording.html&lt;br /&gt;
 Starting from the top… What is this?  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, minimum-scale=1.0&quot;&amp;gt;&lt;/code&gt;  ah of course, it’s for mobile devices.  https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary&lt;/p&gt;
 
 &lt;p&gt;What is this?  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;div&amp;gt;&amp;lt;audio controls autoplay&amp;gt;&amp;lt;/audio&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;  It’s the audio widget, which I did not know was an HTML tag.  &lt;code class=&quot;highlighter-rouge&quot;&gt;controls&lt;/code&gt; shows the play, seek, volume controls, &lt;code class=&quot;highlighter-rouge&quot;&gt;autoplay&lt;/code&gt; plays without pressing play.&lt;/p&gt;
@@ -90,8 +188,8 @@ Here we see the real magic, navigator.mediaDevices.getUserMedia() , which appear
 
 &lt;p&gt;Then, if there’s a recorder it is destroyed, and then we create the RecordRTC object and start recording.&lt;/p&gt;
 
-&lt;p&gt;#note, what is navigator?
-The navigator object contains information about the browser.&lt;br /&gt;
+&lt;h1 id=&quot;note-what-is-navigator&quot;&gt;note, what is navigator?&lt;/h1&gt;
+&lt;p&gt;The navigator object contains information about the browser.&lt;br /&gt;
 In this demo we see&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;navigator.platform        == 'win'
 navigator.mediaDevices
@@ -100,7 +198,9 @@ navigator.userAgent       == 'Safari'
 navigator.msSaveOrOpenBlob
 navigator.msSaveBlob
 &lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;</content><author><name></name></author><summary type="html">Learning to use this demo: https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/audio-recording.html Starting from the top… What is this? &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, minimum-scale=1.0&quot;&amp;gt; ah of course, it’s for mobile devices. https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary What is this? &amp;lt;div&amp;gt;&amp;lt;audio controls autoplay&amp;gt;&amp;lt;/audio&amp;gt;&amp;lt;/div&amp;gt; It’s the audio widget, which I did not know was an HTML tag. controls shows the play, seek, volume controls, autoplay plays without pressing play. What is this? &amp;lt;script src=&quot;https://webrtc.github.io/adapter/adapter-latest.js&quot;&amp;gt;&amp;lt;/script&amp;gt; Oh… we need to use this adapter for cross browser compatibility, insulating us from name changes. Why does the demo code declare vars all over the place… Let’s move them to the top. Demo still works. So.. the control flow here is convoluted, impossible to read top to bottom. Let’s start from pressing the “Start Recording” button. Using the inspector I see the button has a click event. I see where this is set, and I’ll move it to the top. Ah finally some sense; all the click handlers are set in a block. So I’ll just move all the click handlers to the top. Alright, the btnStartRecording.onclick. This smells bad, I’m pretty sure? ``` btnStartRecording.onclick = function() { this.disabled = true; this.style.border = ‘’; this.style.fontSize = ‘’;</summary></entry><entry><title type="html">Remove Secret Data from Old git Commits not yet pushed</title><link href="/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed.html" rel="alternate" type="text/html" title="Remove Secret Data from Old git Commits not yet pushed" /><published>2018-02-09T00:00:00-08:00</published><updated>2018-02-09T00:00:00-08:00</updated><id>/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed</id><content type="html" xml:base="/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed.html">&lt;p&gt;I didn’t push to the remote yet. The very initial commit of my repo has an API token in it.&lt;br /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The Stop Recording Button click handler calls recorder.stopRecording, which will then call the stopRecordingCallback() which calls replaceAudio() and then audio.play()&lt;/p&gt;</content><author><name></name></author><summary type="html">Learning to use this demo: https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/audio-recording.html Starting from the top… What is this? &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, minimum-scale=1.0&quot;&amp;gt; ah of course, it’s for mobile devices. https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary What is this? &amp;lt;div&amp;gt;&amp;lt;audio controls autoplay&amp;gt;&amp;lt;/audio&amp;gt;&amp;lt;/div&amp;gt; It’s the audio widget, which I did not know was an HTML tag. controls shows the play, seek, volume controls, autoplay plays without pressing play. What is this? &amp;lt;script src=&quot;https://webrtc.github.io/adapter/adapter-latest.js&quot;&amp;gt;&amp;lt;/script&amp;gt; Oh… we need to use this adapter for cross browser compatibility, insulating us from name changes. Why does the demo code declare vars all over the place… Let’s move them to the top. Demo still works. So.. the control flow here is convoluted, impossible to read top to bottom. Let’s start from pressing the “Start Recording” button. Using the inspector I see the button has a click event. I see where this is set, and I’ll move it to the top. Ah finally some sense; all the click handlers are set in a block. So I’ll just move all the click handlers to the top. Alright, the btnStartRecording.onclick. This smells bad, I’m pretty sure? ``` btnStartRecording.onclick = function() { this.disabled = true; this.style.border = ‘’; this.style.fontSize = ‘’;</summary></entry><entry><title type="html">Remove Secret Data from Old git Commits not yet pushed</title><link href="/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed.html" rel="alternate" type="text/html" title="Remove Secret Data from Old git Commits not yet pushed" /><published>2018-02-09T00:00:00-08:00</published><updated>2018-02-09T00:00:00-08:00</updated><id>/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed</id><content type="html" xml:base="/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed.html">&lt;p&gt;I didn’t push to the remote yet. The very initial commit of my repo has an API token in it.&lt;br /&gt;
 My current verison still has that API token in it.&lt;br /&gt;
 I want to replace the token at the initial commit, then I want to rebase all the other commits after that.&lt;br /&gt;
 To do this, I’ll make a dummy branch at master so I don’t lose that branch.&lt;br /&gt;
@@ -1049,38 +1149,4 @@ Run the client like this&lt;br /&gt;
 
 &lt;h1 id=&quot;hopper&quot;&gt;Hopper&lt;/h1&gt;
 &lt;p&gt;Just download the .deb, Ubuntu software manager fails miserably as usual, but doing this apparently makes it work&lt;br /&gt;
-` sudo dpkg -i Hopper-v4-4.3.12-Linux.deb `&lt;/p&gt;</content><author><name></name></author><summary type="html">Ubuntu on my laptop was crashing regularly and taking way too long to boot from the SSD. Editing this Blog Need: Clone git repo, apt-get install ruby ruby-dev, gem install bundler, bundle install Need: Production repo URL, so it can be pushed to. The prod remote is a bare git repo on the production server. Put in the url to it? Behind web root? A: use the whole SSH URL Use ~/.ssh/config to specify the key to be used. New: The built _site had been stored in the git repo, so it could be directly copied into the bare remote, and then copied to the deploy. I thought of course, to git rm the _site and then run jekyll build inside /deploy, but of course jekyll was not installed. So for now I put the built _site back in the repo.</summary></entry><entry><title type="html">Name Versioning and Publishing Latest Release</title><link href="/2017/11/09/semantic-versioning-and-publishing-latest-release.html" rel="alternate" type="text/html" title="Name Versioning and Publishing Latest Release" /><published>2017-11-09T00:00:00-08:00</published><updated>2017-11-09T00:00:00-08:00</updated><id>/2017/11/09/semantic-versioning-and-publishing-latest-release</id><content type="html" xml:base="/2017/11/09/semantic-versioning-and-publishing-latest-release.html">&lt;p&gt;After I got Jenkins building my code, there was no semantic versioning so this is what happened:&lt;br /&gt;
-The built executable would have the same name every build so got overwritten.&lt;br /&gt;
-I had a version number but more at a higher level, like a release number.&lt;br /&gt;
-Now I need something to identify each build, ie. each commit.&lt;/p&gt;
-
-&lt;p&gt;So I did this in CMake:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;...
-set(THIS_BUILD_VERSION 0x2B30)
-...
-add_executable(myexename ${SOURCES} ${SOURCES_RECURSE} )
-
-EXEC_PROGRAM(
-&quot;echo $(git rev-parse --abbrev-ref HEAD)_$(git rev-parse --short HEAD)&quot; 
-OUTPUT_VARIABLE gitrepoinfo
-)
-
-set(output_exe_filename MY_EXE_PREFIX_${THIS_BUILD_VERSION}_${gitrepoinfo})
-set_target_properties(myexename PROPERTIES OUTPUT_NAME ${output_exe_filename})
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;EXEC_PROGRAM is what worked for me , not the other execute_process or whatever.&lt;br /&gt;
-I echo 2 git commands to get the branch name and short commit ID.&lt;/p&gt;
-
-&lt;p&gt;Then I set the variable for the executable’s filename, and tell the target to be named by it.&lt;/p&gt;
-
-&lt;p&gt;This worked, so now every time I git push I get a new build identifying that commit.&lt;br /&gt;
-Now the problem is, the filenames are too long to type by hand so I need something 
-like “latest-version.out” as an easy reference.&lt;br /&gt;
-I tried to use symlinks, that didn’t work.&lt;/p&gt;
-
-&lt;p&gt;Simple solution for now is to have Jenkins zip up the build, name it latest.zip ,
-and publish that along with the non-zipped originals.&lt;br /&gt;
-That way the zip is always overwritten with the latest.zip, and the originals are still
-piling up for backup.&lt;/p&gt;</content><author><name></name></author><summary type="html">After I got Jenkins building my code, there was no semantic versioning so this is what happened: The built executable would have the same name every build so got overwritten. I had a version number but more at a higher level, like a release number. Now I need something to identify each build, ie. each commit. So I did this in CMake: ``` … set(THIS_BUILD_VERSION 0x2B30) … add_executable(myexename ${SOURCES} ${SOURCES_RECURSE} )</summary></entry></feed>
+` sudo dpkg -i Hopper-v4-4.3.12-Linux.deb `&lt;/p&gt;</content><author><name></name></author><summary type="html">Ubuntu on my laptop was crashing regularly and taking way too long to boot from the SSD. Editing this Blog Need: Clone git repo, apt-get install ruby ruby-dev, gem install bundler, bundle install Need: Production repo URL, so it can be pushed to. The prod remote is a bare git repo on the production server. Put in the url to it? Behind web root? A: use the whole SSH URL Use ~/.ssh/config to specify the key to be used. New: The built _site had been stored in the git repo, so it could be directly copied into the bare remote, and then copied to the deploy. I thought of course, to git rm the _site and then run jekyll build inside /deploy, but of course jekyll was not installed. So for now I put the built _site back in the repo.</summary></entry></feed>

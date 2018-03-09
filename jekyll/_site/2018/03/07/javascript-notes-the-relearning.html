@@ -155,8 +155,8 @@ Here we see the real magic, navigator.mediaDevices.getUserMedia() , which appear
 
 <p>Then, if there’s a recorder it is destroyed, and then we create the RecordRTC object and start recording.</p>
 
-<p>#note, what is navigator?
-The navigator object contains information about the browser.<br />
+<h1 id="note-what-is-navigator">note, what is navigator?</h1>
+<p>The navigator object contains information about the browser.<br />
 In this demo we see</p>
 <div class="highlighter-rouge"><pre class="highlight"><code>navigator.platform        == 'win'
 navigator.mediaDevices
@@ -166,6 +166,8 @@ navigator.msSaveOrOpenBlob
 navigator.msSaveBlob
 </code></pre>
 </div>
+
+<p>The Stop Recording Button click handler calls recorder.stopRecording, which will then call the stopRecordingCallback() which calls replaceAudio() and then audio.play()</p>
 
   </div>
 

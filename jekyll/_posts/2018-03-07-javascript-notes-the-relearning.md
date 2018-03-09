@@ -93,7 +93,7 @@ setSrcObject() is a RecordRTC function, does it attach the microphone to the <au
   
 Then, if there's a recorder it is destroyed, and then we create the RecordRTC object and start recording.
 
-#note, what is navigator?
+# note, what is navigator?
 The navigator object contains information about the browser.  
 In this demo we see
 ```
@@ -104,3 +104,5 @@ navigator.userAgent       == 'Safari'
 navigator.msSaveOrOpenBlob
 navigator.msSaveBlob
 ```
+  
+The Stop Recording Button click handler calls recorder.stopRecording, which will then call the stopRecordingCallback() which calls replaceAudio() and then audio.play()
