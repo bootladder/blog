@@ -101,3 +101,6 @@ Oh nice, some debugging help.  I point my browser to mydomain:8088 and it says I
   
 Oh snap!  Getting some good logs in the console.  
 Dang, I can't connect another peer because I loaded this locally.  Instead of bothering to copy the files to another machine, I should just serve them.
+  
+# Connecting to Janus with 2 peers
+So, not surpisingly, I'm getting issues with HTTPS.  Somehow I have to get it right, Janus over HTTPS, webserver over HTTPS, HTTPS proxy to a Janus over HTTP, whatever.  Well, I figured out how to get Beego framework to serve static pages over HTTPS, so that'll do.  Don't know what to do with Janus.  Let's just put the static page in a running Beego server and see what happens.
