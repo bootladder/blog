@@ -1,5 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-09T15:39:43-08:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Janus Notes</title><link href="/2018/03/09/janus-notes.html" rel="alternate" type="text/html" title="Janus Notes" /><published>2018-03-09T00:00:00-08:00</published><updated>2018-03-09T00:00:00-08:00</updated><id>/2018/03/09/janus-notes</id><content type="html" xml:base="/2018/03/09/janus-notes.html">&lt;p&gt;It appears that Janus is what I want.  I may have to apply browser-side recording, but first I’ll see how far Janus goes with server side.&lt;br /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-11T16:03:09-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Janus: Refactoring a Plugin</title><link href="/2018/03/11/janus-refactoring-a-plugin.html" rel="alternate" type="text/html" title="Janus: Refactoring a Plugin" /><published>2018-03-11T00:00:00-08:00</published><updated>2018-03-11T00:00:00-08:00</updated><id>/2018/03/11/janus-refactoring-a-plugin</id><content type="html" xml:base="/2018/03/11/janus-refactoring-a-plugin.html">&lt;p&gt;The sample Janus Plugins are written in C and they are very good.&lt;br /&gt;
+But, it’s not very readable.  I’d like a higher level description of what the sample plugin app does.  Though the documentation is good, I still want a complete, high level description.  I’ll do this by refactoring, which will also allow me to take out reusable snippets.&lt;/p&gt;
+
+&lt;p&gt;Particularly looking to refactor to improve:  separation of concerns  (single responsibility) .  Make it more obvious where the configuration file comes from.&lt;/p&gt;
+
+&lt;h1 id=&quot;pre--notes&quot;&gt;Pre- Notes&lt;/h1&gt;
+&lt;ol&gt;
+  &lt;li&gt;Because these plugins are .so shared modules, I should be able to build the plugin by itself, then test with a real Janus instance.  Janus’ build script builds the sample plugins with it, but that’s just for convenience.  As a product developer, what I would do is have a separate build environment, git repo, etc. for my new plugin, build it, then deploy it to the /path/to/janus/lib/janus/plugins/  (I believe that’s where you deploy them?)&lt;/li&gt;
+  &lt;li&gt;Oh crap, it’s built with autotools, I forgot.  I have no idea, and no desire to learn autotools.  Hmm how do I build the plugin?&lt;/li&gt;
+  &lt;li&gt;Ah yes, thank you https://github.com/mquander/janus-helloworld-plugin .  I will fork it!  Then copy over the recordplaytest demo!&lt;/li&gt;
+  &lt;li&gt;Ah, it didn’t include any Janus headers, so those must come from the Janus installation on the server.  I don’t have Janus installed on my laptop. Let’s just make sure by attempting a build on my laptop.   Need jansson.  Ah yes, of course, plugins/plugin.h not found.  Let’s make sure that exists on the server installation.  Well it’s actually in /path/to/janus/include/janus/plugins .  Ah, checking the gcc -I flags, yes, it’s in there.  Good!  Eh, let’s build it on the cloud and then hook up a Jenkins later.&lt;/li&gt;
+  &lt;li&gt;Cool, it builds on my server that has Janus.  Let’s… see if make install followed by restarting Janus will pick up the new plugin!
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;JANUS AudioBridge plugin initialized!
+Loading plugin 'libjanus_helloworld.so'...
+JANUS hello world plugin initialized!
+Loading plugin 'libjanus_recordplay.so'...
+JANUS Record&amp;amp;Play plugin initialized!
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+    &lt;h1 id=&quot;yay&quot;&gt;Yay&lt;/h1&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Quick side note, to clean up the build I did a &lt;code class=&quot;highlighter-rouge&quot;&gt;git clean -f -d -x&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Now I can figure out how to change the name of the plugin and copy in the source from recordplaytest.  Well, doing a &lt;code class=&quot;highlighter-rouge&quot;&gt;grep -ir hello *&lt;/code&gt; , excluding janus_helloworld.c , only shows a few matches.  That’s cool, the name is not significant.  OK, it worked, but there are still “hello world” occurences in the source itself.&lt;/li&gt;
+  &lt;li&gt;Before I copy paste the source from the recordplay plugin, let’s look at that &lt;code class=&quot;highlighter-rouge&quot;&gt;grep -i hello *&lt;/code&gt; again.  Lots of matches, but which of those actually matter?  The #defines at the top, eg. &lt;code class=&quot;highlighter-rouge&quot;&gt;#define JANUS_HELLOWORLD_PACKAGE &quot;janus.plugin.helloworld&quot;&lt;/code&gt; don’t need to change, because they are simply returned by the getters.  In other words, I can copy paste the source from recordplay_plugin, the names won’t be HELLO anymore, they’ll be RECORDPLAY, and this is OK.
+The interface implementation, &lt;code class=&quot;highlighter-rouge&quot;&gt;janus_plugin&lt;/code&gt; is a struct of function pointers, so the names don’t matter, they’re just function pointers.  The symbol name of that implementation is &lt;code class=&quot;highlighter-rouge&quot;&gt;janus_helloworld_plugin&lt;/code&gt; , ie. &lt;code class=&quot;highlighter-rouge&quot;&gt;static janus_plugin janus_helloworld_plugin&lt;/code&gt; .  A pointer to this struct is returned by the &lt;code class=&quot;highlighter-rouge&quot;&gt;*create()&lt;/code&gt; function.&lt;br /&gt;
+So, my conclusion is, I will only have to change the name of &lt;code class=&quot;highlighter-rouge&quot;&gt;janus.plugin.recordplay&lt;/code&gt; or whatever it is, to something else, so the plugin namespace does not collide.&lt;/li&gt;
+  &lt;li&gt;Now I can copy paste the source.  Ah crap.  There are headers in janus-gateway repo that have to be included in the build.  I don’t know how to do that in autotools.  Dang!   Oh, looking at Makefile.am , it appears I can specify a -I flag.  Oh, I don’t need to go to the source, the headers are exported in the Janus install.  Oh, the headers directory is already there!  Problem was the &lt;code class=&quot;highlighter-rouge&quot;&gt;../blah.h&lt;/code&gt; should be &lt;code class=&quot;highlighter-rouge&quot;&gt;blah.h&lt;/code&gt; .  Changing that…  OK, I built it again with &lt;code class=&quot;highlighter-rouge&quot;&gt;make&lt;/code&gt;, no need to do any more autotools stuff.  I get an error, plugin could not be initialized because no configuration file could be read.  Let’s copy one in there… &lt;code class=&quot;highlighter-rouge&quot;&gt;/path/to/janus/etc/janus/&lt;/code&gt;  Yay, now it works!&lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">The sample Janus Plugins are written in C and they are very good. But, it’s not very readable. I’d like a higher level description of what the sample plugin app does. Though the documentation is good, I still want a complete, high level description. I’ll do this by refactoring, which will also allow me to take out reusable snippets. Particularly looking to refactor to improve: separation of concerns (single responsibility) . Make it more obvious where the configuration file comes from. Pre- Notes Because these plugins are .so shared modules, I should be able to build the plugin by itself, then test with a real Janus instance. Janus’ build script builds the sample plugins with it, but that’s just for convenience. As a product developer, what I would do is have a separate build environment, git repo, etc. for my new plugin, build it, then deploy it to the /path/to/janus/lib/janus/plugins/ (I believe that’s where you deploy them?) Oh crap, it’s built with autotools, I forgot. I have no idea, and no desire to learn autotools. Hmm how do I build the plugin? Ah yes, thank you https://github.com/mquander/janus-helloworld-plugin . I will fork it! Then copy over the recordplaytest demo! Ah, it didn’t include any Janus headers, so those must come from the Janus installation on the server. I don’t have Janus installed on my laptop. Let’s just make sure by attempting a build on my laptop. Need jansson. Ah yes, of course, plugins/plugin.h not found. Let’s make sure that exists on the server installation. Well it’s actually in /path/to/janus/include/janus/plugins . Ah, checking the gcc -I flags, yes, it’s in there. Good! Eh, let’s build it on the cloud and then hook up a Jenkins later. Cool, it builds on my server that has Janus. Let’s… see if make install followed by restarting Janus will pick up the new plugin! JANUS AudioBridge plugin initialized! Loading plugin 'libjanus_helloworld.so'... JANUS hello world plugin initialized! Loading plugin 'libjanus_recordplay.so'... JANUS Record&amp;amp;Play plugin initialized! Yay Quick side note, to clean up the build I did a git clean -f -d -x Now I can figure out how to change the name of the plugin and copy in the source from recordplaytest. Well, doing a grep -ir hello * , excluding janus_helloworld.c , only shows a few matches. That’s cool, the name is not significant. OK, it worked, but there are still “hello world” occurences in the source itself. Before I copy paste the source from the recordplay plugin, let’s look at that grep -i hello * again. Lots of matches, but which of those actually matter? The #defines at the top, eg. #define JANUS_HELLOWORLD_PACKAGE &quot;janus.plugin.helloworld&quot; don’t need to change, because they are simply returned by the getters. In other words, I can copy paste the source from recordplay_plugin, the names won’t be HELLO anymore, they’ll be RECORDPLAY, and this is OK. The interface implementation, janus_plugin is a struct of function pointers, so the names don’t matter, they’re just function pointers. The symbol name of that implementation is janus_helloworld_plugin , ie. static janus_plugin janus_helloworld_plugin . A pointer to this struct is returned by the *create() function. So, my conclusion is, I will only have to change the name of janus.plugin.recordplay or whatever it is, to something else, so the plugin namespace does not collide. Now I can copy paste the source. Ah crap. There are headers in janus-gateway repo that have to be included in the build. I don’t know how to do that in autotools. Dang! Oh, looking at Makefile.am , it appears I can specify a -I flag. Oh, I don’t need to go to the source, the headers are exported in the Janus install. Oh, the headers directory is already there! Problem was the ../blah.h should be blah.h . Changing that… OK, I built it again with make, no need to do any more autotools stuff. I get an error, plugin could not be initialized because no configuration file could be read. Let’s copy one in there… /path/to/janus/etc/janus/ Yay, now it works!</summary></entry><entry><title type="html">Janus Notes</title><link href="/2018/03/09/janus-notes.html" rel="alternate" type="text/html" title="Janus Notes" /><published>2018-03-09T00:00:00-08:00</published><updated>2018-03-09T00:00:00-08:00</updated><id>/2018/03/09/janus-notes</id><content type="html" xml:base="/2018/03/09/janus-notes.html">&lt;p&gt;It appears that Janus is what I want.  I may have to apply browser-side recording, but first I’ll see how far Janus goes with server side.&lt;br /&gt;
 Apparently, browsers can connect peer to peer to a Janus server.&lt;/p&gt;
 
 &lt;p&gt;Obviously with all the acquisitions happening in this space, I’d like my app to be independent of Janus, source-wise and functionality-wise.&lt;/p&gt;
@@ -1005,151 +1032,4 @@ generate_arduino_firmware(blink
 &lt;/div&gt;
 &lt;p&gt;Wow that’s not too bad , I’d like to give it a try!&lt;/p&gt;
 
-&lt;p&gt;It looks like it should be easy to support the ARM chips, and use this to create new Arduino Libraries.&lt;/p&gt;</content><author><name></name></author><summary type="html">I cloned the repo. cd example mkdir build cmake .. CMake Error at CMakeLists.txt:11 (GENERATE_ARDUINO_LIBRARY_EXAMPLE): Unknown CMake command &quot;GENERATE_ARDUINO_LIBRARY_EXAMPLE&quot;. OK https://github.com/queezythegreat/arduino-cmake/issues/38 solves it. mkdir build;cmake .. must happen in the top level CMakeLists.txt directory. steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake$ mkdir build steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake$ cd build steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake/build$ cmake .. CMake Error at cmake/ArduinoToolchain.cmake:93 (message): Could not find Arduino SDK (set ARDUINO_SDK_PATH)! Call Stack (most recent call first): /usr/share/cmake-3.5/Modules/CMakeDetermineSystem.cmake:98 (include) CMakeLists.txt:15 (project) OK, it can’t find the toolchain. It’s not installed. What happened … Line 15 of the top level CMakeLists.txt, was a project() call. project(ArduinoExample C CXX ASM) And then project() calls CMake core… line 98 include(&quot;${CMAKE_TOOLCHAIN_FILE}&quot; OPTIONAL RESULT_VARIABLE _INCLUDED_TOOLCHAIN_FILE) CMAKE_TOOLCHAIN_FILE is set in the CMakeLists.txt: ``` #=============================================================================# Author: QueezyTheGreat Date: 26.04.2011 # # Description: Arduino CMake example # # #=============================================================================# set(CMAKE_TOOLCHAIN_FILE cmake/ArduinoToolchain.cmake) # Arduino Toolchain</summary></entry><entry><title type="html">Bring up New Ubuntu System</title><link href="/2018/01/14/bring-up-new-ubuntu-system.html" rel="alternate" type="text/html" title="Bring up New Ubuntu System" /><published>2018-01-14T00:00:00-08:00</published><updated>2018-01-14T00:00:00-08:00</updated><id>/2018/01/14/bring-up-new-ubuntu-system</id><content type="html" xml:base="/2018/01/14/bring-up-new-ubuntu-system.html">&lt;p&gt;Ubuntu on my laptop was crashing regularly and taking way too long to boot from the SSD.&lt;/p&gt;
-
-&lt;h1 id=&quot;editing-this-blog&quot;&gt;Editing this Blog&lt;/h1&gt;
-&lt;p&gt;Need: Clone git repo, apt-get install ruby ruby-dev, gem install bundler, bundle install&lt;br /&gt;
-Need: Production repo URL, so it can be pushed to.&lt;br /&gt;
-The prod remote is a bare git repo on the production server.&lt;br /&gt;
-Put in the url to it?  Behind web root?  &lt;em&gt;A:  use the whole SSH URL&lt;/em&gt;&lt;br /&gt;
-Use ~/.ssh/config to specify the key to be used.&lt;br /&gt;
-&lt;em&gt;New&lt;/em&gt;:  The built _site had been stored in the git repo, so it
-could be directly copied into the bare remote, and then copied to the deploy.
-I thought of course, to &lt;code class=&quot;highlighter-rouge&quot;&gt;git rm&lt;/code&gt; the _site and then run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll build&lt;/code&gt;
-inside /deploy, but of course jekyll was not installed.&lt;br /&gt;
-So for now I put the built _site back in the repo.&lt;/p&gt;
-
-&lt;h1 id=&quot;atom-ide&quot;&gt;Atom IDE&lt;/h1&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo add-apt-repository ppa:webupd8team/atom&lt;/code&gt;&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt update; sudo apt install atom&lt;/code&gt;&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;Source: http://tipsonubuntu.com/2016/08/05/install-atom-text-editor-ubuntu-16-04/&lt;/code&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;aliases&quot;&gt;Aliases&lt;/h1&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#Steve Aliases
-alias l='ls -ltrh --color=auto'
-alias gs='git status'
-alias gl='git log'
-alias gd='git diff'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h1 id=&quot;random-color-command-prompt&quot;&gt;Random Color Command Prompt&lt;/h1&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---
-...inside .bashrc
----
-function nextcolor
-{
-    mycolor=$(($RANDOM % 7 + 31))
-    echo $mycolor
-}
-if [ &quot;$color_prompt&quot; = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;$(nextcolor)m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h1 id=&quot;vim&quot;&gt;VIM&lt;/h1&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install vim&lt;/code&gt;&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;~/.vimrc
-set noexpandtab
-set tabstop=2
-set shiftwidth=2
-set clipboard=unnamedplus
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h1 id=&quot;golang&quot;&gt;Golang&lt;/h1&gt;
-
-&lt;p&gt;Copy pasted from instructions: https://golang.org/doc/install?download=go1.9.2.linux-amd64.tar.gz&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Linux, Mac OS X, and FreeBSD tarballs
-
-Download the archive and extract it into /usr/local, creating a Go tree in /usr/local/go. For example:
-
-tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz
-
-(Typically these commands must be run as root or through sudo.)
-
-Add /usr/local/go/bin to the PATH environment variable. You can do this by adding this line to your /etc/profile (for a system-wide installation) or $HOME/.profile:
-
-export PATH=$PATH:/usr/local/go/bin
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;go get -t -u ./...&lt;/code&gt; -u installs from the net, -t installs for tests.&lt;br /&gt;
-&lt;strong&gt;-t is not in man go get ???&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;misc&quot;&gt;Misc&lt;/h1&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone https://github.com/sstephenson/bats.git
-cd bats
-./install.sh /usr/local
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h1 id=&quot;thunderbird&quot;&gt;Thunderbird&lt;/h1&gt;
-&lt;p&gt;Don’t download all emails from IMAP server, only last 30 days
-&lt;code class=&quot;highlighter-rouge&quot;&gt;Source: https://support.mozilla.org/en-US/questions/1066286&lt;/code&gt;&lt;br /&gt;
-Why doesn’t this work, it downloaded all my emails.  Maybe because there weren’t that many of them?&lt;/p&gt;
-
-&lt;h1 id=&quot;servers&quot;&gt;Servers&lt;/h1&gt;
-&lt;p&gt;Need SSH Keys, Hostnames, Root Passwords, IP Addresses&lt;br /&gt;
-&lt;em&gt;Gnome Keyring&lt;/em&gt; turns out it reads the keys stored in ~/.ssh.  Confirmed, easy, just copy the keys into there.  Continue using ~/.ssh/config to specify which key per host&lt;/p&gt;
-
-&lt;h1 id=&quot;ubuntu-crap&quot;&gt;Ubuntu Crap&lt;/h1&gt;
-&lt;p&gt;Disable Caps-Lock:  &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install gnome-tweak-tool&lt;/code&gt;  , go to “Typing”&lt;br /&gt;
-Eable Workspaces:  &lt;code class=&quot;highlighter-rouge&quot;&gt;Settings--&amp;gt;Appearance--&amp;gt;Behavior--&amp;gt;Enable Workspaces&lt;/code&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;x-i3-bind-capslock-to-windows-key-super&quot;&gt;X, i3, Bind Capslock to Windows Key (Super)&lt;/h1&gt;
-&lt;p&gt;setxkbmap -option caps:super&lt;/p&gt;
-
-&lt;h1 id=&quot;arm-none-eabi-gcc&quot;&gt;arm-none-eabi-gcc&lt;/h1&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get install gcc-arm-none-eabi&lt;/code&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;irc&quot;&gt;IRC&lt;/h1&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get install xchat-gnome&lt;/code&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;/msg nickserv register&lt;/code&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;synergy&quot;&gt;Synergy&lt;/h1&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;https://github.com/symless/synergy-core/wiki/Compiling&lt;/code&gt;&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; git clone https://github.com/symless/synergy-core.git
- cd synergy-core
- mkdir build
- cd build
- cmake ..
- make
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;An Ubuntu 16 laptop didn’t have libcurl so,&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get install libcurl4-openssl-dev&lt;/code&gt;&lt;br /&gt;
-Also it didn’t have XKBlib.h
-&lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get install libx11-dev&lt;/code&gt;&lt;br /&gt;
-As other people have noticed you have to edit CMakeLists.txt to change path to find XKBLib.h&lt;br /&gt;
-Change it to /usr/include.&lt;br /&gt;
-Weird, CMake still can’t find it, but if i do a rm -rf build and repeat the build again it works.&lt;br /&gt;
-Then it can’t find libxtst. &lt;code class=&quot;highlighter-rouge&quot;&gt;apt-get install libxtst-dev&lt;/code&gt;&lt;br /&gt;
-That worked well, now make a config file like this:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;section: screens
-        steve-T420:
-        steve-T420-ZoZ:
-        bob-pc:
-end
-section: links
-        steve-T420:
-                down = steve-T420-ZoZ
-                left = bob-pc
-        steve-T420-ZoZ:
-                up = steve-T420
-        bob-pc:
-                right = steve-T420
-end
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Then run it with this&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;./synergys -f -c /etc/synergy.conf&lt;/code&gt;&lt;br /&gt;
-Run the client like this&lt;br /&gt;
-` synergyc -f 10.0.1.23`&lt;/p&gt;
-
-&lt;h1 id=&quot;hopper&quot;&gt;Hopper&lt;/h1&gt;
-&lt;p&gt;Just download the .deb, Ubuntu software manager fails miserably as usual, but doing this apparently makes it work&lt;br /&gt;
-` sudo dpkg -i Hopper-v4-4.3.12-Linux.deb `&lt;/p&gt;</content><author><name></name></author><summary type="html">Ubuntu on my laptop was crashing regularly and taking way too long to boot from the SSD. Editing this Blog Need: Clone git repo, apt-get install ruby ruby-dev, gem install bundler, bundle install Need: Production repo URL, so it can be pushed to. The prod remote is a bare git repo on the production server. Put in the url to it? Behind web root? A: use the whole SSH URL Use ~/.ssh/config to specify the key to be used. New: The built _site had been stored in the git repo, so it could be directly copied into the bare remote, and then copied to the deploy. I thought of course, to git rm the _site and then run jekyll build inside /deploy, but of course jekyll was not installed. So for now I put the built _site back in the repo.</summary></entry></feed>
+&lt;p&gt;It looks like it should be easy to support the ARM chips, and use this to create new Arduino Libraries.&lt;/p&gt;</content><author><name></name></author><summary type="html">I cloned the repo. cd example mkdir build cmake .. CMake Error at CMakeLists.txt:11 (GENERATE_ARDUINO_LIBRARY_EXAMPLE): Unknown CMake command &quot;GENERATE_ARDUINO_LIBRARY_EXAMPLE&quot;. OK https://github.com/queezythegreat/arduino-cmake/issues/38 solves it. mkdir build;cmake .. must happen in the top level CMakeLists.txt directory. steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake$ mkdir build steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake$ cd build steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake/build$ cmake .. CMake Error at cmake/ArduinoToolchain.cmake:93 (message): Could not find Arduino SDK (set ARDUINO_SDK_PATH)! Call Stack (most recent call first): /usr/share/cmake-3.5/Modules/CMakeDetermineSystem.cmake:98 (include) CMakeLists.txt:15 (project) OK, it can’t find the toolchain. It’s not installed. What happened … Line 15 of the top level CMakeLists.txt, was a project() call. project(ArduinoExample C CXX ASM) And then project() calls CMake core… line 98 include(&quot;${CMAKE_TOOLCHAIN_FILE}&quot; OPTIONAL RESULT_VARIABLE _INCLUDED_TOOLCHAIN_FILE) CMAKE_TOOLCHAIN_FILE is set in the CMakeLists.txt: ``` #=============================================================================# Author: QueezyTheGreat Date: 26.04.2011 # # Description: Arduino CMake example # # #=============================================================================# set(CMAKE_TOOLCHAIN_FILE cmake/ArduinoToolchain.cmake) # Arduino Toolchain</summary></entry></feed>
