@@ -93,6 +93,13 @@ So, my conclusion is, I will only have to change the name of <code class="highli
   <li>Now I can copy paste the source.  Ah crap.  There are headers in janus-gateway repo that have to be included in the build.  I don’t know how to do that in autotools.  Dang!   Oh, looking at Makefile.am , it appears I can specify a -I flag.  Oh, I don’t need to go to the source, the headers are exported in the Janus install.  Oh, the headers directory is already there!  Problem was the <code class="highlighter-rouge">../blah.h</code> should be <code class="highlighter-rouge">blah.h</code> .  Changing that…  OK, I built it again with <code class="highlighter-rouge">make</code>, no need to do any more autotools stuff.  I get an error, plugin could not be initialized because no configuration file could be read.  Let’s copy one in there… <code class="highlighter-rouge">/path/to/janus/etc/janus/</code>  Yay, now it works!</li>
 </ol>
 
+<h1 id="beginning-to-understand-the-plugin">Beginning to understand the plugin</h1>
+<p>The first function definitions are the static helper functions, which is OK convention.  The first plugin implementation function is <code class="highlighter-rouge">init</code>.  This is called by Janus when Janus starts.  I saw this before, when Janus failed to start because a plugin couldn’t be initialized.  <code class="highlighter-rouge">init</code> first reads the configuration file, which is assumed to have <code class="highlighter-rouge">"%s/%s.cfg" format.  The path to the config files is an argument to </code>init()<code class="highlighter-rouge"> , which somehow must come from Janus.  The config file includes a path to where the recordings are stored.  That path is stored in a variable.  </code>notify_events<code class="highlighter-rouge"> is a static boolean, which is checked later before doing </code>gateway-&gt;notify_event` for sending an event.</p>
+<ol>
+  <li>Now, <code class="highlighter-rouge">recordings = g_hast_table_new_full</code> , <code class="highlighter-rouge">sessions = g_hst_table_new</code> , <code class="highlighter-rouge">messages = g_async_queue_new_full</code> .</li>
+  <li><code class="highlighter-rouge">handler_thread = g_thread_try_new</code> starts a thread with function <code class="highlighter-rouge">janus_recordplay_handler</code>  .  Oh god, that function is a monster, 421 lines, tons of if statements.</li>
+</ol>
+
   </div>
 
   
