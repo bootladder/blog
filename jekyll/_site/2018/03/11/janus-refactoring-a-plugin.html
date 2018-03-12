@@ -100,6 +100,88 @@ So, my conclusion is, I will only have to change the name of <code class="highli
   <li><code class="highlighter-rouge">handler_thread = g_thread_try_new</code> starts a thread with function <code class="highlighter-rouge">janus_recordplay_handler</code>  .  Oh god, that function is a monster, 421 lines, tons of if statements.</li>
 </ol>
 
+<h1 id="for-reference-here-is-the-plugin-interface-definition">For reference, here is the plugin interface definition</h1>
+<div class="highlighter-rouge"><pre class="highlight"><code>/* Plugin setup */
+static janus_plugin janus_recordplay_plugin =
+  JANUS_PLUGIN_INIT (
+    .init = janus_recordplay_init,
+    .destroy = janus_recordplay_destroy,
+
+    .get_api_compatibility = janus_recordplay_get_api_compatibility,
+    .get_version = janus_recordplay_get_version,
+    .get_version_string = janus_recordplay_get_version_string,
+    .get_description = janus_recordplay_get_description,
+    .get_name = janus_recordplay_get_name,
+    .get_author = janus_recordplay_get_author,
+    .get_package = janus_recordplay_get_package,
+    
+    .create_session = janus_recordplay_create_session,
+    .handle_message = janus_recordplay_handle_message,
+    .setup_media = janus_recordplay_setup_media,
+    .incoming_rtp = janus_recordplay_incoming_rtp,
+    .incoming_rtcp = janus_recordplay_incoming_rtcp,
+    .incoming_data = janus_recordplay_incoming_data,
+    .slow_link = janus_recordplay_slow_link,
+    .hangup_media = janus_recordplay_hangup_media,
+    .destroy_session = janus_recordplay_destroy_session,
+    .query_session = janus_recordplay_query_session,
+  );
+</code></pre>
+</div>
+<div class="highlighter-rouge"><pre class="highlight"><code>int janus_recordplay_init(janus_callbacks *callback, const char *onfig_path);
+void janus_recordplay_destroy(void);
+int janus_recordplay_get_api_compatibility(void);
+int janus_recordplay_get_version(void);
+const char *janus_recordplay_get_version_string(void);
+const char *janus_recordplay_get_description(void);
+const char *janus_recordplay_get_name(void);
+const char *janus_recordplay_get_author(void);
+const char *janus_recordplay_get_package(void);
+void janus_recordplay_create_session(janus_plugin_session *handle, int *error);
+struct janus_plugin_result *janus_recordplay_handle_message(janus_plugin_session *handle, char *transaction, json_t *message, json_t *jsep);
+void janus_recordplay_setup_media(janus_plugin_session *handle);
+void janus_recordplay_incoming_rtp(janus_plugin_session *handle, int video, char *buf, int len);
+void janus_recordplay_incoming_rtcp(janus_plugin_session *handle, int video, char *buf, int len);
+void janus_recordplay_incoming_data(janus_plugin_session *handle, char *buf, int len);
+void janus_recordplay_slow_link(janus_plugin_session *handle, int uplink, int video);
+void janus_recordplay_hangup_media(janus_plugin_session *handle);
+void janus_recordplay_destroy_session(janus_plugin_session *handle, int *error);
+json_t *janus_recordplay_query_session(janus_plugin_session *handle);
+</code></pre>
+</div>
+<p>Ah very nice, these function declarations have the same order as the struct def.<br />
+Now I feel bad for saying it was unreadable.</p>
+<ol>
+  <li>Notice, the <code class="highlighter-rouge">init()</code> function takes a callback struct and a config path.  The other functions eg. <code class="highlighter-rouge">incoming_rtp</code> take a <code class="highlighter-rouge">janus_plugin_session</code>.  Let’s see what they are.</li>
+</ol>
+
+<h1 id="what-is-janus_plugin_session-">What is janus_plugin_session ?</h1>
+<p>Notice there is  <code class="highlighter-rouge">void janus_recordplay_create_session(janus_plugin_session *handle, int *error);</code> .  This is called by Janus and implemented by the plugin.  What does it do in recordplay plugin?  Here it is</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>void janus_recordplay_create_session(janus_plugin_session *handle, int *error) {
+  if(g_atomic_int_get(&amp;stopping) || !g_atomic_int_get(&amp;initialized)) {
+    *error = -1;
+    return;
+  } 
+  janus_recordplay_session *session = g_malloc0(sizeof(janus_recordplay_session));
+  session-&gt;handle = handle;
+... populate session fields
+  janus_mutex_init(&amp;session-&gt;rec_mutex);
+  session-&gt;destroyed = 0;
+  g_atomic_int_set(&amp;session-&gt;hangingup, 0);
+... populate session fields
+  handle-&gt;plugin_handle = session;
+  janus_mutex_lock(&amp;sessions_mutex);
+  g_hash_table_insert(sessions, handle, session);
+  janus_mutex_unlock(&amp;sessions_mutex);
+
+  return;
+}
+</code></pre>
+</div>
+<p>This is convoluted, I don’t get it.  What’s happening here is, the recordplay plugin has a hash table called <code class="highlighter-rouge">sessions</code>.  A <code class="highlighter-rouge">janus_recordplay_session</code> is malloc’d , populated, then stored in the hash table by reference.</p>
+
+<p>Let’s take a look at <code class="highlighter-rouge">janus_recordplay_incoming_rtp</code> ,</p>
+
   </div>
 
   
