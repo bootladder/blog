@@ -1,5 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-12T13:05:52-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Janus: Refactoring a Plugin</title><link href="/2018/03/11/janus-refactoring-a-plugin.html" rel="alternate" type="text/html" title="Janus: Refactoring a Plugin" /><published>2018-03-11T00:00:00-08:00</published><updated>2018-03-11T00:00:00-08:00</updated><id>/2018/03/11/janus-refactoring-a-plugin</id><content type="html" xml:base="/2018/03/11/janus-refactoring-a-plugin.html">&lt;p&gt;The sample Janus Plugins are written in C and they are very good.&lt;br /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-15T12:41:20-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Twilio, Tokbox, Vidyo: Demos</title><link href="/2018/03/12/twilio-tokbox-vidyo-demos.html" rel="alternate" type="text/html" title="Twilio, Tokbox, Vidyo:  Demos" /><published>2018-03-12T00:00:00-07:00</published><updated>2018-03-12T00:00:00-07:00</updated><id>/2018/03/12/twilio-tokbox-vidyo-demos</id><content type="html" xml:base="/2018/03/12/twilio-tokbox-vidyo-demos.html">&lt;h1 id=&quot;vidyo&quot;&gt;Vidyo&lt;/h1&gt;
+&lt;ol&gt;
+  &lt;li&gt;Vidyo PaaS does not include the Media Server (Media Bridge) as part of the platform.  Vidyo does provide a Media Bridge docker image, which the application can use.  &lt;code class=&quot;highlighter-rouge&quot;&gt;To record or live-stream multiple Vidyo conferences simultaneously, you need to create and deploy a separate Docker container for each recording and live stream.&lt;/code&gt; .  Woah, weird use of Docker.  Using docker exec to control the media bridge.  Every recording needs to have a different config file, specifying the path and filename for the recording, plus other options.  What??&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Yeah… no thanks.&lt;/p&gt;
+
+&lt;h1 id=&quot;tokbox&quot;&gt;Tokbox&lt;/h1&gt;
+&lt;ol&gt;
+  &lt;li&gt;Hmm, it markets the ability to record and playback.  Mostly takes about “archiving” , hardly mentions playback at all.  Something’s fishy about it.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1 id=&quot;twilio&quot;&gt;Twilio&lt;/h1&gt;
+
+&lt;h1 id=&quot;sinch--red5&quot;&gt;Sinch?  Red5?&lt;/h1&gt;
+
+&lt;h1 id=&quot;hmm-the-server-needs-to-be-able-to-be-a-peer-in-a-peer2peer-connection&quot;&gt;Hmm, the server needs to be able to be a peer in a peer2peer connection.&lt;/h1&gt;
+&lt;p&gt;This is the only way the server can stream back the recording.
+Otherwise, the only way a client can play the recording is to download it.
+Sure this could happen automatically with a AJAX call.&lt;br /&gt;
+Actually I just tried it, a HTML5 audio tag with the src pointing to a URL.  Works pretty good.&lt;/p&gt;</content><author><name></name></author><summary type="html">Vidyo Vidyo PaaS does not include the Media Server (Media Bridge) as part of the platform. Vidyo does provide a Media Bridge docker image, which the application can use. To record or live-stream multiple Vidyo conferences simultaneously, you need to create and deploy a separate Docker container for each recording and live stream. . Woah, weird use of Docker. Using docker exec to control the media bridge. Every recording needs to have a different config file, specifying the path and filename for the recording, plus other options. What?? Yeah… no thanks. Tokbox Hmm, it markets the ability to record and playback. Mostly takes about “archiving” , hardly mentions playback at all. Something’s fishy about it. Twilio Sinch? Red5? Hmm, the server needs to be able to be a peer in a peer2peer connection. This is the only way the server can stream back the recording. Otherwise, the only way a client can play the recording is to download it. Sure this could happen automatically with a AJAX call. Actually I just tried it, a HTML5 audio tag with the src pointing to a URL. Works pretty good.</summary></entry><entry><title type="html">Janus: Refactoring a Plugin</title><link href="/2018/03/11/janus-refactoring-a-plugin.html" rel="alternate" type="text/html" title="Janus: Refactoring a Plugin" /><published>2018-03-11T00:00:00-08:00</published><updated>2018-03-11T00:00:00-08:00</updated><id>/2018/03/11/janus-refactoring-a-plugin</id><content type="html" xml:base="/2018/03/11/janus-refactoring-a-plugin.html">&lt;p&gt;The sample Janus Plugins are written in C and they are very good.&lt;br /&gt;
 But, it’s not very readable.  I’d like a higher level description of what the sample plugin app does.  Though the documentation is good, I still want a complete, high level description.  I’ll do this by refactoring, which will also allow me to take out reusable snippets.&lt;/p&gt;
 
 &lt;p&gt;Particularly looking to refactor to improve:  separation of concerns  (single responsibility) .  Make it more obvious where the configuration file comes from.&lt;/p&gt;
@@ -319,7 +339,20 @@ navigator.msSaveBlob
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;The Stop Recording Button click handler calls recorder.stopRecording, which will then call the stopRecordingCallback() which calls replaceAudio() and then audio.play()&lt;/p&gt;</content><author><name></name></author><summary type="html">Learning to use this demo: https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/audio-recording.html Starting from the top… What is this? &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, minimum-scale=1.0&quot;&amp;gt; ah of course, it’s for mobile devices. https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary What is this? &amp;lt;div&amp;gt;&amp;lt;audio controls autoplay&amp;gt;&amp;lt;/audio&amp;gt;&amp;lt;/div&amp;gt; It’s the audio widget, which I did not know was an HTML tag. controls shows the play, seek, volume controls, autoplay plays without pressing play. What is this? &amp;lt;script src=&quot;https://webrtc.github.io/adapter/adapter-latest.js&quot;&amp;gt;&amp;lt;/script&amp;gt; Oh… we need to use this adapter for cross browser compatibility, insulating us from name changes. Why does the demo code declare vars all over the place… Let’s move them to the top. Demo still works. So.. the control flow here is convoluted, impossible to read top to bottom. Let’s start from pressing the “Start Recording” button. Using the inspector I see the button has a click event. I see where this is set, and I’ll move it to the top. Ah finally some sense; all the click handlers are set in a block. So I’ll just move all the click handlers to the top. Alright, the btnStartRecording.onclick. This smells bad, I’m pretty sure? ``` btnStartRecording.onclick = function() { this.disabled = true; this.style.border = ‘’; this.style.fontSize = ‘’;</summary></entry><entry><title type="html">Remove Secret Data from Old git Commits not yet pushed</title><link href="/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed.html" rel="alternate" type="text/html" title="Remove Secret Data from Old git Commits not yet pushed" /><published>2018-02-09T00:00:00-08:00</published><updated>2018-02-09T00:00:00-08:00</updated><id>/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed</id><content type="html" xml:base="/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed.html">&lt;p&gt;I didn’t push to the remote yet. The very initial commit of my repo has an API token in it.&lt;br /&gt;
+&lt;p&gt;The Stop Recording Button click handler calls recorder.stopRecording, which will then call the stopRecordingCallback() which calls replaceAudio() and then audio.play()&lt;/p&gt;
+
+&lt;h1 id=&quot;random-notes&quot;&gt;Random notes&lt;/h1&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;getUserMedia&lt;/code&gt; is a promise, either calling a callback or an error.  Apparently, if the callback itself fails execution, then the error is caught.  Also, if this happens, the UserMedia is not released.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.youtube.com/watch?v=4ba0G8FQt5M&lt;/code&gt;  This talk is good.
+#Blobs&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;FileReader can read content from a blob.  readAsText() , readAsArrayBuffer().&lt;/li&gt;
+  &lt;li&gt;A File is a Blob.&lt;/li&gt;
+  &lt;li&gt;FileReader can readAsText(myFile);&lt;/li&gt;
+  &lt;li&gt;ArrayBuffer is like a Blob, but the bytes are on disk.&lt;/li&gt;
+  &lt;li&gt;var bytes = new Uint8Array(buffer); //creates a typed array from an array buffer.&lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">Learning to use this demo: https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/audio-recording.html Starting from the top… What is this? &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, minimum-scale=1.0&quot;&amp;gt; ah of course, it’s for mobile devices. https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary What is this? &amp;lt;div&amp;gt;&amp;lt;audio controls autoplay&amp;gt;&amp;lt;/audio&amp;gt;&amp;lt;/div&amp;gt; It’s the audio widget, which I did not know was an HTML tag. controls shows the play, seek, volume controls, autoplay plays without pressing play. What is this? &amp;lt;script src=&quot;https://webrtc.github.io/adapter/adapter-latest.js&quot;&amp;gt;&amp;lt;/script&amp;gt; Oh… we need to use this adapter for cross browser compatibility, insulating us from name changes. Why does the demo code declare vars all over the place… Let’s move them to the top. Demo still works. So.. the control flow here is convoluted, impossible to read top to bottom. Let’s start from pressing the “Start Recording” button. Using the inspector I see the button has a click event. I see where this is set, and I’ll move it to the top. Ah finally some sense; all the click handlers are set in a block. So I’ll just move all the click handlers to the top. Alright, the btnStartRecording.onclick. This smells bad, I’m pretty sure? ``` btnStartRecording.onclick = function() { this.disabled = true; this.style.border = ‘’; this.style.fontSize = ‘’;</summary></entry><entry><title type="html">Remove Secret Data from Old git Commits not yet pushed</title><link href="/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed.html" rel="alternate" type="text/html" title="Remove Secret Data from Old git Commits not yet pushed" /><published>2018-02-09T00:00:00-08:00</published><updated>2018-02-09T00:00:00-08:00</updated><id>/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed</id><content type="html" xml:base="/2018/02/09/remove-secret-data-from-old-git-commits-not-yet-pushed.html">&lt;p&gt;I didn’t push to the remote yet. The very initial commit of my repo has an API token in it.&lt;br /&gt;
 My current verison still has that API token in it.&lt;br /&gt;
 I want to replace the token at the initial commit, then I want to rebase all the other commits after that.&lt;br /&gt;
 To do this, I’ll make a dummy branch at master so I don’t lose that branch.&lt;br /&gt;
@@ -924,201 +957,4 @@ OK, bcm2835 is more directly accessing the hardware.&lt;br /&gt;
 But sysfsgpio sounds very interesting, like maybe I can port it to the Beaglebone?&lt;/p&gt;
 
 &lt;h1 id=&quot;references-links&quot;&gt;References, Links&lt;/h1&gt;
-&lt;p&gt;http://thehackerworkshop.com/?tag=openocd&lt;/p&gt;</content><author><name></name></author><summary type="html">How to actually write the flash? I’ve never used GDB. First start the OpenOCD server. This is what I see: Info : at91samd20j18.cpu: hardware has 4 breakpoints, 2 watchpoints Then connect to the server with gdb. Run the gdb command and then at the prompt type this: (gdb) target remote localhost:3333 I’m using arm-none-eabi-gdb. If I just run native gdb, I get this output Info : accepting 'gdb' connection from 3333 undefined debug reason 7 - target needs reset Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) But if I run arm-none-eabi-gdb, I get this Info : accepting 'gdb' connection from 3333 undefined debug reason 7 - target needs reset Now that I’m connected let’s Read some memory addresses. (gdb) x 0x3FF00 0x3ff00: 0xdeadbeef (gdb) x 0x3FE00 0x3fe00: 0x11456708 Great! Seeing deadbeef is good; it had to come from the target’s flash. Interesting, if I supply a bogus address it handles nicely. This is the output of the OpenOCD server after doing a (gdb) x 90000000. Error: CMSIS-DAP: Write Error (0x04) Polling target at91samd20j18.cpu failed, GDB will be halted. Polling again in 100ms Polling target at91samd20j18.cpu succeeded again Let’s try to write something. Oh dang, doesn’t work. (gdb) x 0x3f100 0x3f100: 0xffffffff (gdb) set {int}0x3f100 = 0xdeadbeef Writing to flash memory forbidden in this context Now let’s go to the OpenOCD manual and look at their example. It says to run gdb with an .elf file. Let’s do that. Dang. Same error. But, OpenOCD manual shows using the load command. That worked! (gdb) set {int}0x3F100=0xdeadbeef Writing to flash memory forbidden in this context (gdb) load Loading section .text, size 0xfea0 lma 0x0 Loading section .debug_breadcrumbs, size 0x4 lma 0xfea0 Loading section .relocate, size 0x110 lma 0xfea4 Start address 0x74b8, load size 65460 Transfer rate: 1 KB/sec, 9351 bytes/write. Well atleast I can write to RAM. (gdb) set {int}0x20006000=0xdeadbeef (gdb) x 0x20006000 0x20006000: 0xdeadbeef OK, here’s another lead. (gdb) monitor flash probe 0 flash 'at91samd' found at 0x00000000 This shows that the flash bank 0 is found at address 0x0. This is correct. Another thing I can do is erase_check (gdb) monitor flash erase_check 0 successfully checked erase state # 0: 0x00000000 (0x4000 16kB) not erased # 1: 0x00004000 (0x4000 16kB) not erased # 2: 0x00008000 (0x4000 16kB) not erased # 3: 0x0000c000 (0x4000 16kB) not erased # 4: 0x00010000 (0x4000 16kB) erased # 5: 0x00014000 (0x4000 16kB) erased # 6: 0x00018000 (0x4000 16kB) erased # 7: 0x0001c000 (0x4000 16kB) erased # 8: 0x00020000 (0x4000 16kB) erased # 9: 0x00024000 (0x4000 16kB) erased # 10: 0x00028000 (0x4000 16kB) erased # 11: 0x0002c000 (0x4000 16kB) erased # 12: 0x00030000 (0x4000 16kB) erased # 13: 0x00034000 (0x4000 16kB) erased # 14: 0x00038000 (0x4000 16kB) erased # 15: 0x0003c000 (0x4000 16kB) not erased While this is correct, I already know that the page size is 64 bytes and the erase row size is 4 pages, 256 bytes. Definitely not 16kB. I learned here, that when I say (gdb) monitor flash erase_check 0 , what happens is, monitor tells gdb to pass flash erase_check 0 to OpenOCD. So flash erase_check is an OpenOCD command, documented in the manual. We can do flash erase_sector num first last flash erase_address [pad] [unlock] address length flash fillw address word length flash fillh address halfword length flash fillb address byte length flash write_bank num filename [offset] program filename [verify] [reset] [exit] [offset]</summary></entry><entry><title type="html">arduino-cmake first try</title><link href="/2018/01/16/arduino-cmake-first-try.html" rel="alternate" type="text/html" title="arduino-cmake first try" /><published>2018-01-16T00:00:00-08:00</published><updated>2018-01-16T00:00:00-08:00</updated><id>/2018/01/16/arduino-cmake-first-try</id><content type="html" xml:base="/2018/01/16/arduino-cmake-first-try.html">&lt;p&gt;I cloned the repo.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd example
-mkdir build
-cmake ..
-CMake Error at CMakeLists.txt:11 (GENERATE_ARDUINO_LIBRARY_EXAMPLE):
-  Unknown CMake command &quot;GENERATE_ARDUINO_LIBRARY_EXAMPLE&quot;.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;OK &lt;code class=&quot;highlighter-rouge&quot;&gt;https://github.com/queezythegreat/arduino-cmake/issues/38&lt;/code&gt; solves it.&lt;br /&gt;
-mkdir build;cmake .. must happen in the top level CMakeLists.txt directory.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake$ mkdir build
-steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake$ cd build
-steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake/build$ cmake ..
-CMake Error at cmake/ArduinoToolchain.cmake:93 (message):
-  Could not find Arduino SDK (set ARDUINO_SDK_PATH)!
-Call Stack (most recent call first):
-  /usr/share/cmake-3.5/Modules/CMakeDetermineSystem.cmake:98 (include)
-  CMakeLists.txt:15 (project)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;OK, it can’t find the toolchain.  It’s not installed.  What happened …&lt;br /&gt;
-Line 15 of the top level CMakeLists.txt, was a project() call.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;project(ArduinoExample C CXX ASM)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;And then project() calls CMake core… line 98&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;     include(&quot;${CMAKE_TOOLCHAIN_FILE}&quot; OPTIONAL RESULT_VARIABLE _INCLUDED_TOOLCHAIN_FILE)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CMAKE_TOOLCHAIN_FILE&lt;/code&gt; is set in the CMakeLists.txt:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#=============================================================================#
-# Author: QueezyTheGreat                                                      #
-# Date:   26.04.2011                                                          #
-#                                                                             #
-# Description: Arduino CMake example                                          #
-#                                                                             #
-#=============================================================================#
-set(CMAKE_TOOLCHAIN_FILE cmake/ArduinoToolchain.cmake) # Arduino Toolchain
-
-
-cmake_minimum_required(VERSION 2.8)
-#====================================================================#
-#  Setup Project                                                     #
-#====================================================================#
-project(ArduinoExample C CXX ASM)
-
-print_board_list()
-print_programmer_list()
-
-add_subdirectory(example)   #add the example directory into build
-~                                                                     
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;So we are reading the ArduinoToolchain.cmake. 
-Some interesting things inside here, some I don’t understand.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set(CMAKE_SYSTEM_NAME Arduino)
-
-set(CMAKE_C_COMPILER avr-gcc)
-set(CMAKE_ASM_COMPILER avr-gcc)
-set(CMAKE_CXX_COMPILER avr-g++)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Here we are identifying avr-gcc, that’s cool.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#=============================================================================#
-#                         System Paths                                        #
-#=============================================================================#
-if (UNIX)
-    include(Platform/UnixPaths)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;include() is like #include in C, so let’s see it.  Huh.. it’s not there.  Let’s see later then…&lt;/p&gt;
-
-&lt;p&gt;Then there’s a part later to detect the &lt;code class=&quot;highlighter-rouge&quot;&gt;ARDUINO_SDK_PATH&lt;/code&gt; using hints, which are directories likely to have the install.&lt;br /&gt;
-Let’s just install the SDK now.  To do that just download it and run &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo install.sh&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Now let’s run &lt;code class=&quot;highlighter-rouge&quot;&gt;cmake ..&lt;/code&gt; again.  Still the same error, let’s check the path hints.&lt;br /&gt;
-Hmm for some reason the install.sh  doesn’t actually install anything in /usr or /bin or whatever.
-Let’s move it manually then into one of the &lt;code class=&quot;highlighter-rouge&quot;&gt;Hints&lt;/code&gt; , /usr/local/share/ .&lt;br /&gt;
-&lt;strong&gt;Awesome!&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake/build$ cmake ..-- The C compiler identification is GNU 4.9.2
--- The CXX compiler identification is GNU 4.9.2
--- The ASM compiler identification is GNU
--- Found assembler: /usr/local/share/arduino-1.8.5/hardware/tools/avr/bin/avr-gcc
--- Arduino SDK version 1.8.5-2017.01.09: /usr/local/share/arduino-1.8.5
--- Check for working C compiler: /usr/local/share/arduino-1.8.5/hardware/tools/avr/bin/avr-gcc
--- Check for working C compiler: /usr/local/share/arduino-1.8.5/hardware/tools/avr/bin/avr-gcc -- works
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Detecting C compile features
--- Detecting C compile features - done
--- Check for working CXX compiler: /usr/local/share/arduino-1.8.5/hardware/tools/avr/bin/avr-g++
--- Check for working CXX compiler: /usr/local/share/arduino-1.8.5/hardware/tools/avr/bin/avr-g++ -- works
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Detecting CXX compile features
--- Detecting CXX compile features - done
--- ARDUINO Boards:
---                   menu: 
---                    yun: Arduino Y
---                    uno: Arduino/Genuino Uno
---              diecimila: Arduino Duemilanove or Diecimila
---                   nano: Arduino Nano
---                   mega: Arduino/Genuino Mega or Mega 2560
---                megaADK: Arduino Mega ADK
---               leonardo: Arduino Leonardo
---            leonardoeth: Arduino Leonardo ETH
---                  micro: Arduino/Genuino Micro
---                esplora: Arduino Esplora
---                   mini: Arduino Mini
---               ethernet: Arduino Ethernet
---                    fio: Arduino Fio
---                     bt: Arduino BT
---             LilyPadUSB: LilyPad Arduino USB
---                lilypad: LilyPad Arduino
---                    pro: Arduino Pro or Pro Mini
---               atmegang: Arduino NG or older
---           robotControl: Arduino Robot Control
---             robotMotor: Arduino Robot Motor
---                  gemma: Arduino Gemma
---     circuitplay32u4cat: Adafruit Circuit Playground
---                yunmini: Arduino Y
---                chiwawa: Arduino Industrial 101
---                    one: Linino One
---                unowifi: Arduino Uno WiFi
--- 
--- ARDUINO Programmers:
---            avrisp: AVR ISP
---        avrispmkii: AVRISP mkII
---        usbtinyisp: USBtinyISP
---        arduinoisp: ArduinoISP
---     arduinoisporg: ArduinoISP.org
---            usbasp: USBasp
---          parallel: Parallel Programmer
---      arduinoasisp: Arduino as ISP
---          usbGemma: Arduino Gemma
---         buspirate: BusPirate as ISP
---            stk500: Atmel STK500 development board
---          jtag3isp: Atmel JTAGICE3 (ISP mode)
---             jtag3: Atmel JTAGICE3 (JTAG mode)
---         atmel_ice: Atmel-ICE (AVR)
--- 
--- Generating wire_example
--- avr library found: Wire
--- Generating blink_example
--- Generating blink_original
--- Generating blink_file_original
--- Generating blink_bundled
--- Generating blink_lib
--- Generating blink
--- Generating serial_lib
--- avr library found: SoftwareSerial
--- Configuring done
--- Generating done
--- Build files have been written to: /home/steve/prog/scratch/arduino-cmake/build
-steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake/build$ 
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;What’s that stuff about boards and programmers?
-How does that last part work, &lt;code class=&quot;highlighter-rouge&quot;&gt;Generating blink_example&lt;/code&gt; ?&lt;br /&gt;
-Somehow, CMakeLists.txt at the top level was able to find all of those things.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Easy&lt;/strong&gt; , that’s in the top CMakeLists.txt:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#====================================================================#
-#  Setup Project                                                     #
-#====================================================================#
-project(ArduinoExample C CXX ASM)
-
-print_board_list()
-print_programmer_list()
-
-add_subdirectory(example)   #add the example directory into build
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;So literally it prints the board lists and programmer list, and recurses into the example directory.&lt;/p&gt;
-
-&lt;p&gt;So, the examples/CMakeLists.txt.&lt;br /&gt;
-All that happens is this:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set(ARDUINO_DEFAULT_BOARD uno) # Default Board ID, when not specified
-set(ARDUINO_DEFAULT_PORT /dev/ttyUSB0) # Default Port, when not specified
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#====================================================================#
-# Advanced firwmare example
-#====================================================================#
-generate_arduino_firmware(blink
-        SRCS blink.cpp
-        LIBS blink_lib
-        BOARD nano
-        BOARD_CPU atmega328
-        PORT com4
-        )
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Wow that’s not too bad , I’d like to give it a try!&lt;/p&gt;
-
-&lt;p&gt;It looks like it should be easy to support the ARM chips, and use this to create new Arduino Libraries.&lt;/p&gt;</content><author><name></name></author><summary type="html">I cloned the repo. cd example mkdir build cmake .. CMake Error at CMakeLists.txt:11 (GENERATE_ARDUINO_LIBRARY_EXAMPLE): Unknown CMake command &quot;GENERATE_ARDUINO_LIBRARY_EXAMPLE&quot;. OK https://github.com/queezythegreat/arduino-cmake/issues/38 solves it. mkdir build;cmake .. must happen in the top level CMakeLists.txt directory. steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake$ mkdir build steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake$ cd build steve@steve-ThinkPad-T420:~/prog/scratch/arduino-cmake/build$ cmake .. CMake Error at cmake/ArduinoToolchain.cmake:93 (message): Could not find Arduino SDK (set ARDUINO_SDK_PATH)! Call Stack (most recent call first): /usr/share/cmake-3.5/Modules/CMakeDetermineSystem.cmake:98 (include) CMakeLists.txt:15 (project) OK, it can’t find the toolchain. It’s not installed. What happened … Line 15 of the top level CMakeLists.txt, was a project() call. project(ArduinoExample C CXX ASM) And then project() calls CMake core… line 98 include(&quot;${CMAKE_TOOLCHAIN_FILE}&quot; OPTIONAL RESULT_VARIABLE _INCLUDED_TOOLCHAIN_FILE) CMAKE_TOOLCHAIN_FILE is set in the CMakeLists.txt: ``` #=============================================================================# Author: QueezyTheGreat Date: 26.04.2011 # # Description: Arduino CMake example # # #=============================================================================# set(CMAKE_TOOLCHAIN_FILE cmake/ArduinoToolchain.cmake) # Arduino Toolchain</summary></entry></feed>
+&lt;p&gt;http://thehackerworkshop.com/?tag=openocd&lt;/p&gt;</content><author><name></name></author><summary type="html">How to actually write the flash? I’ve never used GDB. First start the OpenOCD server. This is what I see: Info : at91samd20j18.cpu: hardware has 4 breakpoints, 2 watchpoints Then connect to the server with gdb. Run the gdb command and then at the prompt type this: (gdb) target remote localhost:3333 I’m using arm-none-eabi-gdb. If I just run native gdb, I get this output Info : accepting 'gdb' connection from 3333 undefined debug reason 7 - target needs reset Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) Error: CMSIS-DAP: Write Error (0x04) But if I run arm-none-eabi-gdb, I get this Info : accepting 'gdb' connection from 3333 undefined debug reason 7 - target needs reset Now that I’m connected let’s Read some memory addresses. (gdb) x 0x3FF00 0x3ff00: 0xdeadbeef (gdb) x 0x3FE00 0x3fe00: 0x11456708 Great! Seeing deadbeef is good; it had to come from the target’s flash. Interesting, if I supply a bogus address it handles nicely. This is the output of the OpenOCD server after doing a (gdb) x 90000000. Error: CMSIS-DAP: Write Error (0x04) Polling target at91samd20j18.cpu failed, GDB will be halted. Polling again in 100ms Polling target at91samd20j18.cpu succeeded again Let’s try to write something. Oh dang, doesn’t work. (gdb) x 0x3f100 0x3f100: 0xffffffff (gdb) set {int}0x3f100 = 0xdeadbeef Writing to flash memory forbidden in this context Now let’s go to the OpenOCD manual and look at their example. It says to run gdb with an .elf file. Let’s do that. Dang. Same error. But, OpenOCD manual shows using the load command. That worked! (gdb) set {int}0x3F100=0xdeadbeef Writing to flash memory forbidden in this context (gdb) load Loading section .text, size 0xfea0 lma 0x0 Loading section .debug_breadcrumbs, size 0x4 lma 0xfea0 Loading section .relocate, size 0x110 lma 0xfea4 Start address 0x74b8, load size 65460 Transfer rate: 1 KB/sec, 9351 bytes/write. Well atleast I can write to RAM. (gdb) set {int}0x20006000=0xdeadbeef (gdb) x 0x20006000 0x20006000: 0xdeadbeef OK, here’s another lead. (gdb) monitor flash probe 0 flash 'at91samd' found at 0x00000000 This shows that the flash bank 0 is found at address 0x0. This is correct. Another thing I can do is erase_check (gdb) monitor flash erase_check 0 successfully checked erase state # 0: 0x00000000 (0x4000 16kB) not erased # 1: 0x00004000 (0x4000 16kB) not erased # 2: 0x00008000 (0x4000 16kB) not erased # 3: 0x0000c000 (0x4000 16kB) not erased # 4: 0x00010000 (0x4000 16kB) erased # 5: 0x00014000 (0x4000 16kB) erased # 6: 0x00018000 (0x4000 16kB) erased # 7: 0x0001c000 (0x4000 16kB) erased # 8: 0x00020000 (0x4000 16kB) erased # 9: 0x00024000 (0x4000 16kB) erased # 10: 0x00028000 (0x4000 16kB) erased # 11: 0x0002c000 (0x4000 16kB) erased # 12: 0x00030000 (0x4000 16kB) erased # 13: 0x00034000 (0x4000 16kB) erased # 14: 0x00038000 (0x4000 16kB) erased # 15: 0x0003c000 (0x4000 16kB) not erased While this is correct, I already know that the page size is 64 bytes and the erase row size is 4 pages, 256 bytes. Definitely not 16kB. I learned here, that when I say (gdb) monitor flash erase_check 0 , what happens is, monitor tells gdb to pass flash erase_check 0 to OpenOCD. So flash erase_check is an OpenOCD command, documented in the manual. We can do flash erase_sector num first last flash erase_address [pad] [unlock] address length flash fillw address word length flash fillh address halfword length flash fillb address byte length flash write_bank num filename [offset] program filename [verify] [reset] [exit] [offset]</summary></entry></feed>

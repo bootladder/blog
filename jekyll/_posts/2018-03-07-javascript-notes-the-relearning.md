@@ -106,3 +106,14 @@ navigator.msSaveBlob
 ```
   
 The Stop Recording Button click handler calls recorder.stopRecording, which will then call the stopRecordingCallback() which calls replaceAudio() and then audio.play()
+  
+# Random notes
+`getUserMedia` is a promise, either calling a callback or an error.  Apparently, if the callback itself fails execution, then the error is caught.  Also, if this happens, the UserMedia is not released.
+  
+`https://www.youtube.com/watch?v=4ba0G8FQt5M`  This talk is good.
+#Blobs
+1.  FileReader can read content from a blob.  readAsText() , readAsArrayBuffer().
+2.  A File is a Blob.
+3.  FileReader can readAsText(myFile);
+4.  ArrayBuffer is like a Blob, but the bytes are on disk.
+5.  var bytes = new Uint8Array(buffer); //creates a typed array from an array buffer.
