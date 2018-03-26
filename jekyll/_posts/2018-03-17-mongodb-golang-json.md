@@ -71,6 +71,10 @@ OK my solution now is to try `-p 127.0.0.1:27017:27017` .  Yes!! That is the sol
 I'm using Flask as my API server.  It is in a container.  It receives requests and then executes shell scripts.  The shell scripts are located in a host directory that is volume mounted to the container.  I compiled the exact golang dummy program above and put it in that directory.  It executes fine on the host, but when executing in the container, the Mongo server cannot be found.  
 At first I thought, there is no port forwarding that gives the Flask container access to localhost:27017 on the host.  The Flask container did have 9002:5000, which makes the Flask default port 5000 accessible by the public at port 9002.  So I tried to do a 27017:27017 in the Flask container.  But no!  Docker could not bind to 27017, because Mongo was already bound to it.  
 So, I still don't understand this but my solution was to change the Flask container to use Host Networking, ie. `network_mode:host`
+# Oh no... that ended up breaking Flask!
+Turns out, setting `network_mode:host` overrides the port forward I had `9002:5000`, since the Flask server stopped responding to 9002, and started responding to 5000!
+# OK I will just configure the Flask port.  Using network_mode:host.
+Ugh this sucks.  I couldn't figure out how to block public access to Mongo.  So I actually put Mongo in the docker network, doing a port publish `22222:21017`.  The Flask is using `network_mode:host`.  I did verify Flask can access Mongo, and the public cannot.
   
 # I'm reading stupid hate comments about MongoDB... why?
 `https://getstream.io/blog/building-a-performant-api-using-go-and-cassandra/`

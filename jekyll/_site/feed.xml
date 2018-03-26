@@ -1,5 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-18T15:47:52-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">MongoDB Golang JSON (Mongo Alternatives?)</title><link href="/2018/03/17/mongodb-golang-json.html" rel="alternate" type="text/html" title="MongoDB Golang JSON (Mongo Alternatives?)" /><published>2018-03-17T00:00:00-07:00</published><updated>2018-03-17T00:00:00-07:00</updated><id>/2018/03/17/mongodb-golang-json</id><content type="html" xml:base="/2018/03/17/mongodb-golang-json.html">&lt;p&gt;I need a database, since working with a JSON file in the filesystem was not going far enough.  Need to query objects, delete objects, sort, etc.&lt;br /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-25T22:09:34-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Create React App, Take 2</title><link href="/2018/03/25/create-react-app-take-2.html" rel="alternate" type="text/html" title="Create React App, Take 2" /><published>2018-03-25T00:00:00-07:00</published><updated>2018-03-25T00:00:00-07:00</updated><id>/2018/03/25/create-react-app-take-2</id><content type="html" xml:base="/2018/03/25/create-react-app-take-2.html">&lt;h1 id=&quot;preface&quot;&gt;Preface&lt;/h1&gt;
+&lt;p&gt;I got a react practice app going a month ago.  Tic-tac-toe demo.  Used create-react-app.&lt;br /&gt;
+It was running on the development server for a bit.  Then I shut it down, now I wanted to bring it back up.&lt;br /&gt;
+I just tried to run &lt;code class=&quot;highlighter-rouge&quot;&gt;npm start&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;npm run start&lt;/code&gt; whatever it is, and it totally crashed my VPS.&lt;br /&gt;
+All of my open ssh sessions were getting these printed…&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Message from syslogd@caseyjones at Mar 26 04:56:10 ...
+ kernel:[445167.403797] BUG: soft lockup - CPU#0 stuck for 25s! [node:363]
+
+Message from syslogd@caseyjones at Mar 26 04:56:36 ...
+ kernel:[445193.778113] BUG: soft lockup - CPU#0 stuck for 25s! [postgres:414]
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Woah.  Maybe I ran out of RAM?  That’s a likely cause.  If not, that’s crazy.&lt;/p&gt;
+
+&lt;h1 id=&quot;anyway-ill-reboot-with-the-admin-console-and-do-a-fresh-create-react-app&quot;&gt;Anyway, I’ll reboot with the admin console and do a fresh create-react-app&lt;/h1&gt;
+&lt;h1 id=&quot;why-is-it-taking-so-long-i-dont-remember-it-taking-so-long&quot;&gt;Why is it taking so long… I don’t remember it taking so long&lt;/h1&gt;
+&lt;h1 id=&quot;wow-i-didnt-realize-it-was-200mb-fresh-install--its-all-in-node_modules&quot;&gt;Wow I didn’t realize it was 200MB, fresh install.  It’s all in node_modules&lt;/h1&gt;
+
+&lt;p&gt;OK, now the dev server is up.&lt;br /&gt;
+My goal is to take some built JS and put it in my existing project.&lt;br /&gt;
+Let’s just get straight to that.  run a &lt;code class=&quot;highlighter-rouge&quot;&gt;npm run build&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;what-did-npm-run-build-do-&quot;&gt;What did npm run build do ?&lt;/h1&gt;
+&lt;p&gt;First, &lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt;.  It took the source index.html, &lt;code class=&quot;highlighter-rouge&quot;&gt;public/index.html&lt;/code&gt; , removed all the comments and white space, replaced the template &lt;code class=&quot;highlighter-rouge&quot;&gt;%PUBLIC_URL%&lt;/code&gt; with &lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt;.  Ahh here’s the cool part, at the end of the &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;body&amp;gt;&lt;/code&gt; , the following was inserted:  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script type=&quot;text/javascript&quot; src=&quot;/static/js/main.ee7b2412.js&quot;&amp;gt;&lt;/code&gt;.&lt;br /&gt;
+And of course, our .js is in there.&lt;br /&gt;
+Cool, let’s see if I can just pop that main.ee7b2412.js into my static site, and stick a couple HTML tags to load it up.&lt;br /&gt;
+So, in the HTML I need the following: &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;div id=&quot;root&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;&lt;br /&gt;
+And at the end of the body I need this: &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script type=&quot;text/javascript&quot; src=&quot;react-app.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;h1 id=&quot;cool-that-works&quot;&gt;Cool, that works.&lt;/h1&gt;
+&lt;p&gt;But, can’t use this for development, because it takes way too long to build the production site.  I’ll have to go back to the development server and just start over there.&lt;/p&gt;</content><author><name></name></author><summary type="html">Preface I got a react practice app going a month ago. Tic-tac-toe demo. Used create-react-app. It was running on the development server for a bit. Then I shut it down, now I wanted to bring it back up. I just tried to run npm start or npm run start whatever it is, and it totally crashed my VPS. All of my open ssh sessions were getting these printed… ``` Message from syslogd@caseyjones at Mar 26 04:56:10 … kernel:[445167.403797] BUG: soft lockup - CPU#0 stuck for 25s! [node:363]</summary></entry><entry><title type="html">MongoDB Golang JSON (Mongo Alternatives?)</title><link href="/2018/03/17/mongodb-golang-json.html" rel="alternate" type="text/html" title="MongoDB Golang JSON (Mongo Alternatives?)" /><published>2018-03-17T00:00:00-07:00</published><updated>2018-03-17T00:00:00-07:00</updated><id>/2018/03/17/mongodb-golang-json</id><content type="html" xml:base="/2018/03/17/mongodb-golang-json.html">&lt;p&gt;I need a database, since working with a JSON file in the filesystem was not going far enough.  Need to query objects, delete objects, sort, etc.&lt;br /&gt;
 Also I like the idea of using Golang to deal with JSON at the client-server interface, since it’s really easy in Golang.  Then Golang can talk to the database.&lt;br /&gt;
 Initial googling suggested either postgres or Mongo, and I’m trying Mongo because I haven’t yet.&lt;/p&gt;
 
@@ -68,6 +98,10 @@ Oh, weird, turns out the original installation had already set bindaddress to 12
 &lt;p&gt;I’m using Flask as my API server.  It is in a container.  It receives requests and then executes shell scripts.  The shell scripts are located in a host directory that is volume mounted to the container.  I compiled the exact golang dummy program above and put it in that directory.  It executes fine on the host, but when executing in the container, the Mongo server cannot be found.&lt;br /&gt;
 At first I thought, there is no port forwarding that gives the Flask container access to localhost:27017 on the host.  The Flask container did have 9002:5000, which makes the Flask default port 5000 accessible by the public at port 9002.  So I tried to do a 27017:27017 in the Flask container.  But no!  Docker could not bind to 27017, because Mongo was already bound to it.&lt;br /&gt;
 So, I still don’t understand this but my solution was to change the Flask container to use Host Networking, ie. &lt;code class=&quot;highlighter-rouge&quot;&gt;network_mode:host&lt;/code&gt;&lt;/p&gt;
+&lt;h1 id=&quot;oh-no-that-ended-up-breaking-flask&quot;&gt;Oh no… that ended up breaking Flask!&lt;/h1&gt;
+&lt;p&gt;Turns out, setting &lt;code class=&quot;highlighter-rouge&quot;&gt;network_mode:host&lt;/code&gt; overrides the port forward I had &lt;code class=&quot;highlighter-rouge&quot;&gt;9002:5000&lt;/code&gt;, since the Flask server stopped responding to 9002, and started responding to 5000!&lt;/p&gt;
+&lt;h1 id=&quot;ok-i-will-just-configure-the-flask-port--using-network_modehost&quot;&gt;OK I will just configure the Flask port.  Using network_mode:host.&lt;/h1&gt;
+&lt;p&gt;Ugh this sucks.  I couldn’t figure out how to block public access to Mongo.  So I actually put Mongo in the docker network, doing a port publish &lt;code class=&quot;highlighter-rouge&quot;&gt;22222:21017&lt;/code&gt;.  The Flask is using &lt;code class=&quot;highlighter-rouge&quot;&gt;network_mode:host&lt;/code&gt;.  I did verify Flask can access Mongo, and the public cannot.&lt;/p&gt;
 
 &lt;h1 id=&quot;im-reading-stupid-hate-comments-about-mongodb-why&quot;&gt;I’m reading stupid hate comments about MongoDB… why?&lt;/h1&gt;
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;https://getstream.io/blog/building-a-performant-api-using-go-and-cassandra/&lt;/code&gt;
@@ -692,73 +726,4 @@ So let’s open the Dockerfile and install some toolchains.&lt;/p&gt;
 
 &lt;p&gt;Well it works, pretty obvious.&lt;/p&gt;
 
-&lt;p&gt;Just remember folks, 1GB RAM is easily plenty and easily nothing.  Pay attention to how much your stupid high level frameworks and languages use.&lt;/p&gt;</content><author><name></name></author><summary type="html">Dang, I finally figured out why my Docker containers were failing shortly after starting. That Error Code 137, Out of Memory. Really it’s my stupid Redmine container that’s taking up 30% of my 1GB RAM. But I can’t do anything about that. Jenkins I can consolidate the 3 instances into 1. Previously I had 1 Jenkins per toolchain, ie. 1 for arm-linux , 1 for arm-none, 1 for golang, etc. I liked this because it keeps the toolchain installs independent. Now I have to use 1 Jenkins container with all the toolchains inside of it. First I’ll have to port all the Jobs into the 1 Jenkins instance. Then I’ll see them in the Jenkins UI, so I can run builds which will fail due to no toolchain installed. Then I can install the toolchains. Great, copy pasting the jobs/ directories worked, I now see the jobs in the Jenkins homepage. And of course, running the build fails due to non-existing toolchain. So let’s open the Dockerfile and install some toolchains. Well it works, pretty obvious. Just remember folks, 1GB RAM is easily plenty and easily nothing. Pay attention to how much your stupid high level frameworks and languages use.</summary></entry><entry><title type="html">Debugging a Bootloader with GDB and OpenOCD</title><link href="/2018/01/21/debugging-a-bootloader-with-gdb-and-openocd.html" rel="alternate" type="text/html" title="Debugging a Bootloader with GDB and OpenOCD" /><published>2018-01-21T00:00:00-08:00</published><updated>2018-01-21T00:00:00-08:00</updated><id>/2018/01/21/debugging-a-bootloader-with-gdb-and-openocd</id><content type="html" xml:base="/2018/01/21/debugging-a-bootloader-with-gdb-and-openocd.html">&lt;p&gt;I have a working build of a bootloader.  Let’s flash it.  I have a binary and an ELF.  First let’s flash the binary.&lt;br /&gt;
-I’m using a SAMD20 custom board with an Atmel-ICE driven by a Beaglebone running OpenOCD, and I’m driving the Beaglebone with SSH.
-Let’s configure the Beaglebone’s OpenOCD conf.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Hmm, arm-none-eabi gcc and gdb are 700mb disk.  No thanks?&lt;/strong&gt;&lt;br /&gt;
-Let’s see what we can do with telnet.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;telnet localhost 4444
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Cool, halt and reset work.&lt;br /&gt;
-To read some memory use these&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; mdw 0x3ff00
-0x0003ff00: 2110002a 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Let’s load an image&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; load_image /tmp/binarg1
-8180 bytes written at address 0x00000000
-downloaded 8180 bytes in 0.327776s (24.371 KiB/s)
-&amp;gt; reset  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Looks like it worked.  Interestingly there is no LED toggle on the debugger.  I guess edbg puts it in but OpenOCD doesn’t.&lt;/p&gt;
-
-&lt;p&gt;Let’s look at the vector table.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; dump_image /tmp/bindump1 0x0 0x100
-dumped 256 bytes in 0.011345s (22.036 KiB/s)
--------
--------
-debian@FFNBeagle-A-0:/tmp$ od -tx1 -w4 -Ax bindump1 -v
-000000 00 80 00 20
-000004 25 07 00 00
-000008 65 07 00 00
-00000c 0d 07 00 00
-000010 00 00 00 00
-000014 00 00 00 00
-000018 00 00 00 00
-00001c 00 00 00 00
-000020 00 00 00 00
-000024 00 00 00 00
-000028 00 00 00 00
-00002c 65 07 00 00
-000030 00 00 00 00
-000034 00 00 00 00
-000038 65 07 00 00
-00003c 65 07 00 00
-000040 65 07 00 00
-000044 65 07 00 00
-000048 65 07 00 00
-00004c f1 06 00 00
-000050 fd 05 00 00
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h1 id=&quot;weird-problem-what-is-going-on&quot;&gt;Weird problem, what is going on?&lt;/h1&gt;
-&lt;p&gt;As I said, I have a working bootloader and a working application that can be bootloaded and run.  I used edbg, which always worked flawlessly when -p for programming, -e for erasing.  After the firmware is flashed, the application is loaded by serial port, ttyUSB.&lt;br /&gt;
-Very weird, I used OpenOCD to flash the bootloader firmware, it was OK, then I used ttyUSB to load the application, that was also OK, but then when I reset the target, it would jump to the application and hit some hard fault or something and reset.  WTF is OpenOCD doing differently?  I’m not even using OpenOCD for erasing anymore, I use edbg because I know for sure it erases, so it must be the programming.  I’m using binary images, not ELF’s so it really should just dump the memory, I don’t see how there could be a difference.&lt;br /&gt;
-Well, I know the next thing to try.  Try all the different commands for writing flash memory from a file.  I was using load_image blah.bin , where my blah.bin should start at address 0x0 so no more parameters are supplied to load_image&lt;/p&gt;
-
-&lt;p&gt;OK, before I do that, I should be able to find out what exactly went wrong by analyzing the flash memory contents on target.&lt;br /&gt;
-It looks like the bootloader is OK but then fails to jump to the application.  Let’s check the pointers.&lt;/p&gt;
-
-&lt;p&gt;The app loads from 0x2000, and puts a pointer to while(1) at 0x2100.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; mdw 0x2100
-0x00002100: 00002229 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Check the listing for address 2229, that is in app space, check the app listing file.  Well this is weird, jenkins appears to be building a different binary from my laptop.  GCC version is different.  Crap.  We’re going to have to make Jenkins a single point of truth here, and I’ll have to publish the linker map file so I can view it on my laptop.&lt;/p&gt;
-
-&lt;p&gt;Well not sure what’s happening but things seem to be working on OpenOCD again.&lt;/p&gt;</content><author><name></name></author><summary type="html">I have a working build of a bootloader. Let’s flash it. I have a binary and an ELF. First let’s flash the binary. I’m using a SAMD20 custom board with an Atmel-ICE driven by a Beaglebone running OpenOCD, and I’m driving the Beaglebone with SSH. Let’s configure the Beaglebone’s OpenOCD conf.</summary></entry></feed>
+&lt;p&gt;Just remember folks, 1GB RAM is easily plenty and easily nothing.  Pay attention to how much your stupid high level frameworks and languages use.&lt;/p&gt;</content><author><name></name></author><summary type="html">Dang, I finally figured out why my Docker containers were failing shortly after starting. That Error Code 137, Out of Memory. Really it’s my stupid Redmine container that’s taking up 30% of my 1GB RAM. But I can’t do anything about that. Jenkins I can consolidate the 3 instances into 1. Previously I had 1 Jenkins per toolchain, ie. 1 for arm-linux , 1 for arm-none, 1 for golang, etc. I liked this because it keeps the toolchain installs independent. Now I have to use 1 Jenkins container with all the toolchains inside of it. First I’ll have to port all the Jobs into the 1 Jenkins instance. Then I’ll see them in the Jenkins UI, so I can run builds which will fail due to no toolchain installed. Then I can install the toolchains. Great, copy pasting the jobs/ directories worked, I now see the jobs in the Jenkins homepage. And of course, running the build fails due to non-existing toolchain. So let’s open the Dockerfile and install some toolchains. Well it works, pretty obvious. Just remember folks, 1GB RAM is easily plenty and easily nothing. Pay attention to how much your stupid high level frameworks and languages use.</summary></entry></feed>

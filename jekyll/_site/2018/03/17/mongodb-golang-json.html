@@ -133,6 +133,10 @@ Oh, weird, turns out the original installation had already set bindaddress to 12
 <p>I’m using Flask as my API server.  It is in a container.  It receives requests and then executes shell scripts.  The shell scripts are located in a host directory that is volume mounted to the container.  I compiled the exact golang dummy program above and put it in that directory.  It executes fine on the host, but when executing in the container, the Mongo server cannot be found.<br />
 At first I thought, there is no port forwarding that gives the Flask container access to localhost:27017 on the host.  The Flask container did have 9002:5000, which makes the Flask default port 5000 accessible by the public at port 9002.  So I tried to do a 27017:27017 in the Flask container.  But no!  Docker could not bind to 27017, because Mongo was already bound to it.<br />
 So, I still don’t understand this but my solution was to change the Flask container to use Host Networking, ie. <code class="highlighter-rouge">network_mode:host</code></p>
+<h1 id="oh-no-that-ended-up-breaking-flask">Oh no… that ended up breaking Flask!</h1>
+<p>Turns out, setting <code class="highlighter-rouge">network_mode:host</code> overrides the port forward I had <code class="highlighter-rouge">9002:5000</code>, since the Flask server stopped responding to 9002, and started responding to 5000!</p>
+<h1 id="ok-i-will-just-configure-the-flask-port--using-network_modehost">OK I will just configure the Flask port.  Using network_mode:host.</h1>
+<p>Ugh this sucks.  I couldn’t figure out how to block public access to Mongo.  So I actually put Mongo in the docker network, doing a port publish <code class="highlighter-rouge">22222:21017</code>.  The Flask is using <code class="highlighter-rouge">network_mode:host</code>.  I did verify Flask can access Mongo, and the public cannot.</p>
 
 <h1 id="im-reading-stupid-hate-comments-about-mongodb-why">I’m reading stupid hate comments about MongoDB… why?</h1>
 <p><code class="highlighter-rouge">https://getstream.io/blog/building-a-performant-api-using-go-and-cassandra/</code>
