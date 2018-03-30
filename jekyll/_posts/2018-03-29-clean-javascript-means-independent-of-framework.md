@@ -101,3 +101,20 @@ function testerdom(md) {
   
 So, actually in terms of lines of code it isn't horrible.  Those if statements are only setting plain old variables, so I can just factor those out.  The lame part is that `React.createElement()` has a totally different API from `document.createElement()`.  The props, not only have to be converted to object like that, but it's super annoying that the fields changed, eg. background-color changed to backgroundColor.  Being that I want to just do the bare minimum CSS, this is annoying.  
 1 more note, to set children of a node in react, you pass them into the parent when the parent is being created.  Notice the top level node, the `div`, is created on the last line.  This is because React nodes are immutable.  In Plain JS, I could just `appendChild()`
+  
+## Conversely, what is lacking from Vanilla JS?
+
+# No Component Classes
+What does a component class ala React do for me?  
+Lifecycle methods are cool.  With Vanilla JS, all I had was button onclick.  
+
+Let's do an experiment and mimic some of React's behavior.  
+I want a HTML snippet like this
+```
+<body>
+<div id=root />
+<script src="my-vanilla.js"/>
+</body>
+```
+The javascript executes on load.  It will render my "App Component" under root.
+

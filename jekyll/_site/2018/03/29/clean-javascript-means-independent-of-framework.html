@@ -164,6 +164,23 @@ Take a look at the vanilla version here:</p>
 <p>So, actually in terms of lines of code it isn’t horrible.  Those if statements are only setting plain old variables, so I can just factor those out.  The lame part is that <code class="highlighter-rouge">React.createElement()</code> has a totally different API from <code class="highlighter-rouge">document.createElement()</code>.  The props, not only have to be converted to object like that, but it’s super annoying that the fields changed, eg. background-color changed to backgroundColor.  Being that I want to just do the bare minimum CSS, this is annoying.<br />
 1 more note, to set children of a node in react, you pass them into the parent when the parent is being created.  Notice the top level node, the <code class="highlighter-rouge">div</code>, is created on the last line.  This is because React nodes are immutable.  In Plain JS, I could just <code class="highlighter-rouge">appendChild()</code></p>
 
+<h2 id="conversely-what-is-lacking-from-vanilla-js">Conversely, what is lacking from Vanilla JS?</h2>
+
+<h1 id="no-component-classes">No Component Classes</h1>
+<p>What does a component class ala React do for me?<br />
+Lifecycle methods are cool.  With Vanilla JS, all I had was button onclick.</p>
+
+<p>Let’s do an experiment and mimic some of React’s behavior.<br />
+I want a HTML snippet like this</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;body&gt;
+&lt;div id=root /&gt;
+&lt;script src="my-vanilla.js"/&gt;
+&lt;/body&gt;
+</code></pre>
+</div>
+<p>The javascript executes on load.  It will render my “App Component” under root.</p>
+
+
   </div>
 
   
