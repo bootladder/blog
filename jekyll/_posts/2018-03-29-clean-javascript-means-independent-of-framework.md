@@ -117,4 +117,13 @@ I want a HTML snippet like this
 </body>
 ```
 The javascript executes on load.  It will render my "App Component" under root.
-
+*Phew, fortunately there are no ' characters in there*
+  
+Crap.  I can load my HTML from a file into the div, using jQuery, but, I need to ensure that the (JS that sets the button onClick handlers) is executed after the div is loaded.  Otherwise javascript says the element is null.  
+  
+OK, got out of that using the callback function on jQuery's `load`.  After the HTML is loaded, the callback executes JS which will assign the click handlers.
+  
+This is not what I intend to do, this is just a refactor/saving of my work before I write different stuff.  
+I'd like to have components ala React.  To do that, I need to dynamically generate the HTML, not just load static HTML into a #div.  Well not necessarily; actually, inside the static HTML, I could put in stub IDs in the divs, which could be set to application specific stuff, if the surrounding tag is identified.
+  
+To summarize.  What I did was take all the (JS that sets the button onclick handlers) , wrap all those into a function.  That function is called in the callback of jquery load.  Another thing I did was bring the declarations of those DOM object variables to the global scope, and initialized them in the wrapper function.  This gives other functions access to those global DOM objects.
