@@ -1,5 +1,111 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-25T22:09:34-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Create React App, Take 2</title><link href="/2018/03/25/create-react-app-take-2.html" rel="alternate" type="text/html" title="Create React App, Take 2" /><published>2018-03-25T00:00:00-07:00</published><updated>2018-03-25T00:00:00-07:00</updated><id>/2018/03/25/create-react-app-take-2</id><content type="html" xml:base="/2018/03/25/create-react-app-take-2.html">&lt;h1 id=&quot;preface&quot;&gt;Preface&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-29T21:52:42-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Clean Javascript means Independent of Framework</title><link href="/2018/03/29/clean-javascript-means-independent-of-framework.html" rel="alternate" type="text/html" title="Clean Javascript means Independent of Framework" /><published>2018-03-29T00:00:00-07:00</published><updated>2018-03-29T00:00:00-07:00</updated><id>/2018/03/29/clean-javascript-means-independent-of-framework</id><content type="html" xml:base="/2018/03/29/clean-javascript-means-independent-of-framework.html">&lt;p&gt;I have no interest in climbing steep learning curves for all these javascript frameworks.  Also I don’t want to learn stuff that will be obsolete soon.&lt;br /&gt;
+That’s why I like C programming and embedded systems.  Nothing has really changed.  You learn it once and you’re good to go.&lt;br /&gt;
+Somewhere in the middle of these 2 is Clean Architecture, or just modularity.&lt;/p&gt;
+
+&lt;p&gt;I feel like React kind of throws a wrench into this.  Let me talk it out to myself.&lt;br /&gt;
+JSX is not HTML.  It can be transformed into HTML, but it’s not HTML.  It would be nice if it was, so HTML could be reusable.&lt;br /&gt;
+But we can ignore this and leave that hassle for the front end person.&lt;br /&gt;
+I should be able to prototype my UI without any CSS, and the HTML should be throwaway code.&lt;/p&gt;
+
+&lt;p&gt;It’s frustrating trying to take what I want, or what I already have, and make it work with React.  So, let’s not do that.  What if all the React code looked exactly like the examples on the web?  That solves 2 problems:  first it takes away the pain of working with the framework, second it keeps my “core logic” separated.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-are-some-of-the-essential-elements-of-react--why-am-i-even-using-it&quot;&gt;What are some of the essential elements of React.  Why am I even using it?&lt;/h2&gt;
+&lt;p&gt;The component class:&lt;br /&gt;
+A component has state, props, lifecycle events, and a render.&lt;/p&gt;
+
+&lt;p&gt;When the state changes, the component rerenders.&lt;br /&gt;
+Pieces of state can be passed to children as props.&lt;/p&gt;
+
+&lt;h1 id=&quot;interesting--porting-vanilla-js-to-react-&quot;&gt;Interesting:  Porting Vanilla JS to React !!!&lt;/h1&gt;
+&lt;p&gt;I have a vanilla JS function that creates some elements using &lt;code class=&quot;highlighter-rouge&quot;&gt;document.createElement()&lt;/code&gt;, sets some to be children, populates some innerHTML, then returns the top parent.&lt;br /&gt;
+How do I port this same function to React?  Well…. looks like I can’t.&lt;br /&gt;
+Take a look at the vanilla version here:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function createMessageListEntryFromMessageDesc(md) {
+
+    var d = document.createElement('div')
+    var playbutton = document.createElement('button')
+
+    // Set innerHTML of Button
+    playbutton.innerHTML = md.topic
+    if( md.customtopic ) {
+        playbutton.innerHTML = md.customtopic
+    }
+
+    // Set Color of Button
+    var color
+    if( md.project == &quot;1&quot; ) {
+      color = &quot;blue&quot;
+    }
+    else {
+      color = &quot;gray&quot;
+    }
+
+    // Set Opacity of Button
+    var opacity
+    if( md.listenedto == false )
+        opacity = &quot;1&quot;
+    else
+        opacity = &quot;0.2&quot;
+
+    playbutton.setAttribute(&quot;style&quot;,
+      &quot;background-color: &quot;+color+&quot;;font-size : 32px; opacity:&quot;+opacity);
+
+    d.appendChild(playbutton)
+    return d
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Pretty straight forward.  It uses &lt;code class=&quot;highlighter-rouge&quot;&gt;document.createElement()&lt;/code&gt; , sets properties &lt;code class=&quot;highlighter-rouge&quot;&gt;innerHTML&lt;/code&gt; and calls method &lt;code class=&quot;highlighter-rouge&quot;&gt;setAttribute()&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;appendChild()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now see what I did to make it work with React.  (without JSX)&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function testerdom(md) {
+
+    var text = md.topic
+    if( md.customtopic ) {
+        text = md.customtopic
+    }
+    // Set Color of Button
+    var color
+    if( md.project == &quot;1&quot; ) {
+      color = &quot;blue&quot;
+    }
+    else {
+      color = &quot;gray&quot;
+    }
+
+    // Set Opacity of Button
+    var opacity
+    if( md.listenedto == false )
+        opacity = &quot;1&quot;
+    else
+        opacity = &quot;0.2&quot;
+
+    var props = {
+      style:{
+        backgroundColor:color,
+        fontSize: '32px',
+        opacity:opacity
+      }
+    }
+    var playbutton = React.createElement('button',props,text)
+    var d = React.createElement('div',null,playbutton)
+    return d
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So, actually in terms of lines of code it isn’t horrible.  Those if statements are only setting plain old variables, so I can just factor those out.  The lame part is that &lt;code class=&quot;highlighter-rouge&quot;&gt;React.createElement()&lt;/code&gt; has a totally different API from &lt;code class=&quot;highlighter-rouge&quot;&gt;document.createElement()&lt;/code&gt;.  The props, not only have to be converted to object like that, but it’s super annoying that the fields changed, eg. background-color changed to backgroundColor.  Being that I want to just do the bare minimum CSS, this is annoying.&lt;br /&gt;
+1 more note, to set children of a node in react, you pass them into the parent when the parent is being created.  Notice the top level node, the &lt;code class=&quot;highlighter-rouge&quot;&gt;div&lt;/code&gt;, is created on the last line.  This is because React nodes are immutable.  In Plain JS, I could just &lt;code class=&quot;highlighter-rouge&quot;&gt;appendChild()&lt;/code&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">I have no interest in climbing steep learning curves for all these javascript frameworks. Also I don’t want to learn stuff that will be obsolete soon. That’s why I like C programming and embedded systems. Nothing has really changed. You learn it once and you’re good to go. Somewhere in the middle of these 2 is Clean Architecture, or just modularity. I feel like React kind of throws a wrench into this. Let me talk it out to myself. JSX is not HTML. It can be transformed into HTML, but it’s not HTML. It would be nice if it was, so HTML could be reusable. But we can ignore this and leave that hassle for the front end person. I should be able to prototype my UI without any CSS, and the HTML should be throwaway code. It’s frustrating trying to take what I want, or what I already have, and make it work with React. So, let’s not do that. What if all the React code looked exactly like the examples on the web? That solves 2 problems: first it takes away the pain of working with the framework, second it keeps my “core logic” separated. What are some of the essential elements of React. Why am I even using it? The component class: A component has state, props, lifecycle events, and a render. When the state changes, the component rerenders. Pieces of state can be passed to children as props.</summary></entry><entry><title type="html">Javascript Sucks: Greatest Hits</title><link href="/2018/03/28/javascript-sucks-greatest-hits.html" rel="alternate" type="text/html" title="Javascript Sucks:  Greatest Hits" /><published>2018-03-28T00:00:00-07:00</published><updated>2018-03-28T00:00:00-07:00</updated><id>/2018/03/28/javascript-sucks-greatest-hits</id><content type="html" xml:base="/2018/03/28/javascript-sucks-greatest-hits.html">&lt;h1 id=&quot;heres-a-collection-of-snippets&quot;&gt;Here’s a collection of snippets&lt;/h1&gt;
+
+&lt;h3 id=&quot;consolelogobject-is-a-live-reference--in-other-words--it-doesnt-actually-log&quot;&gt;console.log(object) is a live reference.  in other words:  it doesn’t actually log.&lt;/h3&gt;
+&lt;p&gt;https://stackoverflow.com/a/38660899/9325070&lt;/p&gt;
+&lt;h3 id=&quot;solution-jsonstringifyobject-and-log-the-string&quot;&gt;Solution, JSON.stringify(object) and log the string.&lt;/h3&gt;
+&lt;p&gt;https://stackoverflow.com/a/4293047/9325070&lt;/p&gt;
+
+&lt;h1 id=&quot;finally-an-article-that-doesnt-suck&quot;&gt;Finally an article that doesn’t suck&lt;/h1&gt;
+&lt;p&gt;https://shanetomlinson.com/2013/testing-javascript-frontend-part-1-anti-patterns-and-fixes/&lt;/p&gt;</content><author><name></name></author><summary type="html">Here’s a collection of snippets</summary></entry><entry><title type="html">Create React App, Take 2</title><link href="/2018/03/25/create-react-app-take-2.html" rel="alternate" type="text/html" title="Create React App, Take 2" /><published>2018-03-25T00:00:00-07:00</published><updated>2018-03-25T00:00:00-07:00</updated><id>/2018/03/25/create-react-app-take-2</id><content type="html" xml:base="/2018/03/25/create-react-app-take-2.html">&lt;h1 id=&quot;preface&quot;&gt;Preface&lt;/h1&gt;
 &lt;p&gt;I got a react practice app going a month ago.  Tic-tac-toe demo.  Used create-react-app.&lt;br /&gt;
 It was running on the development server for a bit.  Then I shut it down, now I wanted to bring it back up.&lt;br /&gt;
 I just tried to run &lt;code class=&quot;highlighter-rouge&quot;&gt;npm start&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;npm run start&lt;/code&gt; whatever it is, and it totally crashed my VPS.&lt;br /&gt;
@@ -29,7 +135,19 @@ Cool, let’s see if I can just pop that main.ee7b2412.js into my static site, a
 So, in the HTML I need the following: &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;div id=&quot;root&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;&lt;br /&gt;
 And at the end of the body I need this: &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script type=&quot;text/javascript&quot; src=&quot;react-app.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/p&gt;
 &lt;h1 id=&quot;cool-that-works&quot;&gt;Cool, that works.&lt;/h1&gt;
-&lt;p&gt;But, can’t use this for development, because it takes way too long to build the production site.  I’ll have to go back to the development server and just start over there.&lt;/p&gt;</content><author><name></name></author><summary type="html">Preface I got a react practice app going a month ago. Tic-tac-toe demo. Used create-react-app. It was running on the development server for a bit. Then I shut it down, now I wanted to bring it back up. I just tried to run npm start or npm run start whatever it is, and it totally crashed my VPS. All of my open ssh sessions were getting these printed… ``` Message from syslogd@caseyjones at Mar 26 04:56:10 … kernel:[445167.403797] BUG: soft lockup - CPU#0 stuck for 25s! [node:363]</summary></entry><entry><title type="html">MongoDB Golang JSON (Mongo Alternatives?)</title><link href="/2018/03/17/mongodb-golang-json.html" rel="alternate" type="text/html" title="MongoDB Golang JSON (Mongo Alternatives?)" /><published>2018-03-17T00:00:00-07:00</published><updated>2018-03-17T00:00:00-07:00</updated><id>/2018/03/17/mongodb-golang-json</id><content type="html" xml:base="/2018/03/17/mongodb-golang-json.html">&lt;p&gt;I need a database, since working with a JSON file in the filesystem was not going far enough.  Need to query objects, delete objects, sort, etc.&lt;br /&gt;
+&lt;p&gt;But, can’t use this for development, because it takes way too long to build the production site.  I’ll have to go back to the development server and just start over there.&lt;/p&gt;
+
+&lt;h1 id=&quot;ok-i-need-another-refresher-this-stuff-did-not-stick-from-last-time&quot;&gt;OK I need another refresher… this stuff did not stick from last time.&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;Everything in React is JS.  No HTML *&lt;/li&gt;
+  &lt;li&gt;What is a class?&lt;/li&gt;
+  &lt;li&gt;A class has a constructor that takes in &lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt; and sets initial &lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;A class has a method &lt;code class=&quot;highlighter-rouge&quot;&gt;render()&lt;/code&gt; that returns JSX markup.  JSX is the part that’s like HTML.&lt;/li&gt;
+  &lt;li&gt;A class has life cycle methods like &lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidMount()&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;i-tried-to-copy-paste-some-bootstrap-html-as-a-starting-point&quot;&gt;I tried to copy paste some Bootstrap HTML as a starting point&lt;/h1&gt;
+&lt;p&gt;Paste it into the &lt;code class=&quot;highlighter-rouge&quot;&gt;render()&lt;/code&gt; function’s return.&lt;/p&gt;</content><author><name></name></author><summary type="html">Preface I got a react practice app going a month ago. Tic-tac-toe demo. Used create-react-app. It was running on the development server for a bit. Then I shut it down, now I wanted to bring it back up. I just tried to run npm start or npm run start whatever it is, and it totally crashed my VPS. All of my open ssh sessions were getting these printed… ``` Message from syslogd@caseyjones at Mar 26 04:56:10 … kernel:[445167.403797] BUG: soft lockup - CPU#0 stuck for 25s! [node:363]</summary></entry><entry><title type="html">MongoDB Golang JSON (Mongo Alternatives?)</title><link href="/2018/03/17/mongodb-golang-json.html" rel="alternate" type="text/html" title="MongoDB Golang JSON (Mongo Alternatives?)" /><published>2018-03-17T00:00:00-07:00</published><updated>2018-03-17T00:00:00-07:00</updated><id>/2018/03/17/mongodb-golang-json</id><content type="html" xml:base="/2018/03/17/mongodb-golang-json.html">&lt;p&gt;I need a database, since working with a JSON file in the filesystem was not going far enough.  Need to query objects, delete objects, sort, etc.&lt;br /&gt;
 Also I like the idea of using Golang to deal with JSON at the client-server interface, since it’s really easy in Golang.  Then Golang can talk to the database.&lt;br /&gt;
 Initial googling suggested either postgres or Mongo, and I’m trying Mongo because I haven’t yet.&lt;/p&gt;
 
@@ -581,149 +699,4 @@ In order to use $http requests, the controller is passed $http.  As in this:&lt;
 &lt;p&gt;$http will give &lt;code class=&quot;highlighter-rouge&quot;&gt;No 'Access-Control-Allow-Origin' header is present on the requested resource.'&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Meh, I don’t like it.&lt;/em&gt;&lt;br /&gt;
-&lt;em&gt;As soon as I found out how much has changed over the versions I immediately quit.  I’m not going to bother learning the history when I already think it sucks&lt;/em&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">React A component is a self-contained module that renders some output ** For example, a button. A component might include one or more other components in its output. eg. a Form. Wow, this caching thing on index.html is pretty terrible for a new user. All components have a render function that SPECIFIES what the HTML output of the COMPONENT is. JSX: JS Extension, allows writing JS that LOOKS LIKE HTML class HelloWorld extends React.Component { render() { //The component has a RENDER Function return ( //The render function RETURNS HTML &amp;lt;h1 className='large'&amp;gt;Hello World&amp;lt;/h1&amp;gt; //THIS IS NOT ACTUALLY HTML ); } } h1 className GETS CONVERTED TO class. This is because CLASS IS A RESERVED JS KEYWORD. JSX is very convenient notation for writing nested HTML snippets In order to load React from , ie. client side, the following is needeed: react.min.js , react-dom.min.js, babel-core@x.x.x/browser.min.js Babel is a library for transpiling ES6 to ES5. Inside the body we have the following: &amp;lt;script type=&quot;text/babel&quot;&amp;gt; var app = &amp;lt;h1&amp;gt;Hello world&amp;lt;/h1&amp;gt; var mountComponent = document.querySelector('#app'); ReactDOM.render(app, mountComponent); &amp;lt;/script&amp;gt; This tells Bable to convert the above ES6 into ES5 render() : ReactDOM.render(&amp;lt;what&amp;gt;, &amp;lt;where&amp;gt;) Interesting, in this case the WHERE is #app. In other tutorials it was document root. In the above snippet, app is a HTML snippet, directly passed into render(). Another way to do it is this: ReactDOM.render(&amp;lt;App /&amp;gt;, mount); Where App is a class like class HelloWorld Ah, this makes sense why I struggled with the meta tags. They go inside head. In these examples, the rendering goes to document root or a #hash section. As a test, I should be able to call render() twice in a row and get 2 components to render. ** Cool. After doing that I saw that, if render() is called twice in a row on the same DOM mount (what’s it called?) This is intuitive, the DOM mount gets overwritten. Using 2 div tags with different classes, render() can be called on each of them. A “Wrapper” component combines multiple components. The Wrapper will have divs with classnames. The Wrapper will nest other divs inside those divs, with classnames. Those child components can be used in the Parent by tag notation. class App extends React.Component { render() { return ( &amp;lt;div className=&quot;notificationsFrame&quot;&amp;gt; &amp;lt;div className=&quot;panel&quot;&amp;gt; &amp;lt;Header /&amp;gt; &amp;lt;Content /&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; ) } } To add data ie. props to a component Write something like this: &amp;lt;Header title=&quot;My Header&quot;&amp;gt; It is picked up by the Component liek this: &amp;lt;span className=&quot;title&quot;&amp;gt; {this.props.title} &amp;lt;/span&amp;gt; https://reactjs.org/tutorial/tutorial.html was informative https://reactjs.org/docs/state-and-lifecycle.html I need to learn how setting state works. Do I need a constructor to have this.state? Is this.setState() the only way to set state? (except initializing state in constructor?) This is what I’m doing: ** In render() I am using {this.state.mystatevar} ** In componentDidMount() I am using this.setState{mystatevar:myval}; ** But the console says error: cannot read property mystatevar of null. ** It appears the answer is Yes, you have to declare the different state variables in the constructor</summary></entry><entry><title type="html">CMake: Building an App for Multiple Targets</title><link href="/2018/01/22/cmake-building-an-app-for-multiple-targets.html" rel="alternate" type="text/html" title="CMake: Building an App for Multiple Targets" /><published>2018-01-22T00:00:00-08:00</published><updated>2018-01-22T00:00:00-08:00</updated><id>/2018/01/22/cmake-building-an-app-for-multiple-targets</id><content type="html" xml:base="/2018/01/22/cmake-building-an-app-for-multiple-targets.html">&lt;p&gt;I have an application, it’s a sniffer.&lt;br /&gt;
-I want it to run on bare metal, on an OS, and on multiple CPU targets.&lt;br /&gt;
-Basically anything with a SPI port and the radio should be able to run this.&lt;br /&gt;
-OK, looks like it worked.  Here’s what I learned:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;steve@steve-ThinkPad-T420:~/prog/debos/debos_sniffer$ tree
-.
-├── build.sh
-├── CMakeLists.txt
-├── Makefile
-├── platform
-│   ├── CMakeLists.txt
-│   ├── samd20_baremetal
-│   └── samd20_debos
-│       ├── atsamd20j18.ld
-│       ├── CMakeLists.txt
-│       └── halStartup.c
-├── README.md
-├── src
-│   ├── app.c
-│   ├── my_memcpy.c
-│   ├── my_memcpy.h
-│   └── System.h
-└── tool
-    ├── sniffer_parser_lwmesh.py
-    └── sniffer_reader.py
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#### The Top Level CMakeLists.txt
-cmake_minimum_required(VERSION 3.5)
-
-add_subdirectory(platform)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#### The platform/ CMakeLists.txt
-add_subdirectory(samd20_debos)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Now, here’s where all the original stuff went.  platform/samd20_debos CMakeLists.txt.  I made a few modifications to it.&lt;/p&gt;
-
-&lt;p&gt;First notice in the tree, that I have halStartup.c inside of platform/, not src/.  This is because halStartup.c is platform specific; it defines the vector table, startup code, etc.  In the case of the bootloaded (debos) version, the startup code is actually dummy, and it is just there to help the linker create the binary image correctly.  But for the bare metal version, the startup code needs to be correct and actually call the main()  while(1)&lt;/p&gt;
-
-&lt;p&gt;src/ only has app.c , which currently does depend on a SAMD20 specific library.  We’ll take care of that later.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
-#set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-#set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;I commented those out, I need to figure out whether I’m supposed to set them myself, or use the preset values.  I did notice that setting CMAKE_BINARY_DIR causes the built binaries to show up there, which is what I want.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; add_custom_command(TARGET debos_sniffer POST_BUILD
--    COMMAND size bin/debos_sniffer
-+    COMMAND size debos_sniffer
- )
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Here’s another interesting one.  Before when CMAKE_BINARY_DIR was set to ${CMAKE_SOURCE_DIR}/bin, the custom command worked by specifying bin/debos_sniffer.  This is bin/ at the top level, where .git/ is.  But now, the compiled binary shows up in build/platform/samd20_debos/ , and somehow it is found by just specifying debos_sniffer.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+#file(GLOB SOURCES
-+#    &quot;*.h&quot;
-+#    &quot;*.c&quot;
-+#    &quot;hal/*.c&quot;
-+#    &quot;hal/*.h&quot;
-+#)
-+
-+set(SOURCES   ${CMAKE_SOURCE_DIR}/src/app.c  
-+							${CMAKE_SOURCE_DIR}/src/my_memcpy.c 
-+	 ) 
-+
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Here you see I replaced file(GLOB SOURCES …) with set(SOURCES …),
-as recommended by people.  Notice I’m specifying more exactly where the source is; the previous file(GLOB SOURCES …) worked when CMakeLists.txt was inside the directory with the source.&lt;/p&gt;
-
-&lt;h1 id=&quot;ok-now-that-i-have-the-original-target-built-and-working-i-can-add-another-target&quot;&gt;OK now that I have the original target built and working, I can add another target.&lt;/h1&gt;
-&lt;p&gt;This is the bare metal target.  It’s basically the same thing except:&lt;br /&gt;
-App vector table has to be correct; these are Reset Vector and ISRs.  This app doesn’t use any ISRs so it can’t go too horribly wrong.&lt;/p&gt;
-
-&lt;p&gt;To check that the bare metal app is built correct, I will do the following:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Check that Reset Vector points to startup code.&lt;/li&gt;
-  &lt;li&gt;Check that startup code points to and calls main().&lt;/li&gt;
-  &lt;li&gt;Check that main() points to and calls app().&lt;/li&gt;
-  &lt;li&gt;Check that the calls to Checkpoint() are stubbed out.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;1-add_subdirectory-in-cmakeliststxt-inside-platform&quot;&gt;1. add_subdirectory() in CMakeLists.txt inside platform/&lt;/h1&gt;
-&lt;h1 id=&quot;2-copy-halstartupc-linkerscriptld-cmakeliststxt-from-the-working-target&quot;&gt;2. copy halStartup.c, linkerscript.ld, CMakeLists.txt from the working target&lt;/h1&gt;
-&lt;p&gt;Now let’s see what the build says.  Dang it’s a tricky one!&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CMake Error at /usr/share/cmake-3.5/Modules/ExternalProject.cmake:2405 (add_custom_target):
-  add_custom_target cannot create target &quot;samd20_headers&quot; because another
-  target with the same name already exists.  The existing target is a custom
-  target created in source directory
-  &quot;/home/steve/prog/debos/debos_sniffer/platform/samd20_debos&quot;.  See
-  documentation for policy CMP0002 for more details.
-Call Stack (most recent call first):
-  platform/samd20_baremetal/CMakeLists.txt:69 (ExternalProject_Add)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;So, both CMakeLists.txt are identical, so I didn’t expect it to work anyway.  We see here it was because of ExternalProject_Add.&lt;br /&gt;
-The target “samd20_headers” already exists.&lt;br /&gt;
-Well, since the 2 projects use exactly the same library, let’s try to move the ExternalProject_Add up a level.  So remove the duplicated calls to ExternalProject_Add and stick it in the CMakeLists.txt 1 level up.&lt;/p&gt;
-
-&lt;p&gt;Cool, I did that and the I got an error that I was actually expecting.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CMake Error at platform/samd20_baremetal/CMakeLists.txt:117 (add_executable):
-  add_executable cannot create target &quot;debos_sniffer&quot; because another target
-  with the same name already exists.  The existing target is an executable
-  created in source directory
-  &quot;/home/steve/prog/debos/debos_sniffer/platform/samd20_debos&quot;.  See
-  documentation for policy CMP0002 for more details.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;This is obviously the re-use of the executable’s name, debos_sniffer.  That has to change.&lt;br /&gt;
-Woah cool looks like they both built!&lt;/p&gt;
-
-&lt;h1 id=&quot;lets-open-up-hopper-and-see-what-it-looks-like&quot;&gt;Let’s open up Hopper and see what it looks like&lt;/h1&gt;
-
-&lt;p&gt;For an ARM Cortex M0+ the Reset Vector is located at address 0x4.&lt;br /&gt;
-I got a 0xd9220000, and changing from bad-endian to good-endian, I get the address 0x22d9.  What is that…? &lt;code class=&quot;highlighter-rouge&quot;&gt;HAL_IrqHandlerReset&lt;/code&gt; Yes!  That’s my startup code.  Now, does it call main?  Hopper says it does.  Now, does main call app() in an infinite loop?  Yes!&lt;/p&gt;
-
-&lt;p&gt;OK now for the tricky part.  The Bootloaded version used a function called Checkpoint() which would take a string and some flags, and use the Bootloader’s UART interface to output the bytes, turn on LED, halt the CPU or whatever.&lt;br /&gt;
-The app itself doesn’t configure any serial out.  Also, the Checkpoint() function doesn’t exist so calling it would be bad.&lt;br /&gt;
-So, this is not going to be very eventful, since a sniffer literally just outputs serial and nothing else.&lt;/p&gt;
-
-&lt;h1 id=&quot;well-just-for-fun-lets-add-a-led-toggle-at-the-app-level&quot;&gt;Well just for fun, let’s add a LED toggle at the App level.&lt;/h1&gt;
-&lt;p&gt;To do this, I will bring in some app code that turns on a LED of a different color.  There are 3 LEDs with different colors on the board that I have.  The Bootloader has control of 1 of them.  So let’s have the app turn on the other one, that tells us the app is in control.&lt;/p&gt;
-
-&lt;p&gt;OK that compiled, but now I’m back to my Jenkins issue.  When I push the repo, Jenkins will build it, which will create 2 sets of compiler outputs, one for bootloaded one for bare metal.&lt;/p&gt;
-
-&lt;p&gt;I want to be able to grab either binary without typing out a long ass pathname.&lt;/p&gt;</content><author><name></name></author><summary type="html">I have an application, it’s a sniffer. I want it to run on bare metal, on an OS, and on multiple CPU targets. Basically anything with a SPI port and the radio should be able to run this. OK, looks like it worked. Here’s what I learned: steve@steve-ThinkPad-T420:~/prog/debos/debos_sniffer$ tree . ├── build.sh ├── CMakeLists.txt ├── Makefile ├── platform │   ├── CMakeLists.txt │   ├── samd20_baremetal │   └── samd20_debos │   ├── atsamd20j18.ld │   ├── CMakeLists.txt │   └── halStartup.c ├── README.md ├── src │   ├── app.c │   ├── my_memcpy.c │   ├── my_memcpy.h │   └── System.h └── tool ├── sniffer_parser_lwmesh.py └── sniffer_reader.py ``` The Top Level CMakeLists.txt cmake_minimum_required(VERSION 3.5)</summary></entry><entry><title type="html">Jenkins Job Migration (ie. Jenkins uses too much RAM)</title><link href="/2018/01/21/jenkins-uses-too-much-ram.html" rel="alternate" type="text/html" title="Jenkins Job Migration (ie. Jenkins uses too much RAM)" /><published>2018-01-21T00:00:00-08:00</published><updated>2018-01-21T00:00:00-08:00</updated><id>/2018/01/21/jenkins-uses-too-much-ram</id><content type="html" xml:base="/2018/01/21/jenkins-uses-too-much-ram.html">&lt;p&gt;Dang, I finally figured out why my Docker containers were failing shortly after starting.&lt;br /&gt;
-That Error Code 137, Out of Memory.&lt;br /&gt;
-Really it’s my stupid Redmine container that’s taking up 30% of my 1GB RAM.  But I can’t do anything about that.&lt;br /&gt;
-Jenkins I can consolidate the 3 instances into 1.&lt;br /&gt;
-Previously I had 1 Jenkins per toolchain, ie. 1 for arm-linux , 1 for arm-none, 1 for golang, etc.  I liked this because it keeps the toolchain installs independent.&lt;br /&gt;
-Now I have to use 1 Jenkins container with all the toolchains inside of it.&lt;/p&gt;
-
-&lt;p&gt;First I’ll have to port all the Jobs into the 1 Jenkins instance.  Then I’ll see them in the Jenkins UI, so I can run builds which will fail due to no toolchain installed.  Then I can install the toolchains.&lt;/p&gt;
-
-&lt;p&gt;Great, copy pasting the jobs/ directories worked, I now see the jobs in the Jenkins homepage.  And of course, running the build fails due to non-existing toolchain.&lt;br /&gt;
-So let’s open the Dockerfile and install some toolchains.&lt;/p&gt;
-
-&lt;p&gt;Well it works, pretty obvious.&lt;/p&gt;
-
-&lt;p&gt;Just remember folks, 1GB RAM is easily plenty and easily nothing.  Pay attention to how much your stupid high level frameworks and languages use.&lt;/p&gt;</content><author><name></name></author><summary type="html">Dang, I finally figured out why my Docker containers were failing shortly after starting. That Error Code 137, Out of Memory. Really it’s my stupid Redmine container that’s taking up 30% of my 1GB RAM. But I can’t do anything about that. Jenkins I can consolidate the 3 instances into 1. Previously I had 1 Jenkins per toolchain, ie. 1 for arm-linux , 1 for arm-none, 1 for golang, etc. I liked this because it keeps the toolchain installs independent. Now I have to use 1 Jenkins container with all the toolchains inside of it. First I’ll have to port all the Jobs into the 1 Jenkins instance. Then I’ll see them in the Jenkins UI, so I can run builds which will fail due to no toolchain installed. Then I can install the toolchains. Great, copy pasting the jobs/ directories worked, I now see the jobs in the Jenkins homepage. And of course, running the build fails due to non-existing toolchain. So let’s open the Dockerfile and install some toolchains. Well it works, pretty obvious. Just remember folks, 1GB RAM is easily plenty and easily nothing. Pay attention to how much your stupid high level frameworks and languages use.</summary></entry></feed>
+&lt;em&gt;As soon as I found out how much has changed over the versions I immediately quit.  I’m not going to bother learning the history when I already think it sucks&lt;/em&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">React A component is a self-contained module that renders some output ** For example, a button. A component might include one or more other components in its output. eg. a Form. Wow, this caching thing on index.html is pretty terrible for a new user. All components have a render function that SPECIFIES what the HTML output of the COMPONENT is. JSX: JS Extension, allows writing JS that LOOKS LIKE HTML class HelloWorld extends React.Component { render() { //The component has a RENDER Function return ( //The render function RETURNS HTML &amp;lt;h1 className='large'&amp;gt;Hello World&amp;lt;/h1&amp;gt; //THIS IS NOT ACTUALLY HTML ); } } h1 className GETS CONVERTED TO class. This is because CLASS IS A RESERVED JS KEYWORD. JSX is very convenient notation for writing nested HTML snippets In order to load React from , ie. client side, the following is needeed: react.min.js , react-dom.min.js, babel-core@x.x.x/browser.min.js Babel is a library for transpiling ES6 to ES5. Inside the body we have the following: &amp;lt;script type=&quot;text/babel&quot;&amp;gt; var app = &amp;lt;h1&amp;gt;Hello world&amp;lt;/h1&amp;gt; var mountComponent = document.querySelector('#app'); ReactDOM.render(app, mountComponent); &amp;lt;/script&amp;gt; This tells Bable to convert the above ES6 into ES5 render() : ReactDOM.render(&amp;lt;what&amp;gt;, &amp;lt;where&amp;gt;) Interesting, in this case the WHERE is #app. In other tutorials it was document root. In the above snippet, app is a HTML snippet, directly passed into render(). Another way to do it is this: ReactDOM.render(&amp;lt;App /&amp;gt;, mount); Where App is a class like class HelloWorld Ah, this makes sense why I struggled with the meta tags. They go inside head. In these examples, the rendering goes to document root or a #hash section. As a test, I should be able to call render() twice in a row and get 2 components to render. ** Cool. After doing that I saw that, if render() is called twice in a row on the same DOM mount (what’s it called?) This is intuitive, the DOM mount gets overwritten. Using 2 div tags with different classes, render() can be called on each of them. A “Wrapper” component combines multiple components. The Wrapper will have divs with classnames. The Wrapper will nest other divs inside those divs, with classnames. Those child components can be used in the Parent by tag notation. class App extends React.Component { render() { return ( &amp;lt;div className=&quot;notificationsFrame&quot;&amp;gt; &amp;lt;div className=&quot;panel&quot;&amp;gt; &amp;lt;Header /&amp;gt; &amp;lt;Content /&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; ) } } To add data ie. props to a component Write something like this: &amp;lt;Header title=&quot;My Header&quot;&amp;gt; It is picked up by the Component liek this: &amp;lt;span className=&quot;title&quot;&amp;gt; {this.props.title} &amp;lt;/span&amp;gt; https://reactjs.org/tutorial/tutorial.html was informative https://reactjs.org/docs/state-and-lifecycle.html I need to learn how setting state works. Do I need a constructor to have this.state? Is this.setState() the only way to set state? (except initializing state in constructor?) This is what I’m doing: ** In render() I am using {this.state.mystatevar} ** In componentDidMount() I am using this.setState{mystatevar:myval}; ** But the console says error: cannot read property mystatevar of null. ** It appears the answer is Yes, you have to declare the different state variables in the constructor</summary></entry></feed>

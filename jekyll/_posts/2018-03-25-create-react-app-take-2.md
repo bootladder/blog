@@ -33,3 +33,13 @@ So, in the HTML I need the following: `<div id="root"></div>`
 And at the end of the body I need this: `<script type="text/javascript" src="react-app.js"></script>`
 # Cool, that works.  
 But, can't use this for development, because it takes way too long to build the production site.  I'll have to go back to the development server and just start over there.
+  
+# OK I need another refresher... this stuff did not stick from last time.
+* Everything in React is JS.  No HTML *
+* What is a class?
+* A class has a constructor that takes in `props` and sets initial `state`
+* A class has a method `render()` that returns JSX markup.  JSX is the part that's like HTML.
+* A class has life cycle methods like `componentDidMount()`
+  
+# I tried to copy paste some Bootstrap HTML as a starting point
+Paste it into the `render()` function's return.

@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Create React App, Take 2</title>
-  <meta name="description" content="Preface I got a react practice app going a month ago. Tic-tac-toe demo. Used create-react-app. It was running on the development server for a bit. Then I shu...">
+  <title>Javascript Sucks:  Greatest Hits</title>
+  <meta name="description" content="Here’s a collection of snippets">
 
   <link rel="stylesheet" href="/assets/main.css">
-  <link rel="canonical" href="/2018/03/25/create-react-app-take-2.html">
+  <link rel="canonical" href="/2018/03/28/javascript-sucks-greatest-hits.html">
   <link rel="alternate" type="application/rss+xml" title="Bootladder News" href="/feed.xml">
   
   
@@ -59,54 +59,21 @@
         <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title" itemprop="name headline">Create React App, Take 2</h1>
-    <p class="post-meta"><time datetime="2018-03-25T00:00:00-07:00" itemprop="datePublished">Mar 25, 2018</time></p>
+    <h1 class="post-title" itemprop="name headline">Javascript Sucks:  Greatest Hits</h1>
+    <p class="post-meta"><time datetime="2018-03-28T00:00:00-07:00" itemprop="datePublished">Mar 28, 2018</time></p>
   </header>
 
   <div class="post-content" itemprop="articleBody">
-    <h1 id="preface">Preface</h1>
-<p>I got a react practice app going a month ago.  Tic-tac-toe demo.  Used create-react-app.<br />
-It was running on the development server for a bit.  Then I shut it down, now I wanted to bring it back up.<br />
-I just tried to run <code class="highlighter-rouge">npm start</code> or <code class="highlighter-rouge">npm run start</code> whatever it is, and it totally crashed my VPS.<br />
-All of my open ssh sessions were getting these printed…</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>Message from syslogd@caseyjones at Mar 26 04:56:10 ...
- kernel:[445167.403797] BUG: soft lockup - CPU#0 stuck for 25s! [node:363]
+    <h1 id="heres-a-collection-of-snippets">Here’s a collection of snippets</h1>
 
-Message from syslogd@caseyjones at Mar 26 04:56:36 ...
- kernel:[445193.778113] BUG: soft lockup - CPU#0 stuck for 25s! [postgres:414]
+<h3 id="consolelogobject-is-a-live-reference--in-other-words--it-doesnt-actually-log">console.log(object) is a live reference.  in other words:  it doesn’t actually log.</h3>
+<p>https://stackoverflow.com/a/38660899/9325070</p>
+<h3 id="solution-jsonstringifyobject-and-log-the-string">Solution, JSON.stringify(object) and log the string.</h3>
+<p>https://stackoverflow.com/a/4293047/9325070</p>
 
-</code></pre>
-</div>
-<p>Woah.  Maybe I ran out of RAM?  That’s a likely cause.  If not, that’s crazy.</p>
+<h1 id="finally-an-article-that-doesnt-suck">Finally an article that doesn’t suck</h1>
+<p>https://shanetomlinson.com/2013/testing-javascript-frontend-part-1-anti-patterns-and-fixes/</p>
 
-<h1 id="anyway-ill-reboot-with-the-admin-console-and-do-a-fresh-create-react-app">Anyway, I’ll reboot with the admin console and do a fresh create-react-app</h1>
-<h1 id="why-is-it-taking-so-long-i-dont-remember-it-taking-so-long">Why is it taking so long… I don’t remember it taking so long</h1>
-<h1 id="wow-i-didnt-realize-it-was-200mb-fresh-install--its-all-in-node_modules">Wow I didn’t realize it was 200MB, fresh install.  It’s all in node_modules</h1>
-
-<p>OK, now the dev server is up.<br />
-My goal is to take some built JS and put it in my existing project.<br />
-Let’s just get straight to that.  run a <code class="highlighter-rouge">npm run build</code>.</p>
-
-<h1 id="what-did-npm-run-build-do-">What did npm run build do ?</h1>
-<p>First, <code class="highlighter-rouge">index.html</code>.  It took the source index.html, <code class="highlighter-rouge">public/index.html</code> , removed all the comments and white space, replaced the template <code class="highlighter-rouge">%PUBLIC_URL%</code> with <code class="highlighter-rouge">/</code>.  Ahh here’s the cool part, at the end of the <code class="highlighter-rouge">&lt;body&gt;</code> , the following was inserted:  <code class="highlighter-rouge">&lt;script type="text/javascript" src="/static/js/main.ee7b2412.js"&gt;</code>.<br />
-And of course, our .js is in there.<br />
-Cool, let’s see if I can just pop that main.ee7b2412.js into my static site, and stick a couple HTML tags to load it up.<br />
-So, in the HTML I need the following: <code class="highlighter-rouge">&lt;div id="root"&gt;&lt;/div&gt;</code><br />
-And at the end of the body I need this: <code class="highlighter-rouge">&lt;script type="text/javascript" src="react-app.js"&gt;&lt;/script&gt;</code></p>
-<h1 id="cool-that-works">Cool, that works.</h1>
-<p>But, can’t use this for development, because it takes way too long to build the production site.  I’ll have to go back to the development server and just start over there.</p>
-
-<h1 id="ok-i-need-another-refresher-this-stuff-did-not-stick-from-last-time">OK I need another refresher… this stuff did not stick from last time.</h1>
-<ul>
-  <li>Everything in React is JS.  No HTML *</li>
-  <li>What is a class?</li>
-  <li>A class has a constructor that takes in <code class="highlighter-rouge">props</code> and sets initial <code class="highlighter-rouge">state</code></li>
-  <li>A class has a method <code class="highlighter-rouge">render()</code> that returns JSX markup.  JSX is the part that’s like HTML.</li>
-  <li>A class has life cycle methods like <code class="highlighter-rouge">componentDidMount()</code></li>
-</ul>
-
-<h1 id="i-tried-to-copy-paste-some-bootstrap-html-as-a-starting-point">I tried to copy paste some Bootstrap HTML as a starting point</h1>
-<p>Paste it into the <code class="highlighter-rouge">render()</code> function’s return.</p>
 
   </div>
 

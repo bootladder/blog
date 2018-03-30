@@ -1,0 +1,103 @@
+---
+layout: post
+title: Clean Javascript means Independent of Framework
+---
+I have no interest in climbing steep learning curves for all these javascript frameworks.  Also I don't want to learn stuff that will be obsolete soon.  
+That's why I like C programming and embedded systems.  Nothing has really changed.  You learn it once and you're good to go.  
+Somewhere in the middle of these 2 is Clean Architecture, or just modularity.  
+  
+I feel like React kind of throws a wrench into this.  Let me talk it out to myself.  
+JSX is not HTML.  It can be transformed into HTML, but it's not HTML.  It would be nice if it was, so HTML could be reusable.  
+But we can ignore this and leave that hassle for the front end person.  
+I should be able to prototype my UI without any CSS, and the HTML should be throwaway code.  
+  
+It's frustrating trying to take what I want, or what I already have, and make it work with React.  So, let's not do that.  What if all the React code looked exactly like the examples on the web?  That solves 2 problems:  first it takes away the pain of working with the framework, second it keeps my "core logic" separated.  
+  
+## What are some of the essential elements of React.  Why am I even using it?
+The component class:  
+A component has state, props, lifecycle events, and a render.  
+  
+When the state changes, the component rerenders.  
+Pieces of state can be passed to children as props.  
+
+# Interesting:  Porting Vanilla JS to React !!!
+I have a vanilla JS function that creates some elements using `document.createElement()`, sets some to be children, populates some innerHTML, then returns the top parent.  
+How do I port this same function to React?  Well.... looks like I can't.  
+Take a look at the vanilla version here:
+```
+function createMessageListEntryFromMessageDesc(md) {
+
+    var d = document.createElement('div')
+    var playbutton = document.createElement('button')
+
+    // Set innerHTML of Button
+    playbutton.innerHTML = md.topic
+    if( md.customtopic ) {
+        playbutton.innerHTML = md.customtopic
+    }
+
+    // Set Color of Button
+    var color
+    if( md.project == "1" ) {
+      color = "blue"
+    }
+    else {
+      color = "gray"
+    }
+
+    // Set Opacity of Button
+    var opacity
+    if( md.listenedto == false )
+        opacity = "1"
+    else
+        opacity = "0.2"
+
+    playbutton.setAttribute("style",
+      "background-color: "+color+";font-size : 32px; opacity:"+opacity);
+
+    d.appendChild(playbutton)
+    return d
+}
+```
+  
+Pretty straight forward.  It uses `document.createElement()` , sets properties `innerHTML` and calls method `setAttribute()` and `appendChild()`.  
+  
+Now see what I did to make it work with React.  (without JSX)
+```
+function testerdom(md) {
+
+    var text = md.topic
+    if( md.customtopic ) {
+        text = md.customtopic
+    }
+    // Set Color of Button
+    var color
+    if( md.project == "1" ) {
+      color = "blue"
+    }
+    else {
+      color = "gray"
+    }
+
+    // Set Opacity of Button
+    var opacity
+    if( md.listenedto == false )
+        opacity = "1"
+    else
+        opacity = "0.2"
+
+    var props = {
+      style:{
+        backgroundColor:color,
+        fontSize: '32px',
+        opacity:opacity
+      }
+    }
+    var playbutton = React.createElement('button',props,text)
+    var d = React.createElement('div',null,playbutton)
+    return d
+}
+```
+  
+So, actually in terms of lines of code it isn't horrible.  Those if statements are only setting plain old variables, so I can just factor those out.  The lame part is that `React.createElement()` has a totally different API from `document.createElement()`.  The props, not only have to be converted to object like that, but it's super annoying that the fields changed, eg. background-color changed to backgroundColor.  Being that I want to just do the bare minimum CSS, this is annoying.  
+1 more note, to set children of a node in react, you pass them into the parent when the parent is being created.  Notice the top level node, the `div`, is created on the last line.  This is because React nodes are immutable.  In Plain JS, I could just `appendChild()`
