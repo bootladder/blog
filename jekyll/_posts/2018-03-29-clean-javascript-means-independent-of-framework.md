@@ -126,4 +126,19 @@ OK, got out of that using the callback function on jQuery's `load`.  After the H
 This is not what I intend to do, this is just a refactor/saving of my work before I write different stuff.  
 I'd like to have components ala React.  To do that, I need to dynamically generate the HTML, not just load static HTML into a #div.  Well not necessarily; actually, inside the static HTML, I could put in stub IDs in the divs, which could be set to application specific stuff, if the surrounding tag is identified.
   
-To summarize.  What I did was take all the (JS that sets the button onclick handlers) , wrap all those into a function.  That function is called in the callback of jquery load.  Another thing I did was bring the declarations of those DOM object variables to the global scope, and initialized them in the wrapper function.  This gives other functions access to those global DOM objects.
+To summarize.  What I did was take all the (JS that sets the button onclick handlers) , wrap all those into a function.  That function is called in the callback of jquery load.  Another thing I did was bring the declarations of those DOM object variables to the global scope, and initialized them in the wrapper function.  This gives other functions access to those global DOM objects.  Note the DOM objects were previously global.  They became function scope when I wrapped them into a function.  So I brought out only the declarations of their names to the global scope.
+  
+  
+# Thinking out loud, how to Component-ize my widget?
+My widget displays a list of messages between two people.  
+Really, the only things that need to be identified are those 2 people.  
+  
+Let's list out actually what's there:  
+* Button to load messages  
+* Array of messages that are loaded
+* 2 Divs to hold each displayed message, one A-to-B and another B-to-A
+* AJAX call, which POSTs a form with the 2 people
+* AJAX callback, takes the result, passes to a function that renders
+* Rendering
+
+The rendering needs to create DOM elements that have IDs in them, and onclick handlers that can access those IDs.  For example to delete a message, the ID of the message has to be passed to a function when a button is clicked.
