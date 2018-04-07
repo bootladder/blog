@@ -142,3 +142,12 @@ Let's list out actually what's there:
 * Rendering
 
 The rendering needs to create DOM elements that have IDs in them, and onclick handlers that can access those IDs.  For example to delete a message, the ID of the message has to be passed to a function when a button is clicked.
+  
+# Obvious Realization #1:
+## To have multiple instances of the same thing, you need classes.
+## Actually wait, maybe we can just use objects?
+As with any other language, class will give you stuff like constructors, methods that can use `this`, 
+
+# Embarassing Realization #2:
+https://blog.angular-university.io/really-understanding-javascript-closures/
+Just.... read this.

@@ -1,5 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-30T16:15:06-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Clean Javascript means Independent of Framework</title><link href="/2018/03/29/clean-javascript-means-independent-of-framework.html" rel="alternate" type="text/html" title="Clean Javascript means Independent of Framework" /><published>2018-03-29T00:00:00-07:00</published><updated>2018-03-29T00:00:00-07:00</updated><id>/2018/03/29/clean-javascript-means-independent-of-framework</id><content type="html" xml:base="/2018/03/29/clean-javascript-means-independent-of-framework.html">&lt;p&gt;I have no interest in climbing steep learning curves for all these javascript frameworks.  Also I don’t want to learn stuff that will be obsolete soon.&lt;br /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-07T16:53:45-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html"></title><link href="/2018/04/07/2018-04-07-backup-and-restore-in-case-of-emergency.html" rel="alternate" type="text/html" title="" /><published>2018-04-07T16:53:45-07:00</published><updated>2018-04-07T16:53:45-07:00</updated><id>/2018/04/07/2018-04-07-backup-and-restore-in-case-of-emergency</id><content type="html" xml:base="/2018/04/07/2018-04-07-backup-and-restore-in-case-of-emergency.html">&lt;p&gt;I dropped my phone and it stopped working.  After a short existential crisis, 
+I went to the screen repair place the next day.  It was replaced in an hour,
+fully functional.&lt;br /&gt;
+I got lucky that time.  Eventually I won’t be so lucky.&lt;br /&gt;
+&lt;em&gt;My contacts were not backed up.  I need to be more careful.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Grabbing .vcf’s off my phone.
+First, why the hell are we using this ridiculous format?&lt;br /&gt;
+Second, why is it so confusing to access the filesystem on my Android phone?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I plug my phone into my Ubuntu laptop’s USB.  Figuring out how to mount it was frustrating.&lt;br /&gt;
+But fortunately, Nautilus File Manager somehow knew how to mount it.&lt;br /&gt;
+Having no idea where it was mounted, I right clicked in Nautilus and selected “Open in a Terminal” or whatever.&lt;br /&gt;
+Then I did a &lt;code class=&quot;highlighter-rouge&quot;&gt;find . -name \*.vcf&lt;/code&gt; to find the contacts.  I also exported my contacts in my “Phone App”.&lt;br /&gt;
+Shouldn’t the contacts just.. be there?  Instead of having to export them?  Yeah yeah, proprietary format.&lt;/p&gt;
+
+&lt;p&gt;Now let’s look at the .vcf files.&lt;br /&gt;
+I open one up in VIM.  Then go to the end of the file.  The person I see there, is the last person I added to my phone.&lt;br /&gt;
+I remember this.  Scrolling up, the contacts appear to be in chronological order.&lt;br /&gt;
+Scrolling back to the top, I see… totally random contacts.  Some from 10 years ago, some from 5 years ago.
+Those defintely aren’t in chronological order.  Perhaps they got mixed up since I’ve changed phones a couple times?&lt;/p&gt;
+
+&lt;p&gt;Well, the reason I’m saying this is I have a problem.  I don’t know if all of my contacts are there, or just some of them.&lt;br /&gt;
+For example, there are contacts stored on my SIM card.  Are they in the .vcf file?&lt;br /&gt;
+Also, I had a couple other .vcf files on my phone, don’t remember when why or how, but they’re there.
+Weirdly, the old ones are larger in size than this last one I just exported!  WHY????&lt;br /&gt;
+Oh by the way, there are no dates for when the contacts were added.  I just had to guess by the person’s name and where 
+I was living when I met them, when the contact was added.&lt;/p&gt;
+
+&lt;p&gt;Whatever, it appears to be all of the contacts.  I’ll just grab all the .vcf files off the phone.&lt;br /&gt;
+Also,  the contacts were exported to the SD card, not the phone flash.&lt;br /&gt;
+&lt;em&gt;So, if I just make a point to export my contacts every X days, then they’ll be in the SD card which means I can grab them in the event that the phone dies for real&lt;/em&gt;&lt;/p&gt;</content><author><name></name></author></entry><entry><title type="html">Clean Javascript means Independent of Framework</title><link href="/2018/03/29/clean-javascript-means-independent-of-framework.html" rel="alternate" type="text/html" title="Clean Javascript means Independent of Framework" /><published>2018-03-29T00:00:00-07:00</published><updated>2018-03-29T00:00:00-07:00</updated><id>/2018/03/29/clean-javascript-means-independent-of-framework</id><content type="html" xml:base="/2018/03/29/clean-javascript-means-independent-of-framework.html">&lt;p&gt;I have no interest in climbing steep learning curves for all these javascript frameworks.  Also I don’t want to learn stuff that will be obsolete soon.&lt;br /&gt;
 That’s why I like C programming and embedded systems.  Nothing has really changed.  You learn it once and you’re good to go.&lt;br /&gt;
 Somewhere in the middle of these 2 is Clean Architecture, or just modularity.&lt;/p&gt;
 
@@ -139,7 +172,16 @@ Really, the only things that need to be identified are those 2 people.&lt;/p&gt;
   &lt;li&gt;Rendering&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;The rendering needs to create DOM elements that have IDs in them, and onclick handlers that can access those IDs.  For example to delete a message, the ID of the message has to be passed to a function when a button is clicked.&lt;/p&gt;</content><author><name></name></author><summary type="html">I have no interest in climbing steep learning curves for all these javascript frameworks. Also I don’t want to learn stuff that will be obsolete soon. That’s why I like C programming and embedded systems. Nothing has really changed. You learn it once and you’re good to go. Somewhere in the middle of these 2 is Clean Architecture, or just modularity. I feel like React kind of throws a wrench into this. Let me talk it out to myself. JSX is not HTML. It can be transformed into HTML, but it’s not HTML. It would be nice if it was, so HTML could be reusable. But we can ignore this and leave that hassle for the front end person. I should be able to prototype my UI without any CSS, and the HTML should be throwaway code. It’s frustrating trying to take what I want, or what I already have, and make it work with React. So, let’s not do that. What if all the React code looked exactly like the examples on the web? That solves 2 problems: first it takes away the pain of working with the framework, second it keeps my “core logic” separated. What are some of the essential elements of React. Why am I even using it? The component class: A component has state, props, lifecycle events, and a render. When the state changes, the component rerenders. Pieces of state can be passed to children as props.</summary></entry><entry><title type="html">Javascript Sucks: Greatest Hits</title><link href="/2018/03/28/javascript-sucks-greatest-hits.html" rel="alternate" type="text/html" title="Javascript Sucks:  Greatest Hits" /><published>2018-03-28T00:00:00-07:00</published><updated>2018-03-28T00:00:00-07:00</updated><id>/2018/03/28/javascript-sucks-greatest-hits</id><content type="html" xml:base="/2018/03/28/javascript-sucks-greatest-hits.html">&lt;h1 id=&quot;heres-a-collection-of-snippets&quot;&gt;Here’s a collection of snippets&lt;/h1&gt;
+&lt;p&gt;The rendering needs to create DOM elements that have IDs in them, and onclick handlers that can access those IDs.  For example to delete a message, the ID of the message has to be passed to a function when a button is clicked.&lt;/p&gt;
+
+&lt;h1 id=&quot;obvious-realization-1&quot;&gt;Obvious Realization #1:&lt;/h1&gt;
+&lt;h2 id=&quot;to-have-multiple-instances-of-the-same-thing-you-need-classes&quot;&gt;To have multiple instances of the same thing, you need classes.&lt;/h2&gt;
+&lt;h2 id=&quot;actually-wait-maybe-we-can-just-use-objects&quot;&gt;Actually wait, maybe we can just use objects?&lt;/h2&gt;
+&lt;p&gt;As with any other language, class will give you stuff like constructors, methods that can use &lt;code class=&quot;highlighter-rouge&quot;&gt;this&lt;/code&gt;,&lt;/p&gt;
+
+&lt;h1 id=&quot;embarassing-realization-2&quot;&gt;Embarassing Realization #2:&lt;/h1&gt;
+&lt;p&gt;https://blog.angular-university.io/really-understanding-javascript-closures/
+Just…. read this.&lt;/p&gt;</content><author><name></name></author><summary type="html">I have no interest in climbing steep learning curves for all these javascript frameworks. Also I don’t want to learn stuff that will be obsolete soon. That’s why I like C programming and embedded systems. Nothing has really changed. You learn it once and you’re good to go. Somewhere in the middle of these 2 is Clean Architecture, or just modularity. I feel like React kind of throws a wrench into this. Let me talk it out to myself. JSX is not HTML. It can be transformed into HTML, but it’s not HTML. It would be nice if it was, so HTML could be reusable. But we can ignore this and leave that hassle for the front end person. I should be able to prototype my UI without any CSS, and the HTML should be throwaway code. It’s frustrating trying to take what I want, or what I already have, and make it work with React. So, let’s not do that. What if all the React code looked exactly like the examples on the web? That solves 2 problems: first it takes away the pain of working with the framework, second it keeps my “core logic” separated. What are some of the essential elements of React. Why am I even using it? The component class: A component has state, props, lifecycle events, and a render. When the state changes, the component rerenders. Pieces of state can be passed to children as props.</summary></entry><entry><title type="html">Javascript Sucks: Greatest Hits</title><link href="/2018/03/28/javascript-sucks-greatest-hits.html" rel="alternate" type="text/html" title="Javascript Sucks:  Greatest Hits" /><published>2018-03-28T00:00:00-07:00</published><updated>2018-03-28T00:00:00-07:00</updated><id>/2018/03/28/javascript-sucks-greatest-hits</id><content type="html" xml:base="/2018/03/28/javascript-sucks-greatest-hits.html">&lt;h1 id=&quot;heres-a-collection-of-snippets&quot;&gt;Here’s a collection of snippets&lt;/h1&gt;
 
 &lt;h3 id=&quot;consolelogobject-is-a-live-reference--in-other-words--it-doesnt-actually-log&quot;&gt;console.log(object) is a live reference.  in other words:  it doesn’t actually log.&lt;/h3&gt;
 &lt;p&gt;https://stackoverflow.com/a/38660899/9325070&lt;/p&gt;
@@ -641,104 +683,4 @@ What I’ll do is add a new commit after master that removes all occurrences
 of the secret data.  Then I’ll squash everything, so the secret data is not in that squashed commit.&lt;/p&gt;
 
 &lt;p&gt;Crap !  The squashed commit contains a deletion of an occurrence of the secret data!&lt;br /&gt;
-Well dang, I don’t know what to do.  I’ll just give up, start a new repo history from where I’m at now, after removing all occurrences of the secret data.&lt;/p&gt;</content><author><name></name></author><summary type="html">I didn’t push to the remote yet. The very initial commit of my repo has an API token in it. My current verison still has that API token in it. I want to replace the token at the initial commit, then I want to rebase all the other commits after that. To do this, I’ll make a dummy branch at master so I don’t lose that branch. git branch dummybranch Then I’ll git checkout init_commit_sha1 Then make a branch to name it, git branch initcommit. Then I will modify code here, removing the secret data. Oops! I’m stupid. I need to remove the initial commit from the history. So, now my plan is to create a new repository, starting with the working copy of the initial commit, but with no commits in this new repository yet. Then I will add my bad repo as a remote, fetch all the commits, and hopefully see a way to rebase the commits. Crap ! Turns out I have commits in the middle of the history that has another occurrence of the secret data, then a commit where gofmt indented the line with the secret data. You know what, I’ll go with the Internet’s advice. I’ll squash all the commits into 1 commit, totally wasting all my history but whatever. What I’ll do is add a new commit after master that removes all occurrences of the secret data. Then I’ll squash everything, so the secret data is not in that squashed commit. Crap ! The squashed commit contains a deletion of an occurrence of the secret data! Well dang, I don’t know what to do. I’ll just give up, start a new repo history from where I’m at now, after removing all occurrences of the secret data.</summary></entry><entry><title type="html">React and AngularJS Notes</title><link href="/2018/02/06/react-and-angularjs-notes.html" rel="alternate" type="text/html" title="React and AngularJS Notes" /><published>2018-02-06T00:00:00-08:00</published><updated>2018-02-06T00:00:00-08:00</updated><id>/2018/02/06/react-and-angularjs-notes</id><content type="html" xml:base="/2018/02/06/react-and-angularjs-notes.html">&lt;h1 id=&quot;react&quot;&gt;React&lt;/h1&gt;
-&lt;ul&gt;
-  &lt;li&gt;A component is a self-contained module that renders some output
-** For example, a button.  A component might include one or more other components in its output.  eg. a Form.&lt;/li&gt;
-  &lt;li&gt;Wow, this caching thing on index.html is pretty terrible for a new user.&lt;/li&gt;
-  &lt;li&gt;All components have a &lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt; function that SPECIFIES what the HTML output of the COMPONENT is.&lt;/li&gt;
-  &lt;li&gt;JSX: JS Extension, allows writing JS that LOOKS LIKE HTML
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class HelloWorld extends React.Component {
-  render() {  //The component has a RENDER Function
- return (  //The render function RETURNS HTML
-   &amp;lt;h1 className='large'&amp;gt;Hello World&amp;lt;/h1&amp;gt;  //THIS IS NOT ACTUALLY HTML
- );
-  }
-}
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;h1 className GETS CONVERTED TO class.  This is because CLASS IS A RESERVED JS KEYWORD.&lt;/li&gt;
-  &lt;li&gt;JSX is very convenient notation for writing nested HTML snippets&lt;/li&gt;
-  &lt;li&gt;In order to load React from &lt;script&gt;&lt;/script&gt; , ie. client side, the following is needeed:&lt;/li&gt;
-  &lt;li&gt;react.min.js , react-dom.min.js, babel-core@x.x.x/browser.min.js&lt;/li&gt;
-  &lt;li&gt;Babel is a library for transpiling ES6 to ES5.&lt;/li&gt;
-  &lt;li&gt;Inside the body we have the following:
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;script type=&quot;text/babel&quot;&amp;gt;
-var app = &amp;lt;h1&amp;gt;Hello world&amp;lt;/h1&amp;gt;
-var mountComponent = document.querySelector('#app');
-ReactDOM.render(app, mountComponent);
-&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;This tells Bable to convert the above ES6 into ES5&lt;/li&gt;
-  &lt;li&gt;render() :  &lt;code class=&quot;highlighter-rouge&quot;&gt;ReactDOM.render(&amp;lt;what&amp;gt;, &amp;lt;where&amp;gt;)&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Interesting, in this case the WHERE is #app.  In other tutorials it was document root.&lt;/li&gt;
-  &lt;li&gt;In the above snippet, app is a HTML snippet, directly passed into render().&lt;/li&gt;
-  &lt;li&gt;Another way to do it is this:  &lt;code class=&quot;highlighter-rouge&quot;&gt;ReactDOM.render(&amp;lt;App /&amp;gt;, mount);&lt;/code&gt; Where App is a class like class HelloWorld&lt;/li&gt;
-  &lt;li&gt;Ah, this makes sense why I struggled with the meta tags.  They go inside head.  In
- these examples, the rendering goes to document root or a #hash section.&lt;/li&gt;
-  &lt;li&gt;As a test, I should be able to call render() twice in a row and get 2 components to render.
-** Cool.  After doing that I saw that, if render() is called twice in a row on the same DOM mount (what’s it called?)
-This is intuitive, the DOM mount gets overwritten.  Using 2 div tags with different classes, render() can be called on each of them.&lt;/li&gt;
-  &lt;li&gt;A “Wrapper” component combines multiple components.  The Wrapper will have divs with classnames.&lt;br /&gt;
-The Wrapper will nest other divs inside those divs, with classnames.  Those child components 
-can be used in the Parent by tag notation.
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class App extends React.Component {
-render() {
-  return (
-    &amp;lt;div className=&quot;notificationsFrame&quot;&amp;gt;
-      &amp;lt;div className=&quot;panel&quot;&amp;gt;
-        &amp;lt;Header /&amp;gt;
-        &amp;lt;Content /&amp;gt;
-      &amp;lt;/div&amp;gt;
-    &amp;lt;/div&amp;gt;
-  )
-}
-}
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-    &lt;h1 id=&quot;to-add-data-ie-props-to-a-component&quot;&gt;To add data ie. props to a component&lt;/h1&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Write something like this:  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;Header title=&quot;My Header&quot;&amp;gt;&lt;/code&gt; It is picked up by the Component liek this:
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;span className=&quot;title&quot;&amp;gt;
-{this.props.title}
-&amp;lt;/span&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-    &lt;h1 id=&quot;httpsreactjsorgtutorialtutorialhtml-was-informative&quot;&gt;https://reactjs.org/tutorial/tutorial.html was informative&lt;/h1&gt;
-    &lt;h1 id=&quot;httpsreactjsorgdocsstate-and-lifecyclehtml&quot;&gt;https://reactjs.org/docs/state-and-lifecycle.html&lt;/h1&gt;
-  &lt;/li&gt;
-  &lt;li&gt;I need to learn how setting state works.&lt;/li&gt;
-  &lt;li&gt;Do I need a constructor to have this.state?&lt;/li&gt;
-  &lt;li&gt;Is this.setState() the only way to set state? (except initializing state in constructor?)&lt;/li&gt;
-  &lt;li&gt;This is what I’m doing:
-** In render() I am using {this.state.mystatevar}
-** In componentDidMount() I am using this.setState{mystatevar:myval};
-** But the console says error: cannot read property mystatevar of null.
-** It appears the answer is Yes, you have to declare the different state variables in the constructor&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;uggh-i-dont-know-how-to-separate-the-js-into-different-js-files&quot;&gt;Uggh, I don’t know how to separate the JS into different .js files.&lt;/h1&gt;
-&lt;h1 id=&quot;all-i-want-is-a-indexhtml-and-a-indexjs&quot;&gt;All I want is a index.html and a index.js&lt;/h1&gt;
-
-&lt;h1 id=&quot;angularjs&quot;&gt;AngularJS&lt;/h1&gt;
-&lt;p&gt;First you have this:  &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-app=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;todoApp&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;br /&gt;
-And eventually this:  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;div ng-controller=&quot;TodoListController as todoList&quot;&amp;gt;&lt;/code&gt;
-Then in the .js you have:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;angular.module('todoApp', [])
-  .controller('TodoListController', function() {
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;The names have to match.&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-app=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;todoApp&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;  Does not have to be at the top, or in a html tag.&lt;br /&gt;
-In order to use $http requests, the controller is passed $http.  As in this:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;angular.module('myapp', [])
-  .controller('myController', function($http) {
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;$http will give &lt;code class=&quot;highlighter-rouge&quot;&gt;No 'Access-Control-Allow-Origin' header is present on the requested resource.'&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;Meh, I don’t like it.&lt;/em&gt;&lt;br /&gt;
-&lt;em&gt;As soon as I found out how much has changed over the versions I immediately quit.  I’m not going to bother learning the history when I already think it sucks&lt;/em&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">React A component is a self-contained module that renders some output ** For example, a button. A component might include one or more other components in its output. eg. a Form. Wow, this caching thing on index.html is pretty terrible for a new user. All components have a render function that SPECIFIES what the HTML output of the COMPONENT is. JSX: JS Extension, allows writing JS that LOOKS LIKE HTML class HelloWorld extends React.Component { render() { //The component has a RENDER Function return ( //The render function RETURNS HTML &amp;lt;h1 className='large'&amp;gt;Hello World&amp;lt;/h1&amp;gt; //THIS IS NOT ACTUALLY HTML ); } } h1 className GETS CONVERTED TO class. This is because CLASS IS A RESERVED JS KEYWORD. JSX is very convenient notation for writing nested HTML snippets In order to load React from , ie. client side, the following is needeed: react.min.js , react-dom.min.js, babel-core@x.x.x/browser.min.js Babel is a library for transpiling ES6 to ES5. Inside the body we have the following: &amp;lt;script type=&quot;text/babel&quot;&amp;gt; var app = &amp;lt;h1&amp;gt;Hello world&amp;lt;/h1&amp;gt; var mountComponent = document.querySelector('#app'); ReactDOM.render(app, mountComponent); &amp;lt;/script&amp;gt; This tells Bable to convert the above ES6 into ES5 render() : ReactDOM.render(&amp;lt;what&amp;gt;, &amp;lt;where&amp;gt;) Interesting, in this case the WHERE is #app. In other tutorials it was document root. In the above snippet, app is a HTML snippet, directly passed into render(). Another way to do it is this: ReactDOM.render(&amp;lt;App /&amp;gt;, mount); Where App is a class like class HelloWorld Ah, this makes sense why I struggled with the meta tags. They go inside head. In these examples, the rendering goes to document root or a #hash section. As a test, I should be able to call render() twice in a row and get 2 components to render. ** Cool. After doing that I saw that, if render() is called twice in a row on the same DOM mount (what’s it called?) This is intuitive, the DOM mount gets overwritten. Using 2 div tags with different classes, render() can be called on each of them. A “Wrapper” component combines multiple components. The Wrapper will have divs with classnames. The Wrapper will nest other divs inside those divs, with classnames. Those child components can be used in the Parent by tag notation. class App extends React.Component { render() { return ( &amp;lt;div className=&quot;notificationsFrame&quot;&amp;gt; &amp;lt;div className=&quot;panel&quot;&amp;gt; &amp;lt;Header /&amp;gt; &amp;lt;Content /&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; ) } } To add data ie. props to a component Write something like this: &amp;lt;Header title=&quot;My Header&quot;&amp;gt; It is picked up by the Component liek this: &amp;lt;span className=&quot;title&quot;&amp;gt; {this.props.title} &amp;lt;/span&amp;gt; https://reactjs.org/tutorial/tutorial.html was informative https://reactjs.org/docs/state-and-lifecycle.html I need to learn how setting state works. Do I need a constructor to have this.state? Is this.setState() the only way to set state? (except initializing state in constructor?) This is what I’m doing: ** In render() I am using {this.state.mystatevar} ** In componentDidMount() I am using this.setState{mystatevar:myval}; ** But the console says error: cannot read property mystatevar of null. ** It appears the answer is Yes, you have to declare the different state variables in the constructor</summary></entry></feed>
+Well dang, I don’t know what to do.  I’ll just give up, start a new repo history from where I’m at now, after removing all occurrences of the secret data.&lt;/p&gt;</content><author><name></name></author><summary type="html">I didn’t push to the remote yet. The very initial commit of my repo has an API token in it. My current verison still has that API token in it. I want to replace the token at the initial commit, then I want to rebase all the other commits after that. To do this, I’ll make a dummy branch at master so I don’t lose that branch. git branch dummybranch Then I’ll git checkout init_commit_sha1 Then make a branch to name it, git branch initcommit. Then I will modify code here, removing the secret data. Oops! I’m stupid. I need to remove the initial commit from the history. So, now my plan is to create a new repository, starting with the working copy of the initial commit, but with no commits in this new repository yet. Then I will add my bad repo as a remote, fetch all the commits, and hopefully see a way to rebase the commits. Crap ! Turns out I have commits in the middle of the history that has another occurrence of the secret data, then a commit where gofmt indented the line with the secret data. You know what, I’ll go with the Internet’s advice. I’ll squash all the commits into 1 commit, totally wasting all my history but whatever. What I’ll do is add a new commit after master that removes all occurrences of the secret data. Then I’ll squash everything, so the secret data is not in that squashed commit. Crap ! The squashed commit contains a deletion of an occurrence of the secret data! Well dang, I don’t know what to do. I’ll just give up, start a new repo history from where I’m at now, after removing all occurrences of the secret data.</summary></entry></feed>
