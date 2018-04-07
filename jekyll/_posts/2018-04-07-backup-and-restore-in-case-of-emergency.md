@@ -6,9 +6,9 @@ I dropped my phone and it stopped working.  After a short existential crisis,
 I went to the screen repair place the next day.  It was replaced in an hour,
 fully functional.  
 I got lucky that time.  Eventually I won't be so lucky.  
-*My contacts were not backed up.  I need to be more careful.*  
+_My contacts were not backed up.  I need to be more careful._
   
-* Grabbing .vcf's off my phone.
+#Grabbing .vcf's off my phone.
 First, why the hell are we using this ridiculous format?  
 Second, why is it so confusing to access the filesystem on my Android phone?  
   
@@ -20,7 +20,7 @@ Shouldn't the contacts just.. be there?  Instead of having to export them?  Yeah
   
 Now let's look at the .vcf files.  
 I open one up in VIM.  Then go to the end of the file.  The person I see there, is the last person I added to my phone.  
-I remember this.  Scrolling up, the contacts appear to be in chronological order.  
+Scrolling up, the contacts appear to be in chronological order.  
 Scrolling back to the top, I see... totally random contacts.  Some from 10 years ago, some from 5 years ago.
 Those defintely aren't in chronological order.  Perhaps they got mixed up since I've changed phones a couple times?  
   
