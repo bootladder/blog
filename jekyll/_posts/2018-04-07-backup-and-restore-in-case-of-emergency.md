@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Cell Phone\:  Backup and Restore in Case of Emergency
+title: Cell Phone - Backup and Restore in Case of Emergency
 ---
 I dropped my phone and it stopped working.  After a short existential crisis, 
 I went to the screen repair place the next day.  It was replaced in an hour,
