@@ -15,7 +15,7 @@ in an unpleasant way.
 I have a docking station for my T420 in my home office.  There's a lot of stuff connected to it,
 so having it saves me a lot of time unplugging and plugging.  
 But you know what's funny?   Docking and undocking the laptop itself is starting to take too much time.  
-Realizing the laptop is not docked and I have to go get it and dock it... is not fun.  
+Realizing the laptop is not there on the docking station, and I have to go get it and dock it... is not fun.  
   
 # Now that I have a supply of disposable Thinkpads, the docking station is obsolete.
 
@@ -29,3 +29,6 @@ and then it hit me.  The spare Thinkpad wasn't configured to my liking.
 * No SSH keys, no ~/.ssh/config, no /etc/hosts, no nothing!
 * blah blah blah, you know the deal
 
+# What do I do about this?
+
+# Some of the stuff is mine, not for you!  Some of the stuff is my customer's, not for me in a year from now!
