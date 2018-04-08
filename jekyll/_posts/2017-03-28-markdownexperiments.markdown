@@ -4,6 +4,9 @@ title:  "Markdown Snippets"
 date:   2017-03-28 13:51:03 -0700
 categories: guide
 ---
+  
+https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
+
 I inserted a newline here.     
 To do a newline, end a line with 2 spaces.  
   

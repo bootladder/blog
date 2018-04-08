@@ -1,16 +1,16 @@
 ---
 layout: post
-title: Cell Phone - Backup and Restore in Case of Emergency
+title: Cell Phone - Backup and Restore My Contacts!
 ---
 I dropped my phone and it stopped working.  After a short existential crisis, 
 I went to the screen repair place the next day.  It was replaced in an hour,
 fully functional.  
 I got lucky that time.  Eventually I won't be so lucky.  
-_My contacts were not backed up.  I need to be more careful._
+**My contacts were not backed up.  I need to be more careful.**
   
-#Grabbing .vcf's off my phone.
-First, why the hell are we using this ridiculous format?  
-Second, why is it so confusing to access the filesystem on my Android phone?  
+# Grabbing .vcf's off my phone.
+* First, why the hell are we using this ridiculous format?  
+* Second, why is it so confusing to access the filesystem on my Android phone?  
   
 I plug my phone into my Ubuntu laptop's USB.  Figuring out how to mount it was frustrating.  
 But fortunately, Nautilus File Manager somehow knew how to mount it.  
@@ -33,5 +33,6 @@ I was living when I met them, when the contact was added.
   
 Whatever, it appears to be all of the contacts.  I'll just grab all the .vcf files off the phone.  
 Also,  the contacts were exported to the SD card, not the phone flash.  
-*So, if I just make a point to export my contacts every X days, then they'll be in the SD card which means I can grab them in the event that the phone dies for real*  
+**So, if I just make a point to export my contacts every X days, then they'll be in the SD card which means I can grab them in the event that the phone dies for real**  
+# Fortunately, this is all I need to do.  
 
