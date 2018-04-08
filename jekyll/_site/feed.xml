@@ -1,14 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-07T19:16:02-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-07T19:27:23-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">Configuration Management of my Laptop</title><link href="/2018/04/07/configuration-management-of-my-laptop.html" rel="alternate" type="text/html" title="Configuration Management of my Laptop" /><published>2018-04-07T00:00:00-07:00</published><updated>2018-04-07T00:00:00-07:00</updated><id>/2018/04/07/configuration-management-of-my-laptop</id><content type="html" xml:base="/2018/04/07/configuration-management-of-my-laptop.html">&lt;p&gt;Similar to the contact list in my phone, my main laptop is a single point of failure.&lt;br /&gt;
 I take my laptop on the plane, in the car, etc.  Sometimes if I’m taking my car,
 I’ll take a spare laptop just in case it gets stolen.  Any time I have my main laptop,
 I must have it on my person at all times, even if I’m not going to use it.&lt;br /&gt;
 &lt;strong&gt;This is just plain stupid&lt;/strong&gt;.  I can get a Thinkpad T420, which is what I use exclusively now,
-for less than $200.  It’s relatively heavy by today’s standards.&lt;/p&gt;
+for less than $200.  It’s relatively heavy by today’s standards.  Sometimes I feel tied to it
+in an unpleasant way.&lt;/p&gt;
 
+&lt;h1 id=&quot;the-only-reason-i-have-a-primary-laptop-is-because-its-configured-to-my-preference&quot;&gt;The only reason I have a primary laptop is because it’s configured to my preference.&lt;/h1&gt;
+
+&lt;p&gt;I have a docking station for my T420 in my home office.  There’s a lot of stuff connected to it,
+so having it saves me a lot of time unplugging and plugging.&lt;br /&gt;
+But you know what’s funny?   Docking and undocking the laptop itself is starting to take too much time.&lt;br /&gt;
+Realizing the laptop is not docked and I have to go get it and dock it… is not fun.&lt;/p&gt;
+
+&lt;h1 id=&quot;now-that-i-have-a-supply-of-disposable-thinkpads-the-docking-station-is-obsolete&quot;&gt;Now that I have a supply of disposable Thinkpads, the docking station is obsolete.&lt;/h1&gt;
+
+&lt;p&gt;So, today I went out to the coffee shop, and I took a spare Thinkpad.  Not my main one.
+I left my main Thinkpad on the docking station.  I got to the coffee shop, opened up the laptop,
+and then it hit me.  The spare Thinkpad wasn’t configured to my liking.&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;The only reason I have a primary laptop is because it’s configured to my preference.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><summary type="html">Similar to the contact list in my phone, my main laptop is a single point of failure. I take my laptop on the plane, in the car, etc. Sometimes if I’m taking my car, I’ll take a spare laptop just in case it gets stolen. Any time I have my main laptop, I must have it on my person at all times, even if I’m not going to use it. This is just plain stupid. I can get a Thinkpad T420, which is what I use exclusively now, for less than $200. It’s relatively heavy by today’s standards. The only reason I have a primary laptop is because it’s configured to my preference.</summary></entry><entry><title type="html">Cell Phone - Backup and Restore My Contacts!</title><link href="/2018/04/07/backup-and-restore-in-case-of-emergency.html" rel="alternate" type="text/html" title="Cell Phone - Backup and Restore My Contacts!" /><published>2018-04-07T00:00:00-07:00</published><updated>2018-04-07T00:00:00-07:00</updated><id>/2018/04/07/backup-and-restore-in-case-of-emergency</id><content type="html" xml:base="/2018/04/07/backup-and-restore-in-case-of-emergency.html">&lt;p&gt;I dropped my phone and it stopped working.  After a short existential crisis, 
+  &lt;li&gt;My i3wm config was default; I could barely use it&lt;/li&gt;
+  &lt;li&gt;It didn’t have any of my books on it&lt;/li&gt;
+  &lt;li&gt;golang was not installed&lt;/li&gt;
+  &lt;li&gt;none of my git repos for work projects were cloned&lt;/li&gt;
+  &lt;li&gt;No SSH keys, no ~/.ssh/config, no /etc/hosts, no nothing!&lt;/li&gt;
+  &lt;li&gt;blah blah blah, you know the deal&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">Similar to the contact list in my phone, my main laptop is a single point of failure. I take my laptop on the plane, in the car, etc. Sometimes if I’m taking my car, I’ll take a spare laptop just in case it gets stolen. Any time I have my main laptop, I must have it on my person at all times, even if I’m not going to use it. This is just plain stupid. I can get a Thinkpad T420, which is what I use exclusively now, for less than $200. It’s relatively heavy by today’s standards. Sometimes I feel tied to it in an unpleasant way. The only reason I have a primary laptop is because it’s configured to my preference. I have a docking station for my T420 in my home office. There’s a lot of stuff connected to it, so having it saves me a lot of time unplugging and plugging. But you know what’s funny? Docking and undocking the laptop itself is starting to take too much time. Realizing the laptop is not docked and I have to go get it and dock it… is not fun. Now that I have a supply of disposable Thinkpads, the docking station is obsolete.</summary></entry><entry><title type="html">Cell Phone - Backup and Restore My Contacts!</title><link href="/2018/04/07/backup-and-restore-in-case-of-emergency.html" rel="alternate" type="text/html" title="Cell Phone - Backup and Restore My Contacts!" /><published>2018-04-07T00:00:00-07:00</published><updated>2018-04-07T00:00:00-07:00</updated><id>/2018/04/07/backup-and-restore-in-case-of-emergency</id><content type="html" xml:base="/2018/04/07/backup-and-restore-in-case-of-emergency.html">&lt;p&gt;I dropped my phone and it stopped working.  After a short existential crisis, 
 I went to the screen repair place the next day.  It was replaced in an hour,
 fully functional.&lt;br /&gt;
 I got lucky that time.  Eventually I won’t be so lucky.&lt;br /&gt;
