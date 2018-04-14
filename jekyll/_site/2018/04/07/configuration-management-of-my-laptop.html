@@ -97,6 +97,42 @@ and then it hit me.  The spare Thinkpad wasn’t configured to my liking.</p>
 
 <h1 id="some-of-the-stuff-is-mine-not-for-you--some-of-the-stuff-is-my-customers-not-for-me-in-a-year-from-now">Some of the stuff is mine, not for you!  Some of the stuff is my customer’s, not for me in a year from now!</h1>
 
+<h1 id="solution-run-a-openssh-server-on-the-main-laptop">Solution: Run a OpenSSH server on the main laptop</h1>
+<p>Using the “fleet laptop”, ssh into the main laptop to grab configuration files.
+At the same time, copy them into a git repo for future convenience.
+Even better, add a line in a script that copies it to the destination.<br />
+Worked well for <code class="highlighter-rouge">/etc/</code> and <code class="highlighter-rouge">~/.</code> files.<br />
+<code class="highlighter-rouge">.bashrc .vimrc i3config </code></p>
+
+<h1 id="solution--ansible-playbooks">Solution:  Ansible Playbooks</h1>
+<p>Golang is a multi-step install, and for some reason apt-get install golang-go installs version 1.6.  Too old.<br />
+Let’s give it a try.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>sudo apt-get install software-properties-common
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt-get install ansible
+</code></pre>
+</div>
+<p><strong>Maybe I should just keep a ansible binary off hand, to avoid those 3 steps</strong></p>
+
+<p>TBD…</p>
+
+<h1 id="etchosts-and-sshconfig--bitbucket">/etc/hosts and ~/.ssh/config … Bitbucket?</h1>
+<p>Bitbucket gives you private repos.  Let’s just do that for now.<br />
+<em>~/.ssh/</em><br />
+Copy over my ~/.ssh into the repo, take out unnecessary stuff.<br />
+My <code class="highlighter-rouge">~/.ssh/config</code> contains:  hostnames (IP addresses or domain names), IdentityFile’s (SSH keys).<br />
+Should I include the keys in the repo?  If I do, it’s more convenient, but then it’s more security risk.  If I don’t, I need to generate new keys and then copy them to the hosts.  At best here I have to remember a password to access the remote machine.  At worst, the machine only authenticates with keys, no password login.<br />
+So again, for lack of a better solution, I’ll put my keys in the repo.<br />
+<em>Result</em>:  <code class="highlighter-rouge">~/.ssh/</code> contains key-pairs and the config file.<br />
+Then I attempted to login to a remote host.  Turns out, git does not preserve the 400 permission mode that the keys need to have.  So, in the install script, I change the keys to 400.</p>
+
+<p><em>/etc/hosts</em><br />
+Comparing my “main laptop’s” <code class="highlighter-rouge">/etc/hosts</code> with the other laptop’s default <code class="highlighter-rouge">/etc/hosts</code>, I notice 2nd line of the file:<br />
+<code class="highlighter-rouge">127.0.1.1 my-hostname</code> .  This obviously is unique to the host.  But it appears that this doesn’t matter.  I should be able to remove that line.<br />
+OK I did that, and I notice that when /etc/hosts is touched or modified,
+I get the following message: <code class="highlighter-rouge">sudo: unable to resolve host my-hostname</code>.<br />
+Using this answer as a suggestion: https://askubuntu.com/a/524368 , I added the following line to my install script: <code class="highlighter-rouge">echo 127.0.1.1 $(hostname) | sudo tee -a /etc/hosts</code></p>
+
   </div>
 
   
