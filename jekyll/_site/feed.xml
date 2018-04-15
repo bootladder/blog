@@ -1,5 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-14T12:57:00-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Configuration Management of my Laptop</title><link href="/2018/04/07/configuration-management-of-my-laptop.html" rel="alternate" type="text/html" title="Configuration Management of my Laptop" /><published>2018-04-07T00:00:00-07:00</published><updated>2018-04-07T00:00:00-07:00</updated><id>/2018/04/07/configuration-management-of-my-laptop</id><content type="html" xml:base="/2018/04/07/configuration-management-of-my-laptop.html">&lt;p&gt;Similar to the contact list in my phone, my main laptop is a single point of failure.&lt;br /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-14T22:30:31-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">udev rule for /dev/ symlink with serial number</title><link href="/2018/04/14/udev-rule-for-dev-symlink-with-serial-number.html" rel="alternate" type="text/html" title="udev rule for /dev/ symlink with serial number" /><published>2018-04-14T00:00:00-07:00</published><updated>2018-04-14T00:00:00-07:00</updated><id>/2018/04/14/udev-rule-for-dev-symlink-with-serial-number</id><content type="html" xml:base="/2018/04/14/udev-rule-for-dev-symlink-with-serial-number.html">&lt;p&gt;I discovered, you can do the following:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;KERNEL==&quot;ttyUSB[0-9]*&quot;, ATTRS{idProduct}==&quot;6001&quot;, ATTRS{idVendor}==&quot;0403&quot;, SYMLINK+=&quot;ttyUSB%s{serial}&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;The interesting part is the &lt;code class=&quot;highlighter-rouge&quot;&gt;%s{serial}&lt;/code&gt;.&lt;br /&gt;
+%s is short for ATTRS{} , so the value of the ATTR is inserted there.&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;serial&lt;/code&gt; is the name of an attr, like &lt;code class=&quot;highlighter-rouge&quot;&gt;idProduct&lt;/code&gt;.&lt;br /&gt;
+So, now I can mark my FTDI’s with their serial numbers and do cool stuff.&lt;br /&gt;
+I discovered this from https://txlab.wordpress.com/2016/06/14/udev-rules-for-ttyusb-devices/ , and then looked at the udev manual&lt;/p&gt;</content><author><name></name></author><summary type="html">I discovered, you can do the following: KERNEL==&quot;ttyUSB[0-9]*&quot;, ATTRS{idProduct}==&quot;6001&quot;, ATTRS{idVendor}==&quot;0403&quot;, SYMLINK+=&quot;ttyUSB%s{serial}&quot; The interesting part is the %s{serial}. %s is short for ATTRS{} , so the value of the ATTR is inserted there. serial is the name of an attr, like idProduct. So, now I can mark my FTDI’s with their serial numbers and do cool stuff. I discovered this from https://txlab.wordpress.com/2016/06/14/udev-rules-for-ttyusb-devices/ , and then looked at the udev manual</summary></entry><entry><title type="html">Configuration Management of my Laptop</title><link href="/2018/04/07/configuration-management-of-my-laptop.html" rel="alternate" type="text/html" title="Configuration Management of my Laptop" /><published>2018-04-07T00:00:00-07:00</published><updated>2018-04-07T00:00:00-07:00</updated><id>/2018/04/07/configuration-management-of-my-laptop</id><content type="html" xml:base="/2018/04/07/configuration-management-of-my-laptop.html">&lt;p&gt;Similar to the contact list in my phone, my main laptop is a single point of failure.&lt;br /&gt;
 I take my laptop on the plane, in the car, etc.  Sometimes if I’m taking my car,
 I’ll take a spare laptop just in case it gets stolen.  Any time I have my main laptop,
 I must have it on my person at all times, even if I’m not going to use it.&lt;br /&gt;
@@ -612,120 +620,4 @@ Oh nice, some debugging help.  I point my browser to mydomain:8088 and it says I
 Dang, I can’t connect another peer because I loaded this locally.  Instead of bothering to copy the files to another machine, I should just serve them.&lt;/p&gt;
 
 &lt;h1 id=&quot;connecting-to-janus-with-2-peers&quot;&gt;Connecting to Janus with 2 peers&lt;/h1&gt;
-&lt;p&gt;So, not surpisingly, I’m getting issues with HTTPS.  Somehow I have to get it right, Janus over HTTPS, webserver over HTTPS, HTTPS proxy to a Janus over HTTP, whatever.  Well, I figured out how to get Beego framework to serve static pages over HTTPS, so that’ll do.  Don’t know what to do with Janus.  Let’s just put the static page in a running Beego server and see what happens.&lt;/p&gt;</content><author><name></name></author><summary type="html">It appears that Janus is what I want. I may have to apply browser-side recording, but first I’ll see how far Janus goes with server side. Apparently, browsers can connect peer to peer to a Janus server. Obviously with all the acquisitions happening in this space, I’d like my app to be independent of Janus, source-wise and functionality-wise.</summary></entry><entry><title type="html">Javascript Notes: The Relearning</title><link href="/2018/03/07/javascript-notes-the-relearning.html" rel="alternate" type="text/html" title="Javascript Notes: The Relearning" /><published>2018-03-07T00:00:00-08:00</published><updated>2018-03-07T00:00:00-08:00</updated><id>/2018/03/07/javascript-notes-the-relearning</id><content type="html" xml:base="/2018/03/07/javascript-notes-the-relearning.html">&lt;p&gt;Learning to use this demo: https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/audio-recording.html&lt;br /&gt;
-Starting from the top… What is this?  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, minimum-scale=1.0&quot;&amp;gt;&lt;/code&gt;  ah of course, it’s for mobile devices.  https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary&lt;/p&gt;
-
-&lt;p&gt;What is this?  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;div&amp;gt;&amp;lt;audio controls autoplay&amp;gt;&amp;lt;/audio&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;  It’s the audio widget, which I did not know was an HTML tag.  &lt;code class=&quot;highlighter-rouge&quot;&gt;controls&lt;/code&gt; shows the play, seek, volume controls, &lt;code class=&quot;highlighter-rouge&quot;&gt;autoplay&lt;/code&gt; plays without pressing play.&lt;/p&gt;
-
-&lt;p&gt;What is this?  &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;script src=&quot;https://webrtc.github.io/adapter/adapter-latest.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/code&gt;   Oh… we need to use this adapter for cross browser compatibility, insulating us from name changes.&lt;/p&gt;
-
-&lt;p&gt;Why does the demo code declare vars all over the place… Let’s move them to the top.  Demo still works.&lt;/p&gt;
-
-&lt;p&gt;So.. the control flow here is convoluted, impossible to read top to bottom.  Let’s start from pressing the “Start Recording” button.  Using the inspector I see the button has a click event.  I see where this is set, and I’ll move it to the top.  Ah finally some sense; all the click handlers are set in a block.  So I’ll just move all the click handlers to the top.&lt;/p&gt;
-
-&lt;p&gt;Alright, the btnStartRecording.onclick.  This smells bad, I’m pretty sure?&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;btnStartRecording.onclick = function() {
-    this.disabled = true;
-    this.style.border = '';
-    this.style.fontSize = '';
-
-    if (!microphone) {
-        captureMicrophone(function(mic) {
-            microphone = mic;
-
-// Different behavior for Safari?  Changes button style, does an alert?
-            if(isSafari) {
-                replaceAudio();
-
-                audio.muted = true;
-                setSrcObject(microphone, audio);
-                audio.play();
-
-                btnStartRecording.disabled = false;
-                btnStartRecording.style.border = '1px solid red';
-                btnStartRecording.style.fontSize = '150%';
-
-                alert('Please click startRecording button again. First time we tried to access your microphone. Now we will record it.');
-                return;
-//Return from calling function inside callback?  What?
-            }
-
-//Calling this function again, using a helper named click which,
-//instead of calling the function, sends another click event?
-//Hmm, maybe because we want the call to happen asynchronous to this
-//function call we're currently in, as opposed to recursive?
-            click(btnStartRecording);
-        });
-        return;
-    }
-console.log(&quot;\ndid we get here?\n&quot;);
-    replaceAudio();
-
-    audio.muted = true;
-    setSrcObject(microphone, audio);
-    audio.play();
-
-    var options = {
-        type: 'audio',
-        numberOfAudioChannels: isEdge ? 1 : 2,
-        checkForInactiveTracks: true,
-        bufferSize: 16384
-    };
-
-    if(navigator.platform &amp;amp;&amp;amp; navigator.platform.toString().toLowerCase().indexOf('win') === -1) {
-        options.sampleRate = 48000; // or 44100 or remove this line for default
-    }
-
-    if(recorder) {
-        recorder.destroy();
-        recorder = null;
-    }
-
-    recorder = RecordRTC(microphone, options);
-
-    recorder.startRecording();
-
-    btnStopRecording.disabled = false;
-    btnDownloadRecording.disabled = true;
-};
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;What happens when I Do Not Allow access to the microphone?  The console.log does not get logged.&lt;/p&gt;
-
-&lt;p&gt;First I refresh the page. Then click the button.  The microphone is null so captureMicrophone() is called.  captureMicrophone() sets the Release Button (a global variable) to not disabled.  captureMicrophone() then checks that same microphone global, which is still null at this time.  Then tries to getUserMedia(), and since I Do Not Allow, we get the alert.  Ah.. at this point the function returns, but Does Not call the Callback!  So, the Start Recording click handler returns, and that’s the end of the story.&lt;/p&gt;
-
-&lt;p&gt;Now, what happens when I Allow Access to the microphone?&lt;br /&gt;
-Here we see the real magic, navigator.mediaDevices.getUserMedia() , which appears to take some configuration object?  On success the callback is called, with the mic being passed in from getUserMedia?  Then in the callback, if it’s safari the user is required to press the button again, but otherwise the click() helper function generates another click event.  This time, the global variable microphone is not-null, so we go on to the end of the function where the recording actually happens.&lt;/p&gt;
-
-&lt;p&gt;replaceAudio() , don’t know why this is necessary, it replaces the &lt;audio&gt; tag with a new one, with optional src to be specified.  Why not just use the existing one without replacing it?&lt;/audio&gt;&lt;/p&gt;
-
-&lt;p&gt;setSrcObject() is a RecordRTC function, does it attach the microphone to the &lt;audio&gt; widget?  and then audio.play() moves the seeker and changes the play button to a pause button.  audio.muted=true is there, to stop playback during record, which would cause feedback.&lt;/audio&gt;&lt;/p&gt;
-
-&lt;p&gt;Then, if there’s a recorder it is destroyed, and then we create the RecordRTC object and start recording.&lt;/p&gt;
-
-&lt;h1 id=&quot;note-what-is-navigator&quot;&gt;note, what is navigator?&lt;/h1&gt;
-&lt;p&gt;The navigator object contains information about the browser.&lt;br /&gt;
-In this demo we see&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;navigator.platform        == 'win'
-navigator.mediaDevices
-navigator.mediaDevices.getUserMedia
-navigator.userAgent       == 'Safari'
-navigator.msSaveOrOpenBlob
-navigator.msSaveBlob
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The Stop Recording Button click handler calls recorder.stopRecording, which will then call the stopRecordingCallback() which calls replaceAudio() and then audio.play()&lt;/p&gt;
-
-&lt;h1 id=&quot;random-notes&quot;&gt;Random notes&lt;/h1&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;getUserMedia&lt;/code&gt; is a promise, either calling a callback or an error.  Apparently, if the callback itself fails execution, then the error is caught.  Also, if this happens, the UserMedia is not released.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.youtube.com/watch?v=4ba0G8FQt5M&lt;/code&gt;  This talk is good.
-#Blobs&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;FileReader can read content from a blob.  readAsText() , readAsArrayBuffer().&lt;/li&gt;
-  &lt;li&gt;A File is a Blob.&lt;/li&gt;
-  &lt;li&gt;FileReader can readAsText(myFile);&lt;/li&gt;
-  &lt;li&gt;ArrayBuffer is like a Blob, but the bytes are on disk.&lt;/li&gt;
-  &lt;li&gt;var bytes = new Uint8Array(buffer); //creates a typed array from an array buffer.&lt;/li&gt;
-&lt;/ol&gt;</content><author><name></name></author><summary type="html">Learning to use this demo: https://github.com/muaz-khan/RecordRTC/blob/master/simple-demos/audio-recording.html Starting from the top… What is this? &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, minimum-scale=1.0&quot;&amp;gt; ah of course, it’s for mobile devices. https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary What is this? &amp;lt;div&amp;gt;&amp;lt;audio controls autoplay&amp;gt;&amp;lt;/audio&amp;gt;&amp;lt;/div&amp;gt; It’s the audio widget, which I did not know was an HTML tag. controls shows the play, seek, volume controls, autoplay plays without pressing play. What is this? &amp;lt;script src=&quot;https://webrtc.github.io/adapter/adapter-latest.js&quot;&amp;gt;&amp;lt;/script&amp;gt; Oh… we need to use this adapter for cross browser compatibility, insulating us from name changes. Why does the demo code declare vars all over the place… Let’s move them to the top. Demo still works. So.. the control flow here is convoluted, impossible to read top to bottom. Let’s start from pressing the “Start Recording” button. Using the inspector I see the button has a click event. I see where this is set, and I’ll move it to the top. Ah finally some sense; all the click handlers are set in a block. So I’ll just move all the click handlers to the top. Alright, the btnStartRecording.onclick. This smells bad, I’m pretty sure? ``` btnStartRecording.onclick = function() { this.disabled = true; this.style.border = ‘’; this.style.fontSize = ‘’;</summary></entry></feed>
+&lt;p&gt;So, not surpisingly, I’m getting issues with HTTPS.  Somehow I have to get it right, Janus over HTTPS, webserver over HTTPS, HTTPS proxy to a Janus over HTTP, whatever.  Well, I figured out how to get Beego framework to serve static pages over HTTPS, so that’ll do.  Don’t know what to do with Janus.  Let’s just put the static page in a running Beego server and see what happens.&lt;/p&gt;</content><author><name></name></author><summary type="html">It appears that Janus is what I want. I may have to apply browser-side recording, but first I’ll see how far Janus goes with server side. Apparently, browsers can connect peer to peer to a Janus server. Obviously with all the acquisitions happening in this space, I’d like my app to be independent of Janus, source-wise and functionality-wise.</summary></entry></feed>
