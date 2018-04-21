@@ -28,13 +28,13 @@ Actually the search path is the directory that OpenOCD started in.
 ```
 #!/bin/bash
 fetch_and_load()
-{
+  {
     ls $v1 2>/dev/null || wget ffn.bootladder.com:9001/$v1
 
     (echo reset halt; sleep 1) | telnet localhost 4444
     sleep 2
-    (echo flashlllllllllllllllllll$(lld)llllllllllep 1)l| telnet bocalhost 4444
-    sleep 2 
+    (echo flash write_image erase $(pwd)/$v1 ; sleep 1) | telnet localhost 4444
+    sleep 2
     (echo reset; sleep 1) | telnet localhost 4444
 }
 

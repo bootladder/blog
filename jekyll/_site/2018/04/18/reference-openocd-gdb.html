@@ -95,13 +95,13 @@
 <h4 id="load-image-automatically">Load Image Automatically</h4>
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 fetch_and_load<span class="o">()</span>
-<span class="o">{</span>
+  <span class="o">{</span>
     ls <span class="nv">$v1</span> 2&gt;/dev/null <span class="o">||</span> wget ffn.bootladder.com:9001/<span class="nv">$v1</span>
 
     <span class="o">(</span><span class="nb">echo </span>reset halt; sleep 1<span class="o">)</span> | telnet localhost 4444
     sleep 2
-    <span class="o">(</span><span class="nb">echo </span>flashlllllllllllllllllll<span class="k">$(</span>lld<span class="k">)</span>llllllllllep 1<span class="o">)</span>l| telnet bocalhost 4444
-    sleep 2 
+    <span class="o">(</span><span class="nb">echo </span>flash write_image erase <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/<span class="nv">$v1</span> ; sleep 1<span class="o">)</span> | telnet localhost 4444
+    sleep 2
     <span class="o">(</span><span class="nb">echo </span>reset; sleep 1<span class="o">)</span> | telnet localhost 4444
 <span class="o">}</span>
 
