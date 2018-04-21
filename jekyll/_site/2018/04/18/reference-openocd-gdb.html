@@ -95,21 +95,42 @@
 <h4 id="load-image-automatically">Load Image Automatically</h4>
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 fetch_and_load<span class="o">()</span>
-  <span class="o">{</span>
-    ls <span class="nv">$v1</span> 2&gt;/dev/null <span class="o">||</span> wget ffn.bootladder.com:9001/<span class="nv">$v1</span>
+<span class="o">{</span>
+    <span class="nb">echo </span>Starting OpenOCD Server
+    openocd -f ~/openocdconfigs/stm32f4discovery/openocd.cfg &amp;
+    <span class="nb">echo </span>Fetching and Loading new firmware: <span class="nv">$v1</span>
+    wget ffn.bootladder.com:9001/<span class="nv">$v1</span>
 
     <span class="o">(</span><span class="nb">echo </span>reset halt; sleep 1<span class="o">)</span> | telnet localhost 4444
     sleep 2
     <span class="o">(</span><span class="nb">echo </span>flash write_image erase <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/<span class="nv">$v1</span> ; sleep 1<span class="o">)</span> | telnet localhost 4444
     sleep 2
     <span class="o">(</span><span class="nb">echo </span>reset; sleep 1<span class="o">)</span> | telnet localhost 4444
+    sleep 2
+    <span class="o">(</span><span class="nb">echo </span>shutdown; sleep 1<span class="o">)</span> | telnet localhost 4444
+
 <span class="o">}</span>
 
-<span class="nv">v1</span><span class="o">=</span><span class="k">$(</span>curl ffn.bootladder.com:9001/target/ffnbeagle-woodland-stm32discovery<span class="k">)</span>
-ls <span class="nv">$v1</span> 2&gt;/dev/null <span class="o">||</span> fetch_and_load
+<span class="nv">v1</span><span class="o">=</span><span class="k">$(</span>curl ffn.bootladder.com:9001/target/ffnbeagle-woodland-stm32discovery 2&gt;/dev/null<span class="k">)</span>
+ls <span class="nv">$v1</span> &gt;/dev/null <span class="o">||</span> fetch_and_load
 </code></pre>
 </div>
 <p>This appears to work, but not sure if it works every time.  Hence the sleeps.</p>
+<ul>
+  <li>OpenOCD server is started and stopped for each write_image.</li>
+  <li>The curl retrieves the contents of the URL, which is a filename</li>
+  <li>If the local system has that file, don’t do anything.</li>
+  <li>If not, grab that file and load it.</li>
+</ul>
+
+<p>Loop the above to achieve automatic firmware updates</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>while true; do sh fetch-and-load-ffnbeagle-woodland-stm32discovery.sh ; sleep 1; done;
+</code></pre>
+</div>
+
+<h4 id="the-above-works-when-i-only-have-1-stm32f4-discovery-board">The above works when I only have 1 STM32F4 discovery board.</h4>
+<h4 id="for-my-atmel-project-i-may-have-2-usb-debuggers-attached-to-the-same-host">For my Atmel project, I may have 2 USB debuggers attached to the same host.</h4>
+<h4 id="at-large-scale-a-host-will-have-many-ttyusb-serial-ports-for-bootloading">At large scale, a host will have many ttyUSB serial ports for bootloading</h4>
 
   </div>
 

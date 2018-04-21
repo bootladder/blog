@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-20T17:10:12-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-20T18:16:45-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 </subtitle><entry><title type="html">Reference: OpenOCD, GDB</title><link href="/2018/04/18/reference-openocd-gdb.html" rel="alternate" type="text/html" title="Reference:  OpenOCD, GDB" /><published>2018-04-18T00:00:00-07:00</published><updated>2018-04-18T00:00:00-07:00</updated><id>/2018/04/18/reference-openocd-gdb</id><content type="html" xml:base="/2018/04/18/reference-openocd-gdb.html">&lt;link rel=&quot;stylesheet&quot; href=&quot;https://2ab9pu2w8o9xpg6w26xnz04d-wpengine.netdna-ssl.com/wp-content/cache/autoptimize/css/autoptimize_f0ba07fcfbfb99eca6dd6305271724f8.css&quot; /&gt;
 
 &lt;h1 id=&quot;openocd-pre-reqs&quot;&gt;OpenOCD Pre-reqs&lt;/h1&gt;
@@ -30,21 +30,42 @@
 &lt;h4 id=&quot;load-image-automatically&quot;&gt;Load Image Automatically&lt;/h4&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
 fetch_and_load&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    ls &lt;span class=&quot;nv&quot;&gt;$v1&lt;/span&gt; 2&amp;gt;/dev/null &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; wget ffn.bootladder.com:9001/&lt;span class=&quot;nv&quot;&gt;$v1&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;Starting OpenOCD Server
+    openocd -f ~/openocdconfigs/stm32f4discovery/openocd.cfg &amp;amp;
+    &lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;Fetching and Loading new firmware: &lt;span class=&quot;nv&quot;&gt;$v1&lt;/span&gt;
+    wget ffn.bootladder.com:9001/&lt;span class=&quot;nv&quot;&gt;$v1&lt;/span&gt;
 
     &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;reset halt; sleep 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | telnet localhost 4444
     sleep 2
     &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;flash write_image erase &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;/&lt;span class=&quot;nv&quot;&gt;$v1&lt;/span&gt; ; sleep 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | telnet localhost 4444
     sleep 2
     &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;reset; sleep 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | telnet localhost 4444
+    sleep 2
+    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;shutdown; sleep 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | telnet localhost 4444
+
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;span class=&quot;nv&quot;&gt;v1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;curl ffn.bootladder.com:9001/target/ffnbeagle-woodland-stm32discovery&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
-ls &lt;span class=&quot;nv&quot;&gt;$v1&lt;/span&gt; 2&amp;gt;/dev/null &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; fetch_and_load
+&lt;span class=&quot;nv&quot;&gt;v1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;curl ffn.bootladder.com:9001/target/ffnbeagle-woodland-stm32discovery 2&amp;gt;/dev/null&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+ls &lt;span class=&quot;nv&quot;&gt;$v1&lt;/span&gt; &amp;gt;/dev/null &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; fetch_and_load
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;This appears to work, but not sure if it works every time.  Hence the sleeps.&lt;/p&gt;</content><author><name></name></author><summary type="html">OpenOCD Pre-reqs Host: Laptop or Beaglebone, with openocd installed, with some USB programmer openocd.cfg files: repo To start OpenOCD, cd to directory with openocd.cfg, run openocd</summary></entry><entry><title type="html">Ubuntu WiFi Bridge to the Lab LAN</title><link href="/2018/04/15/ubuntu-wifi-bridge-to-the-lab-lan.html" rel="alternate" type="text/html" title="Ubuntu WiFi Bridge to the Lab LAN" /><published>2018-04-15T00:00:00-07:00</published><updated>2018-04-15T00:00:00-07:00</updated><id>/2018/04/15/ubuntu-wifi-bridge-to-the-lab-lan</id><content type="html" xml:base="/2018/04/15/ubuntu-wifi-bridge-to-the-lab-lan.html">&lt;p&gt;I don’t have Ethernet access to my gateway router; only wifi.  In my lab area I have a few Beaglebones on a switch.  I need to be able to access them from my laptops.  Ubuntu has a convenient wifi to ethernet bridge.
+&lt;p&gt;This appears to work, but not sure if it works every time.  Hence the sleeps.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;OpenOCD server is started and stopped for each write_image.&lt;/li&gt;
+  &lt;li&gt;The curl retrieves the contents of the URL, which is a filename&lt;/li&gt;
+  &lt;li&gt;If the local system has that file, don’t do anything.&lt;/li&gt;
+  &lt;li&gt;If not, grab that file and load it.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Loop the above to achieve automatic firmware updates&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;while true; do sh fetch-and-load-ffnbeagle-woodland-stm32discovery.sh ; sleep 1; done;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;the-above-works-when-i-only-have-1-stm32f4-discovery-board&quot;&gt;The above works when I only have 1 STM32F4 discovery board.&lt;/h4&gt;
+&lt;h4 id=&quot;for-my-atmel-project-i-may-have-2-usb-debuggers-attached-to-the-same-host&quot;&gt;For my Atmel project, I may have 2 USB debuggers attached to the same host.&lt;/h4&gt;
+&lt;h4 id=&quot;at-large-scale-a-host-will-have-many-ttyusb-serial-ports-for-bootloading&quot;&gt;At large scale, a host will have many ttyUSB serial ports for bootloading&lt;/h4&gt;</content><author><name></name></author><summary type="html">OpenOCD Pre-reqs Host: Laptop or Beaglebone, with openocd installed, with some USB programmer openocd.cfg files: repo To start OpenOCD, cd to directory with openocd.cfg, run openocd</summary></entry><entry><title type="html">Ubuntu WiFi Bridge to the Lab LAN</title><link href="/2018/04/15/ubuntu-wifi-bridge-to-the-lab-lan.html" rel="alternate" type="text/html" title="Ubuntu WiFi Bridge to the Lab LAN" /><published>2018-04-15T00:00:00-07:00</published><updated>2018-04-15T00:00:00-07:00</updated><id>/2018/04/15/ubuntu-wifi-bridge-to-the-lab-lan</id><content type="html" xml:base="/2018/04/15/ubuntu-wifi-bridge-to-the-lab-lan.html">&lt;p&gt;I don’t have Ethernet access to my gateway router; only wifi.  In my lab area I have a few Beaglebones on a switch.  I need to be able to access them from my laptops.  Ubuntu has a convenient wifi to ethernet bridge.
 &lt;strong&gt;Recap: to enable the bridge&lt;/strong&gt; 
 network manager applet “edit connections”, add, IPv4 settings method: shared to other computers”.&lt;/p&gt;
 
