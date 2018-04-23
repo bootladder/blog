@@ -61,3 +61,6 @@ while true; do sh fetch-and-load-ffnbeagle-woodland-stm32discovery.sh ; sleep 1;
 #### The above works when I only have 1 STM32F4 discovery board.
 #### For my Atmel project, I may have 2 USB debuggers attached to the same host.
 #### At large scale, a host will have many ttyUSB serial ports for bootloading
+  
+# Hmm, --enable-cmsis-dap not supported in my OpenOCD installation.
+Ahh nice, `sudo apt install libhidapi-dev` , `./configure --enable-cmsis-dap` .  Props to http://www.signal11.us/oss/
