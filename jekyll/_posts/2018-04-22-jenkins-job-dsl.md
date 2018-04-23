@@ -35,4 +35,6 @@ Let's think this through.  What do I need?
 * A Single Point of Truth (SPOT) for viewing and editing a job
 * Atleast a file on the jenkins machine for the above.  Optional/better: git repo
 * The SPOT must contain:
-** Bitbucket, Github, Slack webhooks 
+  * remote URL of git repo
+  * Bitbucket, Github, Slack webhooks 
+  * shell snippet for processing the output of a build
