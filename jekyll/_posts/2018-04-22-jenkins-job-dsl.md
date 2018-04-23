@@ -38,3 +38,14 @@ Let's think this through.  What do I need?
   * remote URL of git repo
   * Bitbucket, Github, Slack webhooks 
   * shell snippet for processing the output of a build
+  
+Looks like all the above is supported.  
+What I don't like is:
+* To edit job definitions, must edit the seed job
+  * To solve this, I'll need to put the Job DSL script in the filesystem
+* After editing job definitions, must re-generate the jobs
+  * With the Job DSL script in the filesystem, I'll be editing
+    the job in the filesystem, maybe without jenkins open.
+    I can put a timer on the job trigger.  I should be able
+    to stick a shell script in there which I can execute after editing,
+    which should run the job to generate all the jobs.
