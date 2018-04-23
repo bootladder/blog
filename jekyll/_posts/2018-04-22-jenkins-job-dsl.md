@@ -74,4 +74,22 @@ Finished: SUCCESS
 ```
 I'll have to figure out how to automate thru that security.  That's OK for now.  
   
-
+# Using a git Repo
+Created a repo, added the seedjob.groovy.  
+**Note:  Jenkins needs the password to a private repo**  
+Manually in Jenkins, add the job git repo with the groovy scripts.
+This way, when building the seed job, the groovy for the jobs
+come from git.
+  
+**OK never mind, this security thing is annoying**  
+In the Seed Job Config, select `Use Groovy Sandbox`  
+Install the `Authorize Project` plugin.  
+Then a widget appears in Manage Jenkins --> Configure Global Security.  
+I selected Run as User who triggered the build.  
+Nope!  Must select `Run as Specific User`, and it's the jenkins user, not the system user
+  
+**I will need Bitbucket Webhook for the Seed Job**  
+Unfortunately have to do this manually.  But I need it
+so I can change the definition of a generated job.
+  
+**WTF?  Can't put dashes `-` in groovy filenames?**
