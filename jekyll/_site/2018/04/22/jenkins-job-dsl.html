@@ -125,6 +125,31 @@ which should run the job to generate all the jobs.</li>
   </li>
 </ul>
 
+<p>OK, in the Job Configuration, change <code class="highlighter-rouge">Use the provided DSL script</code> to <code class="highlighter-rouge">Look on Filesystem</code>.<br />
+It says the scripts must be located in the Workspace.  But wildcards <code class="highlighter-rouge">*</code> can be used.<br />
+My Jenkins is in a docker container, but that should be OK since all the workspaces are
+volume mapped.</p>
+
+<p>OK, I put a Job DSL script in there.  I then manually build the Seed Job and it fails.<br />
+<code class="highlighter-rouge">ERROR: script not yet approved for use</code><br />
+OK, go to <code class="highlighter-rouge">Manage Jenkins --&gt; In-process Script Approval</code>, and it’s there.</p>
+
+<p>Cool!  Works as expected, including the deleting of the old job which I checked the box for.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>Started by user engineering
+Building in workspace /var/jenkins_home/workspace/job-dsl-1
+Processing DSL script filesystemjob.groovy
+Added items:
+    GeneratedJob{name='Job-DSL-Filesystem-Defined'}
+Unreferenced items:
+    GeneratedJob{name='DSL-Tutorial-1-Test'}
+Removed items:
+    GeneratedJob{name='DSL-Tutorial-1-Test'}
+Finished: SUCCESS
+</code></pre>
+</div>
+<p>I’ll have to figure out how to automate thru that security.  That’s OK for now.</p>
+
+
   </div>
 
   

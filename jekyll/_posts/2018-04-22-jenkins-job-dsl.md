@@ -49,3 +49,29 @@ What I don't like is:
     I can put a timer on the job trigger.  I should be able
     to stick a shell script in there which I can execute after editing,
     which should run the job to generate all the jobs.
+  
+OK, in the Job Configuration, change `Use the provided DSL script` to `Look on Filesystem`.  
+It says the scripts must be located in the Workspace.  But wildcards `*` can be used.  
+My Jenkins is in a docker container, but that should be OK since all the workspaces are
+volume mapped.  
+  
+OK, I put a Job DSL script in there.  I then manually build the Seed Job and it fails.  
+`ERROR: script not yet approved for use`  
+OK, go to `Manage Jenkins --> In-process Script Approval`, and it's there.  
+  
+Cool!  Works as expected, including the deleting of the old job which I checked the box for.
+```
+Started by user engineering
+Building in workspace /var/jenkins_home/workspace/job-dsl-1
+Processing DSL script filesystemjob.groovy
+Added items:
+    GeneratedJob{name='Job-DSL-Filesystem-Defined'}
+Unreferenced items:
+    GeneratedJob{name='DSL-Tutorial-1-Test'}
+Removed items:
+    GeneratedJob{name='DSL-Tutorial-1-Test'}
+Finished: SUCCESS
+```
+I'll have to figure out how to automate thru that security.  That's OK for now.  
+  
+
