@@ -169,6 +169,50 @@ so I can change the definition of a generated job.</p>
 
 <p><strong>WTF?  Can’t put dashes <code class="highlighter-rouge">-</code> in groovy filenames?</strong></p>
 
+<h1 id="result--recreated-an-existing-job-configuration-with-job-dsl">Result:  Recreated an Existing Job Configuration with Job DSL</h1>
+<div class="highlighter-rouge"><pre class="highlight"><code>job('ffn-loader-atmelice5898') {
+    scm {
+        git {
+            remote {
+                url('https://bitbucket.org/bootladder/debos_firmware.git');
+            }
+            branch('master');
+            extensions {
+                localBranch 'master'
+            }
+        }
+    }
+    triggers {
+        bitbucketPush()
+    }
+    steps {
+        shell('echo "Hello, world this is generated job dsl!"');
+        shell('\
+            ./build.sh &amp;&amp; cd src/cmakebuild/bin/ &amp;&amp; \
+            pathtonewelf=$(ls *.elf) &amp;&amp; \
+            cp *.elf /var/jenkins_publish/ &amp;&amp; \
+            cd /var/jenkins_publish &amp;&amp; \
+            ln -f $pathtonewelf latest-debos_firmware &amp;&amp; \
+            echo $pathtonewelf &gt; target/ffnbeagle-woodland-atmelice-J41800075898 \
+        ')
+    }
+}
+</code></pre>
+</div>
+<p><strong>What this does:</strong></p>
+<ul>
+  <li>url:  use https:// , it seemed like git:// was not working Bitbucket push triggers</li>
+  <li>localBranch ‘master’ does a local checkout of master branch</li>
+  <li>bitbucketPush() triggers a build on the Bitbucket webhook</li>
+</ul>
+
+<p><strong>The Shell bit</strong><br />
+Builds the ELF, copies it to the publish directory
+and echos the filename to a pointer file.<br />
+The pointer file is curl’ed by a remote host in the lab.<br />
+The pointer file says what firmware should be loaded on a particular target.<br />
+You can see I’m identifying the target by <code class="highlighter-rouge">system-location-tool-serialnumber</code></p>
+
   </div>
 
   

@@ -93,3 +93,45 @@ Unfortunately have to do this manually.  But I need it
 so I can change the definition of a generated job.
   
 **WTF?  Can't put dashes `-` in groovy filenames?**
+  
+# Result:  Recreated an Existing Job Configuration with Job DSL
+```
+job('ffn-loader-atmelice5898') {
+    scm {
+        git {
+            remote {
+                url('https://bitbucket.org/bootladder/debos_firmware.git');
+            }
+            branch('master');
+            extensions {
+                localBranch 'master'
+            }
+        }
+    }
+    triggers {
+        bitbucketPush()
+    }
+    steps {
+        shell('echo "Hello, world this is generated job dsl!"');
+        shell('\
+            ./build.sh && cd src/cmakebuild/bin/ && \
+            pathtonewelf=$(ls *.elf) && \
+            cp *.elf /var/jenkins_publish/ && \
+            cd /var/jenkins_publish && \
+            ln -f $pathtonewelf latest-debos_firmware && \
+            echo $pathtonewelf > target/ffnbeagle-woodland-atmelice-J41800075898 \
+        ')
+    }
+}
+```
+**What this does:**
+* url:  use https:// , it seemed like git:// was not working Bitbucket push triggers
+* localBranch 'master' does a local checkout of master branch
+* bitbucketPush() triggers a build on the Bitbucket webhook
+  
+**The Shell bit**  
+Builds the ELF, copies it to the publish directory
+and echos the filename to a pointer file.  
+The pointer file is curl'ed by a remote host in the lab.  
+The pointer file says what firmware should be loaded on a particular target.  
+You can see I'm identifying the target by `system-location-tool-serialnumber`
