@@ -135,3 +135,6 @@ and echos the filename to a pointer file.
 The pointer file is curl'ed by a remote host in the lab.  
 The pointer file says what firmware should be loaded on a particular target.  
 You can see I'm identifying the target by `system-location-tool-serialnumber`
+  
+# For future reference: http://job-dsl.herokuapp.com/  
+
