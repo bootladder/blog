@@ -1,5 +1,204 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-29T12:23:47-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Jenkins: Job DSL</title><link href="/2018/04/22/jenkins-job-dsl.html" rel="alternate" type="text/html" title="Jenkins: Job DSL" /><published>2018-04-22T00:00:00-07:00</published><updated>2018-04-22T00:00:00-07:00</updated><id>/2018/04/22/jenkins-job-dsl</id><content type="html" xml:base="/2018/04/22/jenkins-job-dsl.html">&lt;p&gt;I don’t know if it’s my low-end VPS, java, or what, but Jenkins is &lt;strong&gt;slow&lt;/strong&gt;.&lt;br /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-29T14:19:53-07:00</updated><id>/</id><title type="html">Bootladder News</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Updating my Jekyll deploy process</title><link href="/2018/04/29/updating-my-jekyll-deploy-process.html" rel="alternate" type="text/html" title="Updating my Jekyll deploy process" /><published>2018-04-29T00:00:00-07:00</published><updated>2018-04-29T00:00:00-07:00</updated><id>/2018/04/29/updating-my-jekyll-deploy-process</id><content type="html" xml:base="/2018/04/29/updating-my-jekyll-deploy-process.html">&lt;h1 id=&quot;this-is-according-to-common-practices-in-the-jekyll-documentation&quot;&gt;This is according to common practices in the jekyll documentation.&lt;/h1&gt;
+&lt;p&gt;also another article about jekyllizing a html template site was good.&lt;br /&gt;
+Following these instructions to create the jekyll install initially: https://jekyllrb.com/tutorials/convert-site-to-jekyll/ .&lt;/p&gt;
+
+&lt;p&gt;The main point is, put layouts in &lt;code class=&quot;highlighter-rouge&quot;&gt;_layouts/&lt;/code&gt; , stub the content with curly braces `&amp;lt;article class=&quot;post&quot; itemscope itemtype=&quot;http://schema.org/BlogPosting&quot;&amp;gt;&lt;/p&gt;
+
+&lt;header class=&quot;post-header&quot;&gt;
+    &lt;h1 class=&quot;post-title&quot; itemprop=&quot;name headline&quot;&gt;Jenkins: Job DSL&lt;/h1&gt;
+    &lt;p class=&quot;post-meta&quot;&gt;&lt;time datetime=&quot;2018-04-22T00:00:00-07:00&quot; itemprop=&quot;datePublished&quot;&gt;Apr 22, 2018&lt;/time&gt;&lt;/p&gt;
+  &lt;/header&gt;
+
+&lt;div class=&quot;post-content&quot; itemprop=&quot;articleBody&quot;&gt;
+    &lt;p&gt;I don’t know if it’s my low-end VPS, java, or what, but Jenkins is &lt;strong&gt;slow&lt;/strong&gt;.&lt;br /&gt;
+To create a new job, edit a job, really just about everything is slow.&lt;br /&gt;
+Right now I want to speed up:  creating a job, editing a job, viewing a job’s definition.&lt;br /&gt;
+Obviously Job DSL is the answer.&lt;/p&gt;
+
+&lt;p&gt;[https://github.com/jenkinsci/job-dsl-plugin/wiki/Tutorial—Using-the-Jenkins-Job-DSL]&lt;/p&gt;
+
+&lt;h1 id=&quot;install-jobdsl-from-plugin-manager-this-is-obvious&quot;&gt;Install JobDSL from Plugin Manager (this is obvious)&lt;/h1&gt;
+
+&lt;h1 id=&quot;intro-to-job-dsl&quot;&gt;Intro to Job DSL&lt;/h1&gt;
+&lt;p&gt;First you manually create a job called the seed job.  In the build step,
+instead of executing a script in the shell, select to run the Job DSL script.&lt;br /&gt;
+The Job DSL script is defining the new jobs that will be created as a result of
+running this seed job.&lt;/p&gt;
+
+&lt;p&gt;Run the seed job.  It generates jobs.  It does not run them, or check if they are defined sensibly.
+Here is the console output.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Started by user engineering
+Building in workspace /var/jenkins_home/workspace/job-dsl-1
+Processing provided DSL script
+Added items:
+    GeneratedJob{name='DSL-Tutorial-1-Test'}
+Finished: SUCCESS
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Now go to the homepage of the seed job.  Notice it shows “Generated Items:” with the generated job.&lt;br /&gt;
+Now go to the homepage of Jenkins.  It shows the generated job, the seed job, and the existing manually created jobs.&lt;/p&gt;
+
+&lt;h1 id=&quot;huh-this-does-not-help-me&quot;&gt;Huh… This does not help me!&lt;/h1&gt;
+&lt;p&gt;Let’s think this through.  What do I need?&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;A Single Point of Truth (SPOT) for viewing and editing a job&lt;/li&gt;
+  &lt;li&gt;Atleast a file on the jenkins machine for the above.  Optional/better: git repo&lt;/li&gt;
+  &lt;li&gt;The SPOT must contain:
+    &lt;ul&gt;
+      &lt;li&gt;remote URL of git repo&lt;/li&gt;
+      &lt;li&gt;Bitbucket, Github, Slack webhooks&lt;/li&gt;
+      &lt;li&gt;shell snippet for processing the output of a build&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Looks like all the above is supported.&lt;br /&gt;
+What I don’t like is:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;To edit job definitions, must edit the seed job
+    &lt;ul&gt;
+      &lt;li&gt;To solve this, I’ll need to put the Job DSL script in the filesystem&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;After editing job definitions, must re-generate the jobs
+    &lt;ul&gt;
+      &lt;li&gt;With the Job DSL script in the filesystem, I’ll be editing
+the job in the filesystem, maybe without jenkins open.
+I can put a timer on the job trigger.  I should be able
+to stick a shell script in there which I can execute after editing,
+which should run the job to generate all the jobs.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;OK, in the Job Configuration, change &lt;code class=&quot;highlighter-rouge&quot;&gt;Use the provided DSL script&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;Look on Filesystem&lt;/code&gt;.&lt;br /&gt;
+It says the scripts must be located in the Workspace.  But wildcards &lt;code class=&quot;highlighter-rouge&quot;&gt;*&lt;/code&gt; can be used.&lt;br /&gt;
+My Jenkins is in a docker container, but that should be OK since all the workspaces are
+volume mapped.&lt;/p&gt;
+
+&lt;p&gt;OK, I put a Job DSL script in there.  I then manually build the Seed Job and it fails.&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ERROR: script not yet approved for use&lt;/code&gt;&lt;br /&gt;
+OK, go to &lt;code class=&quot;highlighter-rouge&quot;&gt;Manage Jenkins --&amp;gt; In-process Script Approval&lt;/code&gt;, and it’s there.&lt;/p&gt;
+
+&lt;p&gt;Cool!  Works as expected, including the deleting of the old job which I checked the box for.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Started by user engineering
+Building in workspace /var/jenkins_home/workspace/job-dsl-1
+Processing DSL script filesystemjob.groovy
+Added items:
+    GeneratedJob{name='Job-DSL-Filesystem-Defined'}
+Unreferenced items:
+    GeneratedJob{name='DSL-Tutorial-1-Test'}
+Removed items:
+    GeneratedJob{name='DSL-Tutorial-1-Test'}
+Finished: SUCCESS
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;I’ll have to figure out how to automate thru that security.  That’s OK for now.&lt;/p&gt;
+
+&lt;h1 id=&quot;using-a-git-repo&quot;&gt;Using a git Repo&lt;/h1&gt;
+&lt;p&gt;Created a repo, added the seedjob.groovy.&lt;br /&gt;
+&lt;strong&gt;Note:  Jenkins needs the password to a private repo&lt;/strong&gt;&lt;br /&gt;
+Manually in Jenkins, add the job git repo with the groovy scripts.
+This way, when building the seed job, the groovy for the jobs
+come from git.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;OK never mind, this security thing is annoying&lt;/strong&gt;&lt;br /&gt;
+In the Seed Job Config, select &lt;code class=&quot;highlighter-rouge&quot;&gt;Use Groovy Sandbox&lt;/code&gt;&lt;br /&gt;
+Install the &lt;code class=&quot;highlighter-rouge&quot;&gt;Authorize Project&lt;/code&gt; plugin.&lt;br /&gt;
+Then a widget appears in Manage Jenkins –&amp;gt; Configure Global Security.&lt;br /&gt;
+I selected Run as User who triggered the build.&lt;br /&gt;
+Nope!  Must select &lt;code class=&quot;highlighter-rouge&quot;&gt;Run as Specific User&lt;/code&gt;, and it’s the jenkins user, not the system user&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;I will need Bitbucket Webhook for the Seed Job&lt;/strong&gt;&lt;br /&gt;
+Unfortunately have to do this manually.  But I need it
+so I can change the definition of a generated job.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;WTF?  Can’t put dashes &lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt; in groovy filenames?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;result--recreated-an-existing-job-configuration-with-job-dsl&quot;&gt;Result:  Recreated an Existing Job Configuration with Job DSL&lt;/h1&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;job('ffn-loader-atmelice5898') {
+    scm {
+        git {
+            remote {
+                url('https://bitbucket.org/bootladder/debos_firmware.git');
+            }
+            branch('master');
+            extensions {
+                localBranch 'master'
+            }
+        }
+    }
+    triggers {
+        bitbucketPush()
+    }
+    steps {
+        shell('echo &quot;Hello, world this is generated job dsl!&quot;');
+        shell('\
+            ./build.sh &amp;amp;&amp;amp; cd src/cmakebuild/bin/ &amp;amp;&amp;amp; \
+            pathtonewelf=$(ls *.elf) &amp;amp;&amp;amp; \
+            cp *.elf /var/jenkins_publish/ &amp;amp;&amp;amp; \
+            cd /var/jenkins_publish &amp;amp;&amp;amp; \
+            ln -f $pathtonewelf latest-debos_firmware &amp;amp;&amp;amp; \
+            echo $pathtonewelf &amp;gt; target/ffnbeagle-woodland-atmelice-J41800075898 \
+        ')
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;What this does:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;url:  use https:// , it seemed like git:// was not working Bitbucket push triggers&lt;/li&gt;
+  &lt;li&gt;localBranch ‘master’ does a local checkout of master branch&lt;/li&gt;
+  &lt;li&gt;bitbucketPush() triggers a build on the Bitbucket webhook&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;The Shell bit&lt;/strong&gt;&lt;br /&gt;
+Builds the ELF, copies it to the publish directory
+and echos the filename to a pointer file.&lt;br /&gt;
+The pointer file is curl’ed by a remote host in the lab.&lt;br /&gt;
+The pointer file says what firmware should be loaded on a particular target.&lt;br /&gt;
+You can see I’m identifying the target by &lt;code class=&quot;highlighter-rouge&quot;&gt;system-location-tool-serialnumber&lt;/code&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;for-future-reference-httpjob-dslherokuappcom&quot;&gt;For future reference: http://job-dsl.herokuapp.com/&lt;/h1&gt;
+
+
+  &lt;/div&gt;
+
+&lt;p&gt;&amp;lt;/article&amp;gt;
+` .  The default layout is selected in index.md.  If index.md chose the indexlayout layout for example, that would be found in &lt;code class=&quot;highlighter-rouge&quot;&gt;_layouts/indexlayout.html&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Assets go in the top level like this.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;├── assets
+│   ├── css
+│   ├── js
+│   └── sass
+├── _config.yml
+├── index.md
+├── _layouts
+│   ├── default.html
+│   └── indexlayout.html
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And they can be accessed from the HTML &lt;code class=&quot;highlighter-rouge&quot;&gt;assets/css/main.css&lt;/code&gt; for example here&lt;/p&gt;
+
+&lt;h1 id=&quot;now-the-different-part--deploying&quot;&gt;Now the different part:  deploying&lt;/h1&gt;
+&lt;p&gt;Before what I did was, build the site, then commit the site to git, then push the built site to the production server.  Problem is committing the built site, it’s a waste.  It’s better to not store the generated site.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Option:  Push to Prod, Build on Prod, Push to Github for archiving&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Requires Jekyll install on prod.  Prod may not have RAM or Disk &lt;strong&gt;BAD&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;Can put a hook in github which deploys on push.  Non-developers can use github directly to update content &lt;strong&gt;GOOD&lt;/strong&gt;
+&lt;strong&gt;Option: Push to Github for archiving, build the site locally, scp the built site to prod&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Option:  (Push to Github or Edit inside Github) , build on Jenkins, deploy with Jenkins&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Easy editing for Non-Developers&lt;/li&gt;
+  &lt;li&gt;Only 1 push required if using command line&lt;/li&gt;
+  &lt;li&gt;Jenkins can configure the Hook and the deploy destination&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">This is according to common practices in the jekyll documentation. also another article about jekyllizing a html template site was good. Following these instructions to create the jekyll install initially: https://jekyllrb.com/tutorials/convert-site-to-jekyll/ . The main point is, put layouts in _layouts/ , stub the content with curly braces `` . The default layout is selected in index.md. If index.md chose the indexlayout layout for example, that would be found in _layouts/indexlayout.html. Assets go in the top level like this. ├── assets │   ├── css │   ├── js │   └── sass ├── _config.yml ├── index.md ├── _layouts │   ├── default.html │   └── indexlayout.html And they can be accessed from the HTML assets/css/main.css for example here Now the different part: deploying Before what I did was, build the site, then commit the site to git, then push the built site to the production server. Problem is committing the built site, it’s a waste. It’s better to not store the generated site. Option: Push to Prod, Build on Prod, Push to Github for archiving Requires Jekyll install on prod. Prod may not have RAM or Disk BAD Can put a hook in github which deploys on push. Non-developers can use github directly to update content GOOD Option: Push to Github for archiving, build the site locally, scp the built site to prod Option: (Push to Github or Edit inside Github) , build on Jenkins, deploy with Jenkins Easy editing for Non-Developers Only 1 push required if using command line Jenkins can configure the Hook and the deploy destination</summary></entry><entry><title type="html">Jenkins: Job DSL</title><link href="/2018/04/22/jenkins-job-dsl.html" rel="alternate" type="text/html" title="Jenkins: Job DSL" /><published>2018-04-22T00:00:00-07:00</published><updated>2018-04-22T00:00:00-07:00</updated><id>/2018/04/22/jenkins-job-dsl</id><content type="html" xml:base="/2018/04/22/jenkins-job-dsl.html">&lt;p&gt;I don’t know if it’s my low-end VPS, java, or what, but Jenkins is &lt;strong&gt;slow&lt;/strong&gt;.&lt;br /&gt;
 To create a new job, edit a job, really just about everything is slow.&lt;br /&gt;
 Right now I want to speed up:  creating a job, editing a job, viewing a job’s definition.&lt;br /&gt;
 Obviously Job DSL is the answer.&lt;/p&gt;
@@ -561,80 +760,4 @@ And at the end of the body I need this: &lt;code class=&quot;highlighter-rouge&q
 &lt;/ul&gt;
 
 &lt;h1 id=&quot;i-tried-to-copy-paste-some-bootstrap-html-as-a-starting-point&quot;&gt;I tried to copy paste some Bootstrap HTML as a starting point&lt;/h1&gt;
-&lt;p&gt;Paste it into the &lt;code class=&quot;highlighter-rouge&quot;&gt;render()&lt;/code&gt; function’s return.&lt;/p&gt;</content><author><name></name></author><summary type="html">Preface I got a react practice app going a month ago. Tic-tac-toe demo. Used create-react-app. It was running on the development server for a bit. Then I shut it down, now I wanted to bring it back up. I just tried to run npm start or npm run start whatever it is, and it totally crashed my VPS. All of my open ssh sessions were getting these printed… ``` Message from syslogd@caseyjones at Mar 26 04:56:10 … kernel:[445167.403797] BUG: soft lockup - CPU#0 stuck for 25s! [node:363]</summary></entry><entry><title type="html">MongoDB Golang JSON (Mongo Alternatives?)</title><link href="/2018/03/17/mongodb-golang-json.html" rel="alternate" type="text/html" title="MongoDB Golang JSON (Mongo Alternatives?)" /><published>2018-03-17T00:00:00-07:00</published><updated>2018-03-17T00:00:00-07:00</updated><id>/2018/03/17/mongodb-golang-json</id><content type="html" xml:base="/2018/03/17/mongodb-golang-json.html">&lt;p&gt;I need a database, since working with a JSON file in the filesystem was not going far enough.  Need to query objects, delete objects, sort, etc.&lt;br /&gt;
-Also I like the idea of using Golang to deal with JSON at the client-server interface, since it’s really easy in Golang.  Then Golang can talk to the database.&lt;br /&gt;
-Initial googling suggested either postgres or Mongo, and I’m trying Mongo because I haven’t yet.&lt;/p&gt;
-
-&lt;p&gt;These instructions worked: &lt;code class=&quot;highlighter-rouge&quot;&gt;https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-16-04&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Nice tutorial here.  &lt;code class=&quot;highlighter-rouge&quot;&gt;https://medium.com/@maumribeiro/a-fullstack-epic-part-i-a-rest-api-in-go-accessing-mongo-db-608b46e969cd&lt;/code&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;main-concepts&quot;&gt;Main Concepts&lt;/h1&gt;
-&lt;p&gt;Basically what happens is there’s a POST request, and the body contains JSON.  The JSON is unmarshalled into a golang struct.  The struct is passed to &lt;code class=&quot;highlighter-rouge&quot;&gt;c.Repository.AddAlbum&lt;/code&gt;.&lt;br /&gt;
-Repository is an empty struct with methods, eg. GetAlbums() , AddAlbum().  There are constants in the author’s code but I imagine you could put the constants eg. SERVER,DBNAME,DOCNAME in the Repository struct, so there could be 1 Repository per user.&lt;br /&gt;
-The methods (eg. GetAlbums) will use the golang Mongo driver, mgo.  The database connection object has methods so we can do crazy syntax like this:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    c := session.DB(DBNAME).C(DOCNAME)
-    results := Albums{}
-    if err := c.Find(nil).All(&amp;amp;results); err != nil {
-        fmt.Println(&quot;Failed to write results:&quot;, err)
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Let’s look at AddAlbum:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;func (r Repository) AddAlbum(album Album) bool {
-    session, err := mgo.Dial(SERVER)
-    defer session.Close()
-    
-    album.ID = bson.NewObjectId()
-    session.DB(DBNAME).C(DOCNAME).Insert(album)
-
-    if err != nil {
-        log.Fatal(err)
-        return false
-    }
-    return true
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;An Album is passed to AddAlbum.  The ID field is generated here and set.  Then, the Album is Inserted into the database.  Cool!&lt;br /&gt;
-UpdateAlbum works similarly except one line is different:&lt;br /&gt;
-`    session.DB(DBNAME).C(DOCNAME).UpdateId(album.ID, album)` .  It finds the album with the ID, then replaces it.&lt;br /&gt;
-I see now, basically what the database is doing is attaching an ID to each JSON object.  This is a critical missing piece, when handling JSON naively.&lt;/p&gt;
-
-&lt;h1 id=&quot;ok-lets-install-it-on-the-server&quot;&gt;OK let’s install it on the server&lt;/h1&gt;
-&lt;p&gt;Well just for fun let’s do it with a docker container.&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo docker run -d -p 27017:27017 -v ~/data:/data/db mongo&lt;/code&gt; easy.&lt;br /&gt;
-Crap, 366MB image.  Another 100MB to install the client tools.  Maybe I can get away with only using the golang libraries?&lt;br /&gt;
-Cool, this minimal snippet worked!&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;func main() {
-  fmt.Println(&quot;Hello1&quot;)
-  session, err := mgo.Dial(&quot;localhost&quot;)
-  if err != nil {
-    fmt.Println(&quot;Hello2&quot;)
-    panic(err)
-  }
-  defer session.Close()
-  fmt.Println(&quot;Hello3&quot;)
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h1 id=&quot;now-the-internet-says-check-security&quot;&gt;Now, the Internet says check security&lt;/h1&gt;
-&lt;p&gt;And yes, the MongoDB server is accessible from the public.&lt;br /&gt;
-Let’s use a docker-compose.yml to put in our own .conf.&lt;br /&gt;
-Oh, weird, turns out the original installation had already set bindaddress to 127.0.0.1.  So… even though the Mongo server only accepts connections from 127.0.0.1, because it’s in a Docker container, it is still reachable from the outside world?  Does Docker change the source IP in the port forward?  Does that mean this same issue will happen for any server inside a container?&lt;/p&gt;
-
-&lt;p&gt;OK my solution now is to try &lt;code class=&quot;highlighter-rouge&quot;&gt;-p 127.0.0.1:27017:27017&lt;/code&gt; .  Yes!! That is the solution.  Now I am unable to access from outside.  And I am still able to access from the simple golang snippet above.&lt;/p&gt;
-
-&lt;h1 id=&quot;hmm-weirdness-getting-a-flask-container-to-talk-to-a-mongo-container&quot;&gt;Hmm, weirdness getting a Flask container to talk to a Mongo container.&lt;/h1&gt;
-&lt;p&gt;I’m using Flask as my API server.  It is in a container.  It receives requests and then executes shell scripts.  The shell scripts are located in a host directory that is volume mounted to the container.  I compiled the exact golang dummy program above and put it in that directory.  It executes fine on the host, but when executing in the container, the Mongo server cannot be found.&lt;br /&gt;
-At first I thought, there is no port forwarding that gives the Flask container access to localhost:27017 on the host.  The Flask container did have 9002:5000, which makes the Flask default port 5000 accessible by the public at port 9002.  So I tried to do a 27017:27017 in the Flask container.  But no!  Docker could not bind to 27017, because Mongo was already bound to it.&lt;br /&gt;
-So, I still don’t understand this but my solution was to change the Flask container to use Host Networking, ie. &lt;code class=&quot;highlighter-rouge&quot;&gt;network_mode:host&lt;/code&gt;&lt;/p&gt;
-&lt;h1 id=&quot;oh-no-that-ended-up-breaking-flask&quot;&gt;Oh no… that ended up breaking Flask!&lt;/h1&gt;
-&lt;p&gt;Turns out, setting &lt;code class=&quot;highlighter-rouge&quot;&gt;network_mode:host&lt;/code&gt; overrides the port forward I had &lt;code class=&quot;highlighter-rouge&quot;&gt;9002:5000&lt;/code&gt;, since the Flask server stopped responding to 9002, and started responding to 5000!&lt;/p&gt;
-&lt;h1 id=&quot;ok-i-will-just-configure-the-flask-port--using-network_modehost&quot;&gt;OK I will just configure the Flask port.  Using network_mode:host.&lt;/h1&gt;
-&lt;p&gt;Ugh this sucks.  I couldn’t figure out how to block public access to Mongo.  So I actually put Mongo in the docker network, doing a port publish &lt;code class=&quot;highlighter-rouge&quot;&gt;22222:21017&lt;/code&gt;.  The Flask is using &lt;code class=&quot;highlighter-rouge&quot;&gt;network_mode:host&lt;/code&gt;.  I did verify Flask can access Mongo, and the public cannot.&lt;/p&gt;
-
-&lt;h1 id=&quot;im-reading-stupid-hate-comments-about-mongodb-why&quot;&gt;I’m reading stupid hate comments about MongoDB… why?&lt;/h1&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;https://getstream.io/blog/building-a-performant-api-using-go-and-cassandra/&lt;/code&gt;
-I looked at cassandra in this article and wow… I have no desire to use it after looking at the code examples.&lt;/p&gt;</content><author><name></name></author><summary type="html">I need a database, since working with a JSON file in the filesystem was not going far enough. Need to query objects, delete objects, sort, etc. Also I like the idea of using Golang to deal with JSON at the client-server interface, since it’s really easy in Golang. Then Golang can talk to the database. Initial googling suggested either postgres or Mongo, and I’m trying Mongo because I haven’t yet. These instructions worked: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-16-04 Nice tutorial here. https://medium.com/@maumribeiro/a-fullstack-epic-part-i-a-rest-api-in-go-accessing-mongo-db-608b46e969cd Main Concepts Basically what happens is there’s a POST request, and the body contains JSON. The JSON is unmarshalled into a golang struct. The struct is passed to c.Repository.AddAlbum. Repository is an empty struct with methods, eg. GetAlbums() , AddAlbum(). There are constants in the author’s code but I imagine you could put the constants eg. SERVER,DBNAME,DOCNAME in the Repository struct, so there could be 1 Repository per user. The methods (eg. GetAlbums) will use the golang Mongo driver, mgo. The database connection object has methods so we can do crazy syntax like this: c := session.DB(DBNAME).C(DOCNAME) results := Albums{} if err := c.Find(nil).All(&amp;amp;results); err != nil { fmt.Println(&quot;Failed to write results:&quot;, err) } Let’s look at AddAlbum: ``` func (r Repository) AddAlbum(album Album) bool { session, err := mgo.Dial(SERVER) defer session.Close() album.ID = bson.NewObjectId() session.DB(DBNAME).C(DOCNAME).Insert(album)</summary></entry></feed>
+&lt;p&gt;Paste it into the &lt;code class=&quot;highlighter-rouge&quot;&gt;render()&lt;/code&gt; function’s return.&lt;/p&gt;</content><author><name></name></author><summary type="html">Preface I got a react practice app going a month ago. Tic-tac-toe demo. Used create-react-app. It was running on the development server for a bit. Then I shut it down, now I wanted to bring it back up. I just tried to run npm start or npm run start whatever it is, and it totally crashed my VPS. All of my open ssh sessions were getting these printed… ``` Message from syslogd@caseyjones at Mar 26 04:56:10 … kernel:[445167.403797] BUG: soft lockup - CPU#0 stuck for 25s! [node:363]</summary></entry></feed>
