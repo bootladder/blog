@@ -6,7 +6,7 @@ title: Updating my Jekyll deploy process
 also another article about jekyllizing a html template site was good.  
 Following these instructions to create the jekyll install initially: https://jekyllrb.com/tutorials/convert-site-to-jekyll/ .  
   
-The main point is, put layouts in `_layouts/` , stub the content with curly braces `{{content}}` .  The default layout is selected in index.md.  If index.md chose the indexlayout layout for example, that would be found in `_layouts/indexlayout.html`.  
+The main point is, put layouts in `_layouts/` , stub the content with curly braces .  The default layout is selected in index.md.  If index.md chose the indexlayout layout for example, that would be found in `_layouts/indexlayout.html`.  
   
 Assets go in the top level like this.  
 ```
