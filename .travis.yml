@@ -17,14 +17,12 @@ before_deploy:
 - git config --local user.email "YOUR GIT USER EMAIL"
 - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
 - echo -e "\n\n\nbefore_deploy\n\n\n"
-- echo echoing the site directory
-- ls /home/travis/build/bootladder/blog/_site/
 deploy:
   provider: releases
   api_key:
     secure: icjiW/NnNJ3gFsZ2G77wWlqNa1tTCUVrJsMzBrOk/rk1TMnDi//nwT8BYTuP1MW664rIcCJGTYvfQZgxw2KD1tH6u58yvYvyQtztB4JDXrITJy65qv8VG7iQbCxDnJvy8jGSfya7lA2BxQHFh5N9thISRVDwas5Zp0LSlCHyNeUrUZMEzLjrbEBKJX52i/D7KDfnpPSuDdx6CMx9aySE9B6z3FUaYw4TR7Wu57qhmWT9vkgEYmKoe3nQmMD+j3pT9H7xbU5By5QQP7dg5b9ZaXn369yNGJF7iiVmdmYKjP0YUGDgcrHbcwmoOD1RXJa6VBT1Hdh5Upvf1L5BX7AL/ahFJTg52oWQQz/Qc6KHTSpBJO6Sxq9113T0bS9C44+qK820R5CGi3niOJPex4E2Yv2lv9lVH9Frr7FVB3S7/wyqeb0OWNV+ZXZ67JsUP07lh9e/SC3/tyUTX3XOdi+mhXPcsrrVzRoNfBKNTFkb6SafPDJwG75v1JFN4KuwbRCOFtUe/+E4FeRuhz9Be/1OVL5b9sscqC1F+RHc3irrfcXyurLTp294+iYUt2R75qd3vav48/J32/0Im1jc64VNEhLcdLNuVQGYa5LEjXWRaBoYzgIFMfajbcxvxqazk7FWEf5euHT3zoxwSck3MsmK7NO8fwDhcz6UUAMNH5+Cacc=
   file_glob: true
-  file: "/home/travis/build/bootladder/blog/_site.zip"
+  file: "/home/travis/build/bootladder/blog/jekyll/_site.zip"
   skip_cleanup: true
   script: echo -e "\n\n\ndeploy\n\n\n"
   on:
