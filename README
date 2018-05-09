@@ -1,0 +1,19 @@
+Build the blog locally,
+jekyll build
+
+Build the blog in Travis,
+push to github
+
+GitHub sends a webhook to ccram.org:5000/bootladder-blog
+
+Check the deployer server on the same machine.
+There's a script in there that finds the latest
+github release, downloads it, unzips, copies into
+a webserver root directory.
+
+
+
+THERE IS NO MORE DOCKER IN THIS REPO.
+This repo does not involve building or running a webserver.
+All it does is generate the static site,
+which can be deployed into a running webserver somewhere else
