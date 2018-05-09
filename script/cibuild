@@ -3,10 +3,11 @@ set -e # halt script on error
 
 echo -e "\n\n\nscript/cibuild\n\n\n"
 echo $(pwd)
+cd jekyll
 bundle install
 bundle exec jekyll build
 echo $(pwd)
-cd /home/travis/build/bootladder/blog/
+#cd /home/travis/build/bootladder/blog/
 zip -r _site.zip _site
 ls
 
