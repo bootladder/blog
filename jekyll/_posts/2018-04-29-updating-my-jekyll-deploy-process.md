@@ -2,36 +2,89 @@
 layout: post
 title: Updating my Jekyll deploy process
 ---
-# This is according to common practices in the jekyll documentation.
-also another article about jekyllizing a html template site was good.  
-Following these instructions to create the jekyll install initially: https://jekyllrb.com/tutorials/convert-site-to-jekyll/ .  
-  
-The main point is, put layouts in `_layouts/` , stub the content with curly braces .  The default layout is selected in index.md.  If index.md chose the indexlayout layout for example, that would be found in `_layouts/indexlayout.html`.  
-  
-Assets go in the top level like this.  
-```
-├── assets
-│   ├── css
-│   ├── js
-│   └── sass
-├── _config.yml
-├── index.md
-├── _layouts
-│   ├── default.html
-│   └── indexlayout.html
-```  
-  
-And they can be accessed from the HTML `assets/css/main.css` for example here  
-  
-# Now the different part:  deploying
+
 Before what I did was, build the site, then commit the site to git, then push the built site to the production server.  Problem is committing the built site, it's a waste.  It's better to not store the generated site.  
   
 **Option:  Push to Prod, Build on Prod, Push to Github for archiving**
 * Requires Jekyll install on prod.  Prod may not have RAM or Disk **BAD**
-* Can put a hook in github which deploys on push.  Non-developers can use github directly to update content **GOOD**
-**Option: Push to Github for archiving, build the site locally, scp the built site to prod**
+* Can put a hook in github which deploys on push.  Non-developers can use github directly to update content **GOOD**  
+**Option: Push to Github for archiving, build the site locally, scp the built site to prod**  
   
 **Option:  (Push to Github or Edit inside Github) , build on Jenkins, deploy with Jenkins**  
 * Easy editing for Non-Developers
 * Only 1 push required if using command line
 * Jenkins can configure the Hook and the deploy destination
+  
+**Option:  (Push to GitHub or Edit inside GitHub) , build on Travis, create GitHub release on Travis,
+call webhook on prod to trigger the webhook (using Travis)**
+  
+  
+# Documenting the Travis Option:
+
+First bring in the `.travis.yml`.  
+```
+language: ruby
+cache: bundler
+rvm:
+- 2.4
+before_script:
+- chmod +x ./script/cibuild
+script: "./script/cibuild"
+branches:
+  only:
+  - master
+env:
+  global:
+  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+sudo: false
+before_deploy:
+- git config --local user.name "YOUR GIT USER NAME"
+- git config --local user.email "YOUR GIT USER EMAIL"
+- git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  
+- echo -e "\n\n\nbefore_deploy\n\n\n"
+- echo echoing the site directory
+- ls /home/travis/build/MYACCOUNTNAME/MYREPONAME/_site/
+  
+deploy:
+  provider: releases
+  api_key:
+    secure: CHANGEME1234123412341234123412341234
+  file_glob: true
+  file: /home/travis/build/MYACCOUNTNAME/MYREPONAME/_site.zip
+  skip_cleanup: true
+  script: echo -e "\n\n\ndeploy\n\n\n"
+  on:
+    repo: MYACCOUNTNAME/MYREPONAME
+    branch: master
+```
+
+Just a couple things to change here.  The GitHub account name and repo name must be specified, and also the api_key.  
+The only way I know right now to generate that key is to use the Travis CLI.
+```
+sudo apt install ruby ruby-dev
+sudo gem install travis
+```
+Then generate the api_key  
+```
+travis encrypt {get the key from travis website}
+```
+# WTF travis, inconsistent flip floppy crap!
+```
+travis login --pro
+travis encrypt -r myusername/myrepo MYTRAVISKEYFROMTRAVIS --pro
+```
+copy the key
+  
+# Blah I'm dumb.  This is what worked:  Generate a Personal Access Token in GitHub, use Travis to encrypt it
+
+    
+# OK, the interesting part:  Deploy a GitHub Release on your own Server
+  
+The `.travis.yml` tells Travis to build the Jekyll site after a push to GitHub, and also to deploy the built site to GitHub Releases.  
+In GitHub, configure a webhook on the Releases event.  Set the webhook URL to your webserver, with some port that you pick.  
+  
+### Manually deploy the auto-deploy server
+I'm using a kludgey poor man's version of other stuff, but I just want something to work ASAP!  
+**In short, what I'm doing is setting up a Flask server to listen to a URL and whenever it is hit with a POST request, it calls a shell script.  That shell script fetches the latest release and deploys it into the web server root**  
+
