@@ -36,3 +36,11 @@ This is easy, `wget freejekyllbuilder.com:9004/download/site1`
 * Another (webhook or Travis) hits the production web server, which tells the server to update itself.
 * The server may know the URL or can be given the URL to freejekyllbuilder.com
 * The server downloads the built site, unzips, deploys into the web server root.
+  
+**Port 80 Issue**  
+I have 50GB disk on this VPS, sweet!  I don't want to get another VPS just for freejekyllbuilder.  
+I also don't want to tie up port 80 for freejekyllbuilder.  
+So I will reverse proxy the port 80 on my VPS.
+  
+**SSL**  
+I have to generate certs
