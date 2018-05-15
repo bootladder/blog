@@ -44,3 +44,18 @@ So I will reverse proxy the port 80 on my VPS.
   
 **SSL**  
 I have to generate certs
+  
+**Meta:  How to build freejekyllbuilder.com with freejekyllbuilder.com**  
+* freejekyllbuilder.com is a Docker image running a Flask server.  
+* Flask happens to serve a index.html static site.
+* The static site must be built from source and then deployed into this Flask web root
+* So, freejekyllbuilder.com itself is a git repo which has the Dockerfile
+* freejekyllbuilder-website is the source for the website.
+**The flow:**
+* freejekyllbuilder-website is updated
+* webhook to Travis
+* Travis zips the site, curls it to freejekyllbuilder.com
+* Travis waits for completion
+* Travis hits a webhook on freejekyllbuilder.com:9009 , some random port where the deployer listens.
+* freejekyllbuilder.com:9009 knows to get the built site from freejekyllbuilder.com/download/metaself and deploy
+
