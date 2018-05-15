@@ -1,30 +1,9 @@
-language: ruby
-cache: bundler
-rvm:
-- 2.4
+language: c
 before_script:
-- chmod +x ./script/cibuild
-script: "./script/cibuild"
+- chmod +x ./cibuild
+script: "./cibuild"
 branches:
   only:
   - master
-env:
-  global:
-  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
 sudo: false
-before_deploy:
-- git config --local user.name "YOUR GIT USER NAME"
-- git config --local user.email "YOUR GIT USER EMAIL"
-- git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
-- echo -e "\n\n\nbefore_deploy\n\n\n"
-deploy:
-  provider: releases
-  api_key:
-    secure: xw5SDmnc+xQvTavVVVocn90WTMtRfws2w8V4/wck2KakKDfUQ5Kx6k5wk9y78XiMOsxQokigp+fcBb3PjOZVP093HjlwOFfy0xhsyAVHcEWNh0Fbg1NPaobNu++Txgdt/kJo49b7dXxTrKBa1qxl4LtPJGKCi/P2xTKLZCC8pJMjuWL19t/69TMeyhQp/SpU2cz8tE0pcWa+mSlukMFN6lLIpGwuasrYS8OJCTumsN3bFYEOG4QbGRTawo/jbYPmq8JgXeJaAL6XvM7KANrvx72wkCluCAJ3brXSLUYSJZq8tB+gny6eU0U9A/KTwN5b6ptsUfpHmO5mVlJv0x0vv7HaL3NTH5Z0HIWlsqnNykXM13g+hvm260aNXuQxQWO6jK2y2I2qKRljSXhjve6D4tSS9jLxRvTK3DAd4wugRh7v07zgapEG2nUo0rigZ0sLhLP6L709PUO8ui8pMujQ53/e2nsoOycp/5+ek0aPP/bMHuPYta+0JmpkvY7VYOjAyz8sRoAaYyIsn3YwnAjZhVFxgUbAxbv0DjV3LcqzXv5g3WcSWHiihDMF9CcaZfMuhcR/AhhYiAseR/nU6JZdRZwhAYD+5xR+YvfMFfnHo7JQwgrnaka2aSiRYydjryq7oVGJbo1utnOW93H/gpT1VjVqx4gG26gQ3mzfklSU2P8=
-  file_glob: true
-  file: "/home/travis/build/bootladder/blog/jekyll/_site.zip"
-  skip_cleanup: true
-  script: echo -e "\n\n\ndeploy\n\n\n"
-  on:
-    repo: bootladder/blog
-    branch: master
+

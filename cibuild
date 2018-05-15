@@ -1,0 +1,9 @@
+#!/bin/bash
+echo hello
+zip -r sitesource.zip *
+mv sitesource.zip /tmp/
+ls
+curl -F 'lolzzzzz=@/tmp/sitesource.zip' freejekyllbuilder.com/upload/bootladder-blog
+sleep 2
+curl ccram.org:5000/bootladder-blog
+
