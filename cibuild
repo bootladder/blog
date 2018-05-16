@@ -1,9 +1,16 @@
 #!/bin/bash
-echo hello
+echo cd jekyll
+cd jekyll
+
+echo zipping the site
 zip -r sitesource.zip *
 mv sitesource.zip /tmp/
 ls
+
+echo curling the site
 curl -F 'lolzzzzz=@/tmp/sitesource.zip' freejekyllbuilder.com/upload/bootladder-blog
 sleep 2
+
+echo triggering prod webhook
 curl ccram.org:5000/bootladder-blog
 
