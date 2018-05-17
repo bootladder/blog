@@ -20,3 +20,5 @@ Github triggers a travis build.
 `curl`s it to <freejekyllbuilder.com>.  The curl request returns, and then
 a webhook on prod is triggered.  
 Prod has the URL for the download already, so it just grabs the site, unzips and deploys
+  
+# Gets confusing... slack hooks would be cool
