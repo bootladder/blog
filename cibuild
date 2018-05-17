@@ -1,4 +1,9 @@
 #!/bin/bash
+
+#Here we are telling travis
+# to zip the source, curl it
+# then hit the webhook
+
 echo cd jekyll
 cd jekyll
 
@@ -12,5 +17,5 @@ curl -F 'lolzzzzz=@/tmp/sitesource.zip' freejekyllbuilder.com/upload/bootladder-
 sleep 2
 
 echo triggering prod webhook
-curl ccram.org:5000/bootladder-blog
+curl https://ccram.org:5000/bootladder-blog
 
