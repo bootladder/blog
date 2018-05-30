@@ -58,4 +58,31 @@ The Application source code will contain:
     * Select Linker Script
     * Generate SemVer Name:  blink-0.3.21-stm32f4discovery+ab12cd34.elf
   
+  
+# Hmm I think I need to review some CMake stuff before I attempt this.
+I'll make up a simpler, representative example, that doesn't cross compile.  
+### set(CMAKE_C_FLAGS "-Wall")
+Notice this is not specific to anything except this file.  
+How do you get different files to compile with different flags?
+### add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} )
+The CMAKE_PROJECT_NAME is set by this I believe?: `project(blink)`  
+add_executable takes a name and a list of source files.  
 
+### include_directories
+### file() , file( GLOB)
+###set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${output_exe_elfname})
+###add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+  
+The above 2 are setting the output filename of the target, and adding a custom command, eg objcopy -O binary 
+```
+|-app.c
+|-port/
+|------portA.c
+|------portB.c
+|------portC.c
+|-CMakeLists.txt
+|-linker/
+|--------linkerA.ld
+|--------linkerB.ld
+|--------linkerC.ld
+```
