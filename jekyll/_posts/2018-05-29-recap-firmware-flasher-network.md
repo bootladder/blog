@@ -71,18 +71,44 @@ add_executable takes a name and a list of source files.
 ### include_directories
 ### file() , file( GLOB)
 ###set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${output_exe_elfname})
+
 ###add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+
+###add_subdirectory
+you can do a `add_executable` in a subdirectory.
+but the search path for sources changes to the subdirectory.
+so use absolute paths, eg. ${CMAKE_SOURCE_DIR}/mypath/file.c
+  
+Top level CMakeLists.txt variables used inside a subdirectory
+must be defined before add_subdirectory is called
   
 The above 2 are setting the output filename of the target, and adding a custom command, eg objcopy -O binary 
+  
+# OK after a day of CMake battle, it looks good.
+**Here is the directory structure**
 ```
-|-app.c
-|-port/
-|------portA.c
-|------portB.c
-|------portC.c
+|--app.c
+|--FreeRTOS/...
+|--port/
+       |--stm32f4discovery/
+               |--STM32F4-Discovery_FW_V1.1.0/....
+               |--CMakeLists.txt
+               |--portA.c
+               |--stm32_flash.ld
+       |--portB/
+               |--CMakeLists.txt
+               |--portB.c
+               |--linkerB.ld
+       |--portC/
+               |--CMakeLists.txt
+               |--portC.c
+               |--linkerC.ld
 |-CMakeLists.txt
-|-linker/
-|--------linkerA.ld
-|--------linkerB.ld
-|--------linkerC.ld
 ```
+  
+**Indeed, I was able to factor out a top level 
+CMakeLists.txt which only had common stuff.
+In order to add a new port for this application,
+simply add another directory under port/ ,
+copy in the implementation files, 
+edit CMakeLists.txt accordingly.**
