@@ -24,6 +24,12 @@ Actually the search path is the directory that OpenOCD started in.
 * To start gdb connected to remote target:  `gdb -ex "target remote localhost:3333" ~/my.elf`
   
 # Telnet Commands
+  
+#### Single Shot Load
+```
+v1=copy-paste-your-path-to-elf-here.elf
+(echo flash write_image erase $(pwd)/$v1 ; sleep 1) | telnet localhost 4444
+```
 #### Load Image Automatically
 ```
 #!/bin/bash
