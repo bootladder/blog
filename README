@@ -1,10 +1,10 @@
-Build the blog locally,
+Build the blog locally and check for errors.
 jekyll build
 
-Build the blog in Travis,
-push to github
+Push to github
+Build the blog in Travis, by zipping and sending to freejekyllbuilder.com
 
-GitHub sends a webhook to ccram.org:5000/bootladder-blog
+Travis sends a webhook to ccram.org:5000/bootladder-blog
 
 Check the deployer server on the same machine.
 There's a script in there that finds the latest
