@@ -56,7 +56,8 @@ Then I assigned that workspace to the virtual display, VIRTUAL1.
 
 
 
-
+# BTW, the latency is horrendous.  But the throughput keeps up
+It was already bad to begin with but it's even worse with this set up.  
 
 # Dont forget the clipboard issue
 Yeah, clipboard is not shared between the 2 X servers.
