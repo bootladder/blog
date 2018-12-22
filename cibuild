@@ -17,5 +17,5 @@ curl -F 'lolzzzzz=@/tmp/sitesource.zip' freejekyllbuilder.com/upload/bootladder-
 sleep 2
 
 echo triggering prod webhook
-curl https://ccram.org:5000/bootladder-blog
+#curl https://ccram.org:5000/bootladder-blog
 
