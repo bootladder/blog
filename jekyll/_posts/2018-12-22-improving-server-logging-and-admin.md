@@ -25,3 +25,8 @@ Obvious trick: `set -e` in a bash script.
 # Remove extraneous logs
 Obvious trick: `mycommand > /dev/null`
 
+
+# Should I switch from bash to a "real language" ?
+Lose a lot of shortcuts offered by bash.  
+Definitely should be an interpreted language eg. python.  
+Don't want to bother compiling and deploying binaries.
