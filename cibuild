@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#Here we are telling travis
-# to zip the source, curl it
-# then hit the webhook
-
 echo cd jekyll
 cd jekyll
 
