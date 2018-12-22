@@ -8,6 +8,7 @@ Sometimes my blog update pipeline fails.  Could be for many reasons:
 * SSL cert on deployer expired
 * deployer can't deploy
   * Bad file permissions
+  * Bad system state
   
 Finding the problem basically means tracing
 the flow in order of execution until the
