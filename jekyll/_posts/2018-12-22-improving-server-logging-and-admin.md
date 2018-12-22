@@ -7,6 +7,7 @@ Sometimes my blog update pipeline fails.  Could be for many reasons:
 * freejekyllbuilder.com down or failed
 * SSL cert on deployer expired
 * deployer can't deploy
+  * Bad file permissions
   
 Finding the problem basically means tracing
 the flow in order of execution until the
