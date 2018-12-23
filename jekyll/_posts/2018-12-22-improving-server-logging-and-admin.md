@@ -25,7 +25,14 @@ Could be restarting a daemon, or retying a step "inside a daemon".
 Obvious trick: `set -e` in a bash script.  
   
 Need a central log.  Can't look at each service/pipeline step for logs.
-Perhaps slack?  Text Message?
+Perhaps slack?  Text Message?  
+  
+Central status server?  
+  
+Need to seprarate logs from freejekyllbuilder.com from httpsdeployer.  
+Users should have freejekyllbuilder.com/status endpoint.  
+httpsdeployer needs log of triggers.
+
 
 # Remove extraneous logs
 Obvious trick: `mycommand > /dev/null`
