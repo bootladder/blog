@@ -20,9 +20,13 @@ I'd much rather just be told where/what the break was and just go to immediately
 # Identify the error 
 eg. check error code, check system state with more code, match an error message  
 # Handle/log the error
-Stop pipeline, retry, try to fix the break, log  
-Could be restarting a daemon, or retying a step "inside a daemon".
-Obvious trick: `set -e` in a bash script.
+Stop pipeline, retry, try to fix the break, log.  
+Could be restarting a daemon, or retying a step "inside a daemon".  
+Obvious trick: `set -e` in a bash script.  
+  
+Need a central log.  Can't look at each service/pipeline step for logs.
+Perhaps slack?  Text Message?
+
 # Remove extraneous logs
 Obvious trick: `mycommand > /dev/null`
 
