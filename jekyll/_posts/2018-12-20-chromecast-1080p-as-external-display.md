@@ -50,8 +50,17 @@ Then I assigned that workspace to the virtual display, VIRTUAL1.
 * Do work on laptop
 
 
+# TLDR; Commands:
+```
+Xephyr -br -ac -noreset -screen 1920x1080 :1
+DISPLAY=:1 awesome &
+DISPLAY=:1 chromium-browser &
+```
 
-
+`xrandr --addmode VIRTUAL1 1920x1080_60.00`
+`xrandr --newmode "1920x1080_60.00"  173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync`
+`cvt 1920 1080 60`
+`arandr`
 
 
 
