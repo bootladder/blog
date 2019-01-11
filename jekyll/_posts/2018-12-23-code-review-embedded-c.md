@@ -24,7 +24,14 @@ This particularly goes for hardware init code.
   
 Another thing:  **messy build system**   
 I had experimented with make, CMake, different testing frameworks, g++, etc.  
-I never decided on one and now there's scattered fragments of all the experiments.
+I never decided on one and now there's scattered fragments of all the experiments.  
+Moreover, there's crap from the very beginning of the project when I used
+vendor libs and let the vendor IDE handle my build.
+Basically the following happened:  There were unused HW driver source files
+that all depended on each other, so removing stuff would break the build,
+requiring more stuff to be removed.  This is why you don't let crap stay in your source tree.  
+One unfortunate side effect of cleaning the cruft is the build size may change,
+so you don't know 100% that you built the same code.
   
 I've found that C build systems are the most verbose and 
 are a more important piece of the project than for build systems for other languages.  

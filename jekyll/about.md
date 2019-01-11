@@ -33,43 +33,41 @@ permalink: /about/
 
 <!-- -->    
 
-    I need a mentor, some good teammates and a good project 
-    to take me to the next level.
-    I'd say I have about 3 solid years of experience in the embedded industry.
+    I'd say I have about 5 solid years of experience in the industry.  
+    My goal is to acquire more experience in the following direction:  
   
-  
-My goal is to acquire more experience in the following direction:  
+
   
 * **Testing**  
  We can completely develop and test an application before the target hardware or OS even exists.  
  We can have a complete hardware test bed; especially for wireless devices!  
  We develop extra software for tests, let's develop extra hardware for tests.  
 
-* **Version Control , Continuous Integration**  
+* **Continuous Integration**  
  Test what you ship, ship what you test.  
  The system is entirely integrated in a cloud-based test environment without a production environment even existing.  
- You can always go back to an exact build and throw it on the hardware test bed.  Though if the hardware test bed ever changes that's a tough one.
+ You can always go back to an exact build and throw it on the hardware test bed.  
 
   
 * **Really Good Modularity and Portability**  
 I've seen Conway's law in action in every engineering job I've had.  
 Let's steer it by making modular architecture critical.   
 Let's be able to swap out a PHY layer or a NWK layer, or a HAL, or an algorithm.    
-Let's divide up a system into components, tasks, messages, control flow, whatever.  
 Let's be extremely flexible but not too complicated.
 
   
-My professional experience includes, but is absolutely not limited to: 
+My professional experience includes, and is absolutely not limited to: 
   
 - 802.15.4 APP and NWK protocol implementations
-- Protocol implementations and Userspace drivers for ttyUSB or serial ports in Linux
-- Porting firmware builds to Linux
+- Protocol implementations and Userspace drivers for serial ports in Linux
+- Porting firmware builds from Vendor Garbage (tm) to CMake
 - Deploy firmware on remote targets, remotely. 
 - Design of power electronic converters, eg. PID control, data sampling, control interface.
 - Design of IoT device, eg. gateway, low-power, RF.
 - Schematics,PCB Layout, BOMs, board bring up, hardware debugging, PCB rework, etc.
 - Technical field work, travelling to install sites, collecting and analyzing field test data.
+- Supporting Contract Manufacturers with test tools and documentation.
 
 
-I've worked at ODI, Inc.  JLM, Inc.  and UC Davis.  
+I've worked at Integral Software, Inc.  ODI, Inc.  JLM, Inc.  and UC Davis.  
 I got a BSEE from Johns Hopkins in 2012.
