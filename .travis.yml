@@ -6,4 +6,5 @@ branches:
   only:
   - master
 sudo: false
-
+notifications:
+  slack: bootladderchatops:1egqmzV3E6kaN22cYNl8KdVc
