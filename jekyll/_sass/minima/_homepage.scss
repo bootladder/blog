@@ -1,0 +1,31 @@
+
+/**
+ * Home page
+ */
+.home-container {
+    display: flex;
+    justify-content: space-between;
+
+}
+.home-posts {
+  padding: 10px;
+  background-color: #ffffff;
+}
+.home-sidebar {
+  padding: 10px;
+  background-color: #80f0C0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+.pagination a,
+.pagination span {
+
+  font-size: 30px;
+  padding: 5px;
+  background-color: #F030F0;
+  border: 2px solid red;
+}
