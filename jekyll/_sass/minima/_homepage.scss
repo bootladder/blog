@@ -7,13 +7,33 @@
     justify-content: space-between;
 
 }
-.home-posts {
-  padding: 10px;
+.post-list {
+  padding: 5px;
   background-color: #ffffff;
 }
 .home-sidebar {
   padding: 10px;
   background-color: #80f0C0;
+}
+
+.page-heading {
+  font-size: 20px;
+  height: auto;
+}
+
+.post-list {
+  margin-left: 0;
+  list-style: none;
+
+  > li {
+    //margin-bottom: $spacing-unit;
+    margin: 0;
+    background-color: chartreuse;
+  }
+
+  > h2 {
+    margin: 0;
+  }
 }
 
 .pagination {
