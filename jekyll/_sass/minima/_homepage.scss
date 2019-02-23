@@ -3,27 +3,60 @@
  * Home page
  */
 .home-container {
-    display: flex;
-    justify-content: space-between;
-
-}
-.post-list {
-  padding: 5px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
   background-color: #ffffff;
+  padding: 5px;
 }
+
 .home-sidebar {
   padding: 10px;
   background-color: #80f0C0;
 }
 
-.page-heading {
+.home-posts{
+  padding: 5px;
+}
+
+.post-list-heading {
+  background-color: blue;
+  padding: 0;
+  margin: 0;
   font-size: 20px;
+  display:block;
   height: auto;
+
+  > svg {
+    background-color: purple;
+    padding: 0;
+    margin: 0;
+    display:block;
+  }
+} 
+svg {
+    padding: 0;
+}
+.elm-svg {
+  padding: 0;
+}
+
+.logicgates{
+  padding: 0;
+  background-color: #26522e;
+}
+.dice {
+  background-color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
 }
 
 .post-list {
-  margin-left: 0;
   list-style: none;
+
+  margin: 0;
 
   > li {
     //margin-bottom: $spacing-unit;
@@ -45,7 +78,49 @@
 .pagination span {
 
   font-size: 30px;
-  padding: 5px;
+  //padding: 5px;
   background-color: #F030F0;
   border: 2px solid red;
+}
+
+/////////////////////////////////////
+
+.home-sidebar div ,
+.home-sidebar p {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  margin: 5px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.about-me-link {
+  background-color: orange;
+  border-radius: 25px;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+}
+
+.home-sidebar h1 {
+  font-size: 24px;
+}
+.sidebar-about-me {
+  padding: 5px;
+  border-radius: 25px;
+  background-color: #AAAAAA;
+}
+
+.sidebar-by-category-links {
+  padding: 5px;
+  border-radius: 25px;
+  background-color: #AAAAAA;
+}
+
+.sidebar-more-links {
+  padding: 5px;
+  border-radius: 25px;
+  background-color: #AAAAAA;
 }
