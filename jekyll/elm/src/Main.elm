@@ -52,7 +52,7 @@ view : Model -> Html Msg
 view model =
     div [ class "elm-svg" ]
         [ div [ class "dice" ]
-            [ svgDie 1
+            [ svgDie 5
             , svgPostsTitle
             , svgFractal
             ]
@@ -231,37 +231,62 @@ svgFractal =
         , strokeWidth "3"
         , Html.Attributes.style "padding-left" "20px"
         ]
-        (List.append
-            [ rect
-                [ x "0"
-                , y "0"
-                , width "120"
-                , height "120"
-                , rx "15"
-                , ry "15"
-                ]
-                []
-            , draw2branches 70 70 1 20
-            ]
-            [ drawLine 20 20 40 40
-            , drawLine 40 40 30 50
-            , drawLine 30 50 20 20
-            , draw2branches 60 60 1 20
+        (List.concat
+            [ [ rect
+                    [ x "0"
+                    , y "0"
+                    , width "120"
+                    , height "120"
+                    , rx "15"
+                    , ry "15"
+                    ]
+                    []
+              ]
+            , drawTriangle
+            , draw2branches 70 70 1 5
+            , draw2branches 80 80 1 5
+            , draw2branches 80 60 1 5
+            , drawMultipleBranches
+            , drawBranchesOnPoints
             ]
         )
 
 
-draw2branches : Int -> Int -> Int -> Int -> Svg msg
+drawTriangle : List (Svg msg)
+drawTriangle =
+    [ drawLine 20 20 40 40
+    , drawLine 40 40 30 50
+    , drawLine 30 50 20 20
+    ]
+
+
+drawMultipleBranches : List (Svg msg)
+drawMultipleBranches =
+    List.concat <| List.map (\x -> draw2branches 80 x 1 5) [ 10, 20, 30 ]
+
+
+drawBranchesOnPoints : List (Svg msg)
+drawBranchesOnPoints =
+    let
+        myPoints1 = List.map (\x -> (12*x,12*x)) (List.range 1 12)
+        myPoints2 = List.map (\x -> ((120-10*x),10*x)) (List.reverse <| List.range 1 10)
+        myPoints3 = List.map (\x -> ((120-10*x),60)) (List.reverse <| List.range 1 10)
+        dir1Branches : List (Svg msg)
+        dir1Branches = List.concat <| List.map drawBranchesOnPoint myPoints1
+        dir2Branches = List.concat <| List.map drawBranchesOnPoint myPoints2
+        dir3Branches = List.concat <| List.map drawBranchesOnPoint myPoints3
+
+    in
+    List.concat [dir1Branches ,dir2Branches, dir3Branches]
+
+drawBranchesOnPoint : (Int,Int) -> List (Svg msg)
+drawBranchesOnPoint (x,y) = draw2branches x y 1 5
+
+draw2branches : Int -> Int -> Int -> Int -> List (Svg msg)
 draw2branches x0 y0 angle r =
-    line
-        [ x1 <| String.fromInt <| x0
-        , y1 <| String.fromInt <| y0 + r
-        , x2 <| String.fromInt <| x0 + (2 * r)
-        , y2 <| String.fromInt <| y0 + (2 * r)
-        , stroke "black"
-        , strokeWidth "3"
-        ]
-        []
+    [ drawLine x0 y0 (x0 + (-1 * 2 * r)) (y0 + (2 * r))
+    , drawLine x0 y0 (x0 + (2 * r)) (y0 + (2 * r))
+    ]
 
 
 drawLine : Int -> Int -> Int -> Int -> Svg msg
