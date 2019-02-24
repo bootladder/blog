@@ -242,50 +242,60 @@ svgFractal =
                     ]
                     []
               ]
-            , drawTriangle
-            , draw2branches 70 70 1 5
-            , draw2branches 80 80 1 5
-            , draw2branches 80 60 1 5
-            , drawMultipleBranches
             , drawBranchesOnPoints
+            , drawBranchesOnPoints2
             ]
         )
 
 
-drawTriangle : List (Svg msg)
-drawTriangle =
-    [ drawLine 20 20 40 40
-    , drawLine 40 40 30 50
-    , drawLine 30 50 20 20
-    ]
+drawBranchesOnPoints2 : List (Svg msg)
+drawBranchesOnPoints2 =
+    let
+        myPoints1 = List.map (\x -> (10*x,10*x)) (List.range 1 12)
+        myPoints2 = List.map (\x -> ((120-10*x),10*x)) (List.reverse <| List.range 1 12)
+        myPoints3 = List.map (\x -> ((120-10*x),60)) (List.reverse <| List.range 1 12)
+        myPoints4 = List.map (\x -> (60,(120-10*x))) (List.reverse <| List.range 1 12)
+        dir1Branches : List (Svg msg)
+        dir1Branches = List.concat <| List.map drawBranchesOnPoint2 myPoints1
+        dir2Branches = List.concat <| List.map drawBranchesOnPoint2 myPoints2
+        dir3Branches = List.concat <| List.map drawBranchesOnPoint2 myPoints3
+        dir4Branches = List.concat <| List.map drawBranchesOnPoint2 myPoints4
 
-
-drawMultipleBranches : List (Svg msg)
-drawMultipleBranches =
-    List.concat <| List.map (\x -> draw2branches 80 x 1 5) [ 10, 20, 30 ]
-
+    in
+    List.concat [dir1Branches ,dir2Branches, dir3Branches, dir4Branches]
 
 drawBranchesOnPoints : List (Svg msg)
 drawBranchesOnPoints =
     let
-        myPoints1 = List.map (\x -> (12*x,12*x)) (List.range 1 12)
-        myPoints2 = List.map (\x -> ((120-10*x),10*x)) (List.reverse <| List.range 1 10)
-        myPoints3 = List.map (\x -> ((120-10*x),60)) (List.reverse <| List.range 1 10)
+        myPoints1 = List.map (\x -> (10*x,10*x)) (List.range 1 12)
+        myPoints2 = List.map (\x -> ((120-10*x),10*x)) (List.reverse <| List.range 1 12)
+        myPoints3 = List.map (\x -> ((120-10*x),60)) (List.reverse <| List.range 1 12)
+        myPoints4 = List.map (\x -> (60,(120-10*x))) (List.reverse <| List.range 1 12)
         dir1Branches : List (Svg msg)
         dir1Branches = List.concat <| List.map drawBranchesOnPoint myPoints1
         dir2Branches = List.concat <| List.map drawBranchesOnPoint myPoints2
         dir3Branches = List.concat <| List.map drawBranchesOnPoint myPoints3
+        dir4Branches = List.concat <| List.map drawBranchesOnPoint myPoints4
 
     in
-    List.concat [dir1Branches ,dir2Branches, dir3Branches]
+    List.concat [dir1Branches ,dir2Branches, dir3Branches, dir4Branches]
 
 drawBranchesOnPoint : (Int,Int) -> List (Svg msg)
 drawBranchesOnPoint (x,y) = draw2branches x y 1 5
+
+drawBranchesOnPoint2 : (Int,Int) -> List (Svg msg)
+drawBranchesOnPoint2 (x,y) = draw2branches2 x y 1 5
 
 draw2branches : Int -> Int -> Int -> Int -> List (Svg msg)
 draw2branches x0 y0 angle r =
     [ drawLine x0 y0 (x0 + (-1 * 2 * r)) (y0 + (2 * r))
     , drawLine x0 y0 (x0 + (2 * r)) (y0 + (2 * r))
+    ]
+
+draw2branches2 : Int -> Int -> Int -> Int -> List (Svg msg)
+draw2branches2 x0 y0 angle r =
+    [ drawLine x0 y0 (x0 + (-1 * 2 * r)) (y0 - (2 * r))
+    , drawLine x0 y0 (x0 + (2 * r)) (y0 - (2 * r))
     ]
 
 
