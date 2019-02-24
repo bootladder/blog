@@ -2,3 +2,6 @@
 .jekyll-metadata
 *.swp
 _site
+*.elmi
+*.elmo
+elmapp.js
