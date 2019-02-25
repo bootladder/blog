@@ -863,6 +863,53 @@ var _Basics_xor = F2(function(a, b) { return a !== b; });
 
 
 
+function _Char_toCode(char)
+{
+	var code = char.charCodeAt(0);
+	if (0xD800 <= code && code <= 0xDBFF)
+	{
+		return (code - 0xD800) * 0x400 + char.charCodeAt(1) - 0xDC00 + 0x10000
+	}
+	return code;
+}
+
+function _Char_fromCode(code)
+{
+	return _Utils_chr(
+		(code < 0 || 0x10FFFF < code)
+			? '\uFFFD'
+			:
+		(code <= 0xFFFF)
+			? String.fromCharCode(code)
+			:
+		(code -= 0x10000,
+			String.fromCharCode(Math.floor(code / 0x400) + 0xD800, code % 0x400 + 0xDC00)
+		)
+	);
+}
+
+function _Char_toUpper(char)
+{
+	return _Utils_chr(char.toUpperCase());
+}
+
+function _Char_toLower(char)
+{
+	return _Utils_chr(char.toLowerCase());
+}
+
+function _Char_toLocaleUpper(char)
+{
+	return _Utils_chr(char.toLocaleUpperCase());
+}
+
+function _Char_toLocaleLower(char)
+{
+	return _Utils_chr(char.toLocaleLowerCase());
+}
+
+
+
 var _String_cons = F2(function(chr, str)
 {
 	return chr + str;
@@ -1172,53 +1219,6 @@ function _String_fromList(chars)
 	return _List_toArray(chars).join('');
 }
 
-
-
-
-function _Char_toCode(char)
-{
-	var code = char.charCodeAt(0);
-	if (0xD800 <= code && code <= 0xDBFF)
-	{
-		return (code - 0xD800) * 0x400 + char.charCodeAt(1) - 0xDC00 + 0x10000
-	}
-	return code;
-}
-
-function _Char_fromCode(code)
-{
-	return _Utils_chr(
-		(code < 0 || 0x10FFFF < code)
-			? '\uFFFD'
-			:
-		(code <= 0xFFFF)
-			? String.fromCharCode(code)
-			:
-		(code -= 0x10000,
-			String.fromCharCode(Math.floor(code / 0x400) + 0xD800, code % 0x400 + 0xDC00)
-		)
-	);
-}
-
-function _Char_toUpper(char)
-{
-	return _Utils_chr(char.toUpperCase());
-}
-
-function _Char_toLower(char)
-{
-	return _Utils_chr(char.toLowerCase());
-}
-
-function _Char_toLocaleUpper(char)
-{
-	return _Utils_chr(char.toLocaleUpperCase());
-}
-
-function _Char_toLocaleLower(char)
-{
-	return _Utils_chr(char.toLocaleLowerCase());
-}
 
 
 
@@ -4411,13 +4411,6 @@ var author$project$Main$update = F2(
 			return model - 1;
 		}
 	});
-var author$project$Main$Decrement = {$: 'Decrement'};
-var author$project$Main$Increment = {$: 'Increment'};
-var elm$core$Maybe$Just = function (a) {
-	return {$: 'Just', a: a};
-};
-var elm$core$Maybe$Nothing = {$: 'Nothing'};
-var elm$core$String$fromInt = _String_fromNumber;
 var elm$core$Basics$identity = function (x) {
 	return x;
 };
@@ -4599,6 +4592,10 @@ var elm$core$Array$initialize = F2(
 			return A5(elm$core$Array$initializeHelp, fn, initialFromIndex, len, _List_Nil, tail);
 		}
 	});
+var elm$core$Maybe$Just = function (a) {
+	return {$: 'Just', a: a};
+};
+var elm$core$Maybe$Nothing = {$: 'Nothing'};
 var elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -4686,6 +4683,7 @@ var elm$core$List$indexedMap = F2(
 			xs);
 	});
 var elm$core$String$all = _String_all;
+var elm$core$String$fromInt = _String_fromNumber;
 var elm$core$String$join = F2(
 	function (sep, chunks) {
 		return A2(
@@ -4824,90 +4822,266 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 			return 3;
 	}
 };
-var elm$html$Html$button = _VirtualDom_node('button');
-var elm$html$Html$div = _VirtualDom_node('div');
-var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
-};
-var author$project$Main$view = function (model) {
-	return A2(
-		elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$button,
-				_List_fromArray(
-					[
-						elm$html$Html$Events$onClick(author$project$Main$Decrement)
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text('-')
-					])),
-				A2(
-				elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text(
-						elm$core$String$fromInt(model))
-					])),
-				A2(
-				elm$html$Html$button,
-				_List_fromArray(
-					[
-						elm$html$Html$Events$onClick(author$project$Main$Increment)
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text('+')
-					]))
-			]));
-};
-var elm$core$Platform$Cmd$batch = _Platform_batch;
-var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
-var elm$core$Platform$Sub$batch = _Platform_batch;
-var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
-var elm$browser$Browser$External = function (a) {
-	return {$: 'External', a: a};
-};
-var elm$browser$Browser$Internal = function (a) {
-	return {$: 'Internal', a: a};
-};
-var elm$browser$Browser$Dom$NotFound = function (a) {
-	return {$: 'NotFound', a: a};
-};
-var elm$core$Basics$never = function (_n0) {
-	never:
-	while (true) {
-		var nvr = _n0.a;
-		var $temp$_n0 = nvr;
-		_n0 = $temp$_n0;
-		continue never;
+var elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var elm$svg$Svg$circle = elm$svg$Svg$trustedNode('circle');
+var elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
+var author$project$Dice$svgCirclesForDieFace = function (dieFace) {
+	switch (dieFace) {
+		case 1:
+			return _List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('50'),
+							elm$svg$Svg$Attributes$cy('50'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil)
+				]);
+		case 2:
+			return _List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('25'),
+							elm$svg$Svg$Attributes$cy('25'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('75'),
+							elm$svg$Svg$Attributes$cy('75'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil)
+				]);
+		case 3:
+			return _List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('25'),
+							elm$svg$Svg$Attributes$cy('25'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('50'),
+							elm$svg$Svg$Attributes$cy('50'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('75'),
+							elm$svg$Svg$Attributes$cy('75'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil)
+				]);
+		case 4:
+			return _List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('25'),
+							elm$svg$Svg$Attributes$cy('25'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('75'),
+							elm$svg$Svg$Attributes$cy('25'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('25'),
+							elm$svg$Svg$Attributes$cy('75'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('75'),
+							elm$svg$Svg$Attributes$cy('75'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil)
+				]);
+		case 5:
+			return _List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('25'),
+							elm$svg$Svg$Attributes$cy('25'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('75'),
+							elm$svg$Svg$Attributes$cy('25'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('25'),
+							elm$svg$Svg$Attributes$cy('75'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('75'),
+							elm$svg$Svg$Attributes$cy('75'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('50'),
+							elm$svg$Svg$Attributes$cy('50'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil)
+				]);
+		case 6:
+			return _List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('25'),
+							elm$svg$Svg$Attributes$cy('20'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('25'),
+							elm$svg$Svg$Attributes$cy('50'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('25'),
+							elm$svg$Svg$Attributes$cy('80'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('75'),
+							elm$svg$Svg$Attributes$cy('20'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('75'),
+							elm$svg$Svg$Attributes$cy('50'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil),
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('75'),
+							elm$svg$Svg$Attributes$cy('80'),
+							elm$svg$Svg$Attributes$r('10'),
+							elm$svg$Svg$Attributes$fill('black')
+						]),
+					_List_Nil)
+				]);
+		default:
+			return _List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$cx('50'),
+							elm$svg$Svg$Attributes$cy('50'),
+							elm$svg$Svg$Attributes$r('50'),
+							elm$svg$Svg$Attributes$fill('red'),
+							elm$svg$Svg$Attributes$stroke('none')
+						]),
+					_List_Nil)
+				]);
 	}
 };
-var elm$core$Task$Perform = function (a) {
-	return {$: 'Perform', a: a};
-};
-var elm$core$Task$succeed = _Scheduler_succeed;
-var elm$core$Task$init = elm$core$Task$succeed(_Utils_Tuple0);
 var elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
 		if (!ls.b) {
@@ -4963,6 +5137,470 @@ var elm$core$List$foldr = F3(
 	function (fn, acc, ls) {
 		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
 	});
+var elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3(elm$core$List$foldr, elm$core$List$cons, ys, xs);
+		}
+	});
+var elm$svg$Svg$rect = elm$svg$Svg$trustedNode('rect');
+var elm$svg$Svg$svg = elm$svg$Svg$trustedNode('svg');
+var elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
+var elm$svg$Svg$Attributes$rx = _VirtualDom_attribute('rx');
+var elm$svg$Svg$Attributes$ry = _VirtualDom_attribute('ry');
+var elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
+var elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
+var elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
+var elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
+var elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
+var author$project$Dice$svgDie = function (number) {
+	return A2(
+		elm$svg$Svg$svg,
+		_List_fromArray(
+			[
+				elm$svg$Svg$Attributes$width('120'),
+				elm$svg$Svg$Attributes$height('120'),
+				elm$svg$Svg$Attributes$viewBox('0 0 100 100'),
+				elm$svg$Svg$Attributes$fill('white'),
+				elm$svg$Svg$Attributes$stroke('black'),
+				elm$svg$Svg$Attributes$strokeWidth('3')
+			]),
+		A2(
+			elm$core$List$append,
+			_List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$rect,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$x('1'),
+							elm$svg$Svg$Attributes$y('1'),
+							elm$svg$Svg$Attributes$width('100'),
+							elm$svg$Svg$Attributes$height('100'),
+							elm$svg$Svg$Attributes$rx('15'),
+							elm$svg$Svg$Attributes$ry('15')
+						]),
+					_List_Nil)
+				]),
+			author$project$Dice$svgCirclesForDieFace(number)));
+};
+var elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var elm$html$Html$Attributes$attribute = elm$virtual_dom$VirtualDom$attribute;
+var author$project$LogicGates$attribute = elm$html$Html$Attributes$attribute;
+var elm$svg$Svg$path = elm$svg$Svg$trustedNode('path');
+var author$project$LogicGates$path = elm$svg$Svg$path;
+var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var elm$svg$Svg$text = elm$virtual_dom$VirtualDom$text;
+var author$project$LogicGates$text = elm$svg$Svg$text;
+var elm$svg$Svg$g = elm$svg$Svg$trustedNode('g');
+var elm$virtual_dom$VirtualDom$nodeNS = function (tag) {
+	return _VirtualDom_nodeNS(
+		_VirtualDom_noScript(tag));
+};
+var elm$svg$Svg$node = elm$virtual_dom$VirtualDom$nodeNS('http://www.w3.org/2000/svg');
+var elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
+var elm$svg$Svg$Attributes$id = _VirtualDom_attribute('id');
+var author$project$LogicGates$svgLogicGates = A2(
+	elm$svg$Svg$svg,
+	_List_fromArray(
+		[
+			A2(author$project$LogicGates$attribute, 'height', '100'),
+			A2(author$project$LogicGates$attribute, 'width', '100%'),
+			A2(author$project$LogicGates$attribute, 'xmlns', 'http://www.w3.org/2000/svg'),
+			A2(author$project$LogicGates$attribute, 'xmlns:svg', 'http://www.w3.org/2000/svg')
+		]),
+	_List_fromArray(
+		[
+			A2(
+			elm$svg$Svg$g,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A3(
+					elm$svg$Svg$node,
+					'title',
+					_List_Nil,
+					_List_fromArray(
+						[
+							author$project$LogicGates$text('Layer 1')
+						])),
+					A2(
+					author$project$LogicGates$path,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$d('m394.26283,59.503l22.31135,0m-22.31135,-18.10207l22.31136,0.00001m-0.05135,-9.92216l0,37.54016c64.25559,3.36901 65.75202,-41.14977 0,-37.54016zm71.81932,18.70003l-23.20465,0m-73.06626,-9.84033l2.20577,0l0,2.20577l-2.20577,0l0,-2.20577zm-0.10375,17.99695l2.20577,0l0,2.20577l-2.20577,0l0,-2.20577zm96.35067,-9.23291l2.20577,0l0,2.20577l-2.20577,0l0,-2.20577z'),
+							elm$svg$Svg$Attributes$fill('#000000'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_14'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A2(
+					author$project$LogicGates$path,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$d('m291.38535,34.8168l19.4688,0m-19.4688,-15.7958l19.4688,0.00001m-0.04481,-8.65804l0,32.7574c56.06918,2.93978 57.37497,-35.90713 0,-32.7574zm62.66927,16.31758l-20.24829,0m-63.75734,-8.58663l1.92475,0l0,1.92475l-1.92475,0l0,-1.92475zm-0.09053,15.70407l1.92475,0l0,1.92475l-1.92475,0l0,-1.92475zm84.07523,-8.0566l1.92475,0l0,1.92475l-1.92475,0l0,-1.92475z'),
+							elm$svg$Svg$Attributes$fill('#000000'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_15'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A2(
+					author$project$LogicGates$path,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$d('m291.44204,81.18472l19.92157,0m-19.92156,-16.16314l19.92157,0.00001m-0.04585,-8.85939l0,33.5192c57.37313,3.00815 58.70928,-36.74219 0,-33.5192zm64.12671,16.69706l-20.71918,0m-65.24008,-8.78632l1.96951,0l0,1.96951l-1.96951,0l0,-1.96951zm-0.09264,16.06928l1.96951,0l0,1.96951l-1.96951,0l0,-1.96951zm86.03048,-8.24397l1.96951,0l0,1.96951l-1.96951,0l0,-1.96951z'),
+							elm$svg$Svg$Attributes$fill('#000000'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_16'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A2(
+					author$project$LogicGates$path,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$d('m254.95687,80.41517l-15.02723,0m-0.04029,0a4.23773,4.23773 0 1 1 -8.47546,0a4.23773,4.23773 0 1 1 8.47546,0zm-45.60447,0.51264l14.77476,0l0,-13.01263l21.57978,12.45913l-21.56833,12.54087l0,-11.97311m-16.21112,-0.78852l1.44508,0l0,1.44494l-1.44508,0l0,-1.44494zm62.11297,-0.45522l1.44515,0l0,1.44516l-1.44515,0l0,-1.44516z'),
+							elm$svg$Svg$Attributes$fill('#000000'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_17'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_18'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '373'),
+							A2(author$project$LogicGates$attribute, 'x2', '392'),
+							A2(author$project$LogicGates$attribute, 'y1', '26.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '26.8125')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_19'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '392'),
+							A2(author$project$LogicGates$attribute, 'x2', '392'),
+							A2(author$project$LogicGates$attribute, 'y1', '41.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '26.67975')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_20'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '377'),
+							A2(author$project$LogicGates$attribute, 'x2', '394.11724'),
+							A2(author$project$LogicGates$attribute, 'y1', '72.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '72.8125')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_21'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '390'),
+							A2(author$project$LogicGates$attribute, 'x2', '390'),
+							A2(author$project$LogicGates$attribute, 'y1', '57.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '72.13032')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_22'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '257'),
+							A2(author$project$LogicGates$attribute, 'x2', '291.1321'),
+							A2(author$project$LogicGates$attribute, 'y1', '81.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '81.8125')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_23'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '291'),
+							A2(author$project$LogicGates$attribute, 'x2', '55.00001'),
+							A2(author$project$LogicGates$attribute, 'y1', '34.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '34.8125')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_24'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '290'),
+							A2(author$project$LogicGates$attribute, 'x2', '15.46831'),
+							A2(author$project$LogicGates$attribute, 'y1', '20.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '20.8125')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_25'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '291'),
+							A2(author$project$LogicGates$attribute, 'x2', '89.87987'),
+							A2(author$project$LogicGates$attribute, 'y1', '62.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '62.8125')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_26'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '193'),
+							A2(author$project$LogicGates$attribute, 'x2', '125.63532'),
+							A2(author$project$LogicGates$attribute, 'y1', '80.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '80.8125')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_28'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '17'),
+							A2(author$project$LogicGates$attribute, 'x2', '17'),
+							A2(author$project$LogicGates$attribute, 'y1', '19.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '134.02721')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_29'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '57'),
+							A2(author$project$LogicGates$attribute, 'x2', '57'),
+							A2(author$project$LogicGates$attribute, 'y1', '32.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '150.8125')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_30'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '92'),
+							A2(author$project$LogicGates$attribute, 'x2', '92'),
+							A2(author$project$LogicGates$attribute, 'y1', '63.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '188.84849')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text('  '),
+					A3(
+					elm$svg$Svg$node,
+					'line',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('none'),
+							A2(author$project$LogicGates$attribute, 'fill-opacity', '0'),
+							elm$svg$Svg$Attributes$id('svg_31'),
+							A2(author$project$LogicGates$attribute, 'stroke', '#000000'),
+							A2(author$project$LogicGates$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$LogicGates$attribute, 'stroke-width', '5'),
+							A2(author$project$LogicGates$attribute, 'x1', '125'),
+							A2(author$project$LogicGates$attribute, 'x2', '125'),
+							A2(author$project$LogicGates$attribute, 'y1', '80.8125'),
+							A2(author$project$LogicGates$attribute, 'y2', '162.31097')
+						]),
+					_List_Nil),
+					author$project$LogicGates$text(' ')
+				]))
+		]));
+var elm$svg$Svg$line = elm$svg$Svg$trustedNode('line');
+var elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
+var elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
+var elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
+var elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
+var author$project$Main$drawLine = F4(
+	function (a, b, c, d) {
+		return A2(
+			elm$svg$Svg$line,
+			_List_fromArray(
+				[
+					elm$svg$Svg$Attributes$x1(
+					elm$core$String$fromInt(a)),
+					elm$svg$Svg$Attributes$y1(
+					elm$core$String$fromInt(b)),
+					elm$svg$Svg$Attributes$x2(
+					elm$core$String$fromInt(c)),
+					elm$svg$Svg$Attributes$y2(
+					elm$core$String$fromInt(d)),
+					elm$svg$Svg$Attributes$stroke('black'),
+					elm$svg$Svg$Attributes$strokeWidth('3')
+				]),
+			_List_Nil);
+	});
+var elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var author$project$Main$draw2branches = F4(
+	function (x0, y0, angle, r) {
+		return _List_fromArray(
+			[
+				A4(author$project$Main$drawLine, x0, y0, x0 + (((-1) * 2) * r), y0 + (2 * r)),
+				A4(author$project$Main$drawLine, x0, y0, x0 + (2 * r), y0 + (2 * r))
+			]);
+	});
+var author$project$Main$drawBranchesOnPoint = function (_n0) {
+	var x = _n0.a;
+	var y = _n0.b;
+	return A4(author$project$Main$draw2branches, x, y, 1, 5);
+};
+var elm$core$List$concat = function (lists) {
+	return A3(elm$core$List$foldr, elm$core$List$append, _List_Nil, lists);
+};
 var elm$core$List$map = F2(
 	function (f, xs) {
 		return A3(
@@ -4977,6 +5615,221 @@ var elm$core$List$map = F2(
 			_List_Nil,
 			xs);
 	});
+var author$project$Main$drawBranchesOnPointsForReal = function (points) {
+	return elm$core$List$concat(
+		A2(elm$core$List$map, author$project$Main$drawBranchesOnPoint, points));
+};
+var author$project$Main$draw2branches2 = F4(
+	function (x0, y0, angle, r) {
+		return _List_fromArray(
+			[
+				A4(author$project$Main$drawLine, x0, y0, x0 + (((-1) * 2) * r), y0 - (2 * r)),
+				A4(author$project$Main$drawLine, x0, y0, x0 + (2 * r), y0 - (2 * r))
+			]);
+	});
+var author$project$Main$drawBranchesOnPoint2 = function (_n0) {
+	var x = _n0.a;
+	var y = _n0.b;
+	return A4(author$project$Main$draw2branches2, x, y, 1, 5);
+};
+var author$project$Main$drawBranchesOnPointsForReal2 = function (points) {
+	return elm$core$List$concat(
+		A2(elm$core$List$map, author$project$Main$drawBranchesOnPoint2, points));
+};
+var author$project$Main$generatePointsFromLambda = function (f) {
+	return A2(
+		elm$core$List$map,
+		f,
+		A2(elm$core$List$range, 1, 12));
+};
+var author$project$Main$drawBranchesOnPoints = function () {
+	var myPoints8 = author$project$Main$generatePointsFromLambda(
+		function (x) {
+			return _Utils_Tuple2(60, 120 - (10 * x));
+		});
+	var myPoints7 = author$project$Main$generatePointsFromLambda(
+		function (x) {
+			return _Utils_Tuple2(120 - (10 * x), 60);
+		});
+	var myPoints6 = author$project$Main$generatePointsFromLambda(
+		function (x) {
+			return _Utils_Tuple2(120 - (10 * x), 10 * x);
+		});
+	var myPoints5 = author$project$Main$generatePointsFromLambda(
+		function (x) {
+			return _Utils_Tuple2(10 * x, 10 * x);
+		});
+	var myPoints4 = author$project$Main$generatePointsFromLambda(
+		function (x) {
+			return _Utils_Tuple2(60, 120 - (10 * x));
+		});
+	var myPoints3 = author$project$Main$generatePointsFromLambda(
+		function (x) {
+			return _Utils_Tuple2(120 - (10 * x), 60);
+		});
+	var myPoints2 = author$project$Main$generatePointsFromLambda(
+		function (x) {
+			return _Utils_Tuple2(120 - (10 * x), 10 * x);
+		});
+	var myPoints1 = author$project$Main$generatePointsFromLambda(
+		function (x) {
+			return _Utils_Tuple2(10 * x, 10 * x);
+		});
+	var dir8Branches = author$project$Main$drawBranchesOnPointsForReal2(myPoints8);
+	var dir7Branches = author$project$Main$drawBranchesOnPointsForReal2(myPoints7);
+	var dir6Branches = author$project$Main$drawBranchesOnPointsForReal2(myPoints6);
+	var dir5Branches = author$project$Main$drawBranchesOnPointsForReal2(myPoints5);
+	var dir4Branches = author$project$Main$drawBranchesOnPointsForReal(myPoints4);
+	var dir3Branches = author$project$Main$drawBranchesOnPointsForReal(myPoints3);
+	var dir2Branches = author$project$Main$drawBranchesOnPointsForReal(myPoints2);
+	var dir1Branches = author$project$Main$drawBranchesOnPointsForReal(myPoints1);
+	return elm$core$List$concat(
+		_List_fromArray(
+			[dir1Branches, dir2Branches, dir3Branches, dir4Branches, dir5Branches, dir6Branches, dir7Branches, dir8Branches]));
+}();
+var author$project$Main$svgFractal = A2(
+	elm$svg$Svg$svg,
+	_List_fromArray(
+		[
+			elm$svg$Svg$Attributes$width('120'),
+			elm$svg$Svg$Attributes$height('120'),
+			elm$svg$Svg$Attributes$viewBox('0 0 120 120'),
+			elm$svg$Svg$Attributes$fill('white'),
+			elm$svg$Svg$Attributes$stroke('black'),
+			elm$svg$Svg$Attributes$strokeWidth('3')
+		]),
+	elm$core$List$concat(
+		_List_fromArray(
+			[
+				_List_fromArray(
+				[
+					A2(
+					elm$svg$Svg$rect,
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$x('0'),
+							elm$svg$Svg$Attributes$y('0'),
+							elm$svg$Svg$Attributes$width('120'),
+							elm$svg$Svg$Attributes$height('120'),
+							elm$svg$Svg$Attributes$rx('15'),
+							elm$svg$Svg$Attributes$ry('15')
+						]),
+					_List_Nil)
+				]),
+				author$project$Main$drawBranchesOnPoints
+			])));
+var author$project$Main$attribute = elm$html$Html$Attributes$attribute;
+var author$project$Main$text = elm$svg$Svg$text;
+var author$project$Main$svgPostsTitle = A2(
+	elm$svg$Svg$svg,
+	_List_fromArray(
+		[
+			A2(author$project$Main$attribute, 'height', '100.00000000000001'),
+			A2(author$project$Main$attribute, 'width', '150'),
+			A2(author$project$Main$attribute, 'xmlns', 'http://www.w3.org/2000/svg'),
+			A2(author$project$Main$attribute, 'xmlns:svg', 'http://www.w3.org/2000/svg')
+		]),
+	_List_fromArray(
+		[
+			A2(
+			elm$svg$Svg$g,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A3(
+					elm$svg$Svg$node,
+					'title',
+					_List_Nil,
+					_List_fromArray(
+						[
+							author$project$Main$text('Layer 1')
+						])),
+					A3(
+					elm$svg$Svg$node,
+					'text',
+					_List_fromArray(
+						[
+							elm$svg$Svg$Attributes$fill('#725b2c'),
+							A2(author$project$Main$attribute, 'font-family', 'Monospace'),
+							A2(author$project$Main$attribute, 'font-size', '24'),
+							elm$svg$Svg$Attributes$id('svg_32'),
+							A2(author$project$Main$attribute, 'stroke', '#000000'),
+							A2(author$project$Main$attribute, 'stroke-dasharray', 'null'),
+							A2(author$project$Main$attribute, 'stroke-linecap', 'null'),
+							A2(author$project$Main$attribute, 'stroke-linejoin', 'null'),
+							A2(author$project$Main$attribute, 'stroke-width', '0'),
+							A2(author$project$Main$attribute, 'text-anchor', 'middle'),
+							A2(author$project$Main$attribute, 'transform', 'matrix(2.0224413590676282,0,0,2.0035618577975565,-14.422150537027019,-14.046823513059891) '),
+							A2(author$project$Main$attribute, 'x', '44.28247'),
+							A2(author$project$Main$attribute, 'xml:space', 'preserve'),
+							A2(author$project$Main$attribute, 'y', '39.38394')
+						]),
+					_List_fromArray(
+						[
+							author$project$Main$text('Posts')
+						]))
+				]))
+		]));
+var elm$html$Html$div = _VirtualDom_node('div');
+var elm$svg$Svg$Attributes$class = _VirtualDom_attribute('class');
+var author$project$Main$view = function (model) {
+	return A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$svg$Svg$Attributes$class('elm-svg')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$svg$Svg$Attributes$class('dice')
+					]),
+				_List_fromArray(
+					[
+						author$project$Dice$svgDie(5),
+						author$project$Main$svgPostsTitle,
+						author$project$Main$svgFractal
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$svg$Svg$Attributes$class('logicgates')
+					]),
+				_List_fromArray(
+					[author$project$LogicGates$svgLogicGates]))
+			]));
+};
+var elm$core$Platform$Cmd$batch = _Platform_batch;
+var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
+var elm$core$Platform$Sub$batch = _Platform_batch;
+var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
+var elm$browser$Browser$External = function (a) {
+	return {$: 'External', a: a};
+};
+var elm$browser$Browser$Internal = function (a) {
+	return {$: 'Internal', a: a};
+};
+var elm$browser$Browser$Dom$NotFound = function (a) {
+	return {$: 'NotFound', a: a};
+};
+var elm$core$Basics$never = function (_n0) {
+	never:
+	while (true) {
+		var nvr = _n0.a;
+		var $temp$_n0 = nvr;
+		_n0 = $temp$_n0;
+		continue never;
+	}
+};
+var elm$core$Task$Perform = function (a) {
+	return {$: 'Perform', a: a};
+};
+var elm$core$Task$succeed = _Scheduler_succeed;
+var elm$core$Task$init = elm$core$Task$succeed(_Utils_Tuple0);
 var elm$core$Task$andThen = _Scheduler_andThen;
 var elm$core$Task$map = F2(
 	function (func, taskA) {

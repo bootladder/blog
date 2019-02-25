@@ -11,7 +11,7 @@
 }
 
 .home-sidebar {
-  padding: 10px;
+  padding: 5px;
   background-color: #80f0C0;
 }
 
@@ -62,6 +62,9 @@ svg {
     //margin-bottom: $spacing-unit;
     margin: 0;
     background-color: chartreuse;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 15px;
   }
 
   > h2 {
@@ -70,6 +73,7 @@ svg {
 }
 
 .pagination {
+  padding: 5px;
   display: flex;
   justify-content: center;
   flex-direction: row;
