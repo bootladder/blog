@@ -181,19 +181,34 @@ drawTreeThing scale =
         myLines =
             drawTreeOnPoints [ Point 0 0 ] (toFloat scale * 1 * pi / 16) 10
 
-        rev =
+        reflectX =
+            \line -> Line (Point line.p1.x (420 - line.p1.y) ) (Point line.p2.x (420 - line.p2.y)) line.depth
+
+        reflectY =
             \line -> Line (Point (420 - line.p1.x) line.p1.y) (Point (420 - line.p2.x) line.p2.y) line.depth
 
-        myLinesReversed =
-            List.map rev myLines
+        myLinesReflectedX =
+            List.map reflectX myLines
+
+        myLinesReflectedY =
+            List.map reflectY myLines
+
+        myLinesReflectedXY =
+            List.map (reflectY << reflectX) myLines
 
         mySvgs =
             List.map line2Svg myLines
 
-        mySvgsReversed =
-            List.map line2Svg myLinesReversed
+        mySvgsReflectedX =
+            List.map line2Svg myLinesReflectedX
+
+        mySvgsReflectedXY =
+            List.map line2Svg myLinesReflectedXY
+
+        mySvgsReflectedY =
+            List.map line2Svg myLinesReflectedY
     in
-    List.concat [ mySvgs, mySvgsReversed ]
+    List.concat [ mySvgs, mySvgsReflectedX, mySvgsReflectedY, mySvgsReflectedXY ]
 
 
 drawTreeOnPoints :
