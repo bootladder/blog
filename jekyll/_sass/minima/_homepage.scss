@@ -52,6 +52,9 @@ svg {
   align-items: center;
   align-content: center;
 }
+.fractals {
+  display: flex;
+}
 
 .post-list {
   list-style: none;
@@ -117,6 +120,7 @@ svg {
   border-radius: 25px;
   background-color: #AAAAAA;
 }
+
 
 .sidebar-by-category-links {
   padding: 5px;

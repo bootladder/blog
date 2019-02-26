@@ -6,3 +6,4 @@ _site
 *.elmo
 elmapp.js
 .#Main.hs
+jekyll/elm/index.html

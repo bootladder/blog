@@ -2,9 +2,9 @@ module Main exposing (Line, Model, Msg(..), Point, attribute, draw2LinesOnPointR
 
 import Browser
 import Dice exposing (..)
-import Html exposing (Html, button, div, text)
+import Html exposing (Attribute, Html, button, div, input, text)
 import Html.Attributes
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import LogicGates exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -25,7 +25,7 @@ type alias Model =
 
 init : Model
 init =
-    0
+    50
 
 
 
@@ -35,6 +35,7 @@ init =
 type Msg
     = Increment
     | Decrement
+    | Slider String
 
 
 update : Msg -> Model -> Model
@@ -45,6 +46,14 @@ update msg model =
 
         Decrement ->
             model - 1
+
+        Slider s ->
+            case String.toInt s of
+                Nothing ->
+                    1
+
+                Just i ->
+                    i
 
 
 
@@ -58,10 +67,29 @@ view model =
             [ svgDie 5
             , svgPostsTitle
             , svgXThing
-            , svgTree
             ]
         , div [ class "logicgates" ]
             [ svgLogicGates
+            ]
+        , div [ class "fractals" ]
+            [ svgTree model
+            , svgTree model
+            , div []
+                [ button [ onClick Decrement ] [ text "-" ]
+                , div [] [ text (String.fromInt model) ]
+                , button [ onClick Increment ] [ text "+" ]
+                ]
+            , div []
+                [ input
+                    [ type_ "range"
+                    , Html.Attributes.min "0"
+                    , Html.Attributes.max "200"
+                    , Html.Attributes.value <| String.fromInt model
+                    , Html.Events.onInput Slider
+                    ]
+                    []
+                , text <| String.fromInt model
+                ]
             ]
         ]
 
@@ -91,11 +119,11 @@ svgPostsTitle =
         ]
 
 
-svgTree : Html Msg
-svgTree =
+svgTree : Int -> Html Msg
+svgTree scale =
     svg
-        [ width "420"
-        , height "420"
+        [ width "120"
+        , height "120"
         , viewBox "0 0 420 420"
         , fill "white"
         , stroke "black"
@@ -105,22 +133,21 @@ svgTree =
             [ [ rect
                     [ x "0"
                     , y "0"
-                    , width "120"
-                    , height "120"
+                    , width "420"
+                    , height "420"
                     , rx "15"
                     , ry "15"
                     ]
                     []
               ]
-            , drawTreeThing
+            , drawTreeThing scale
             ]
         )
 
 
 type alias Point =
-    {
-        x : Int
-       ,y : Int
+    { x : Int
+    , y : Int
     }
 
 
@@ -130,23 +157,44 @@ type alias Line =
     , depth : Int
     }
 
+
 line2Svg : Line -> Svg msg
 line2Svg line =
-    drawLine (line.p1.x)
-             (line.p1.y)
-             (line.p2.x)
-             (line.p2.y)
-                 line.depth
+    drawLine line.p1 line.p2 line.depth
 
 
-drawTreeThing : List (Svg msg)
-drawTreeThing =
+reflectLineYAxis : Line -> Line
+reflectLineYAxis line =
     let
-        myPoints =
-            List.map (\x -> Point 0 (20 * x) ) <| List.range 1 10
-        myLines = drawTreeOnPoints myPoints pi 10
+        p1 =
+            Point 0 0
+
+        p2 =
+            Point 0 0
     in
-        List.map line2Svg myLines
+    Line p1 p2 10
+
+
+drawTreeThing : Int -> List (Svg msg)
+drawTreeThing scale =
+    let
+        myLines =
+            drawTreeOnPoints [ Point 0 0 ] (toFloat scale * 1 * pi / 16) 10
+
+        rev =
+            \line -> Line (Point (420 - line.p1.x) line.p1.y) (Point (420 - line.p2.x) line.p2.y) line.depth
+
+        myLinesReversed =
+            List.map rev myLines
+
+        mySvgs =
+            List.map line2Svg myLines
+
+        mySvgsReversed =
+            List.map line2Svg myLinesReversed
+    in
+    List.concat [ mySvgs, mySvgsReversed ]
+
 
 drawTreeOnPoints :
     List Point
@@ -163,7 +211,9 @@ drawTreeOnPoints points angle0 depth =
                 process =
                     \x -> draw2LinesOnPointReturning2Points x angle0 depth
 
-                points2LinesAndPoints : List Point -> List (List Line, List Point)
+                points2LinesAndPoints :
+                    List Point
+                    -> List ( List Line, List Point )
                 points2LinesAndPoints =
                     List.map process
 
@@ -191,7 +241,7 @@ draw2LinesOnPointReturning2Points : Point -> Float -> Int -> ( List Line, List P
 draw2LinesOnPointReturning2Points point angle depth =
     let
         r =
-            round (toFloat (2 ^ depth) / 20)
+            round (toFloat (2 ^ depth) / 10)
 
         newX0 =
             point.x + round (cos angle * toFloat (-1 * 2 * r))
@@ -208,21 +258,21 @@ draw2LinesOnPointReturning2Points point angle depth =
     ( [ Line point (Point newX0 newY0) depth
       , Line point (Point newX1 newY1) depth
       ]
-    , [ Point newX0 newY0 , Point newX1 newY1  ]
+    , [ Point newX0 newY0, Point newX1 newY1 ]
     )
 
 
-drawLine : Int -> Int -> Int -> Int -> Int -> Svg msg
-drawLine a b c d depth =
+drawLine : Point -> Point -> Int -> Svg msg
+drawLine p0 p1 depth =
     let
         width =
-            0.1 + (toFloat (2 ^ depth) / 200)
+            0.1 + ((2.0 ^ toFloat depth) / 200)
     in
     line
-        [ x1 <| String.fromInt a
-        , y1 <| String.fromInt b
-        , x2 <| String.fromInt c
-        , y2 <| String.fromInt d
+        [ x1 <| String.fromInt p0.x
+        , y1 <| String.fromInt p0.y
+        , x2 <| String.fromInt p1.x
+        , y2 <| String.fromInt p1.y
         , stroke "green"
         , strokeWidth <| String.fromFloat width
         ]
