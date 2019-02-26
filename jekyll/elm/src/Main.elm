@@ -1,4 +1,4 @@
-module Main exposing (Line, Model, Msg(..), Point, attribute, draw2LinesOnPointReturning2Points, drawLine, drawTreeOnPoints, drawTreeThing, init, main, path, svgPostsTitle, svgTree, text, update, view)
+port module Main exposing (Line, Model, Msg(..), Point, attribute, draw2LinesOnPointReturning2Points, drawLine, drawTreeOnPoints, drawTreeThing, init, main, path, svgPostsTitle, svgTree, text, update, view)
 
 import Browser
 import Dice exposing (..)
@@ -12,7 +12,7 @@ import XThing exposing (..)
 
 
 main =
-    Browser.sandbox { init = init, update = update, view = view }
+    Browser.element { init = init, update = update, view = view , subscriptions = subscriptions}
 
 
 
@@ -23,9 +23,9 @@ type alias Model =
     Int
 
 
-init : Model
-init =
-    50
+init : () -> (Model, Cmd Msg)
+init _ =
+    (50, Cmd.none)
 
 
 
@@ -36,25 +36,33 @@ type Msg
     = Increment
     | Decrement
     | Slider String
+    | Noop
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model,Cmd Msg)
 update msg model =
     case msg of
+        Noop ->
+            (model, Cmd.none)
+
         Increment ->
-            model + 1
+            (model + 1, Cmd.none)
 
         Decrement ->
-            model - 1
+            (model - 1, Cmd.none)
 
         Slider s ->
             case String.toInt s of
                 Nothing ->
-                    1
+                  (1, Cmd.none)
 
                 Just i ->
-                    i
+                  (i, Cmd.none)
 
+port activeUsers : (String -> msg) -> Sub msg
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    activeUsers Slider
 
 
 -- VIEW
@@ -73,7 +81,6 @@ view model =
             ]
         , div [ class "fractals" ]
             [ svgTree model
-            , svgTree model
             , div []
                 [ button [ onClick Decrement ] [ text "-" ]
                 , div [] [ text (String.fromInt model) ]
@@ -163,52 +170,38 @@ line2Svg line =
     drawLine line.p1 line.p2 line.depth
 
 
-reflectLineYAxis : Line -> Line
-reflectLineYAxis line =
-    let
-        p1 =
-            Point 0 0
-
-        p2 =
-            Point 0 0
-    in
-    Line p1 p2 10
-
-
 drawTreeThing : Int -> List (Svg msg)
 drawTreeThing scale =
     let
         myLines =
-            drawTreeOnPoints [ Point 0 0 ] (toFloat scale * 1 * pi / 16) 10
+            drawTreeOnPoints [ Point 0 0 ] (toFloat scale * 1 * pi / 32) 10
 
-        reflectX =
-            \line -> Line (Point line.p1.x (420 - line.p1.y) ) (Point line.p2.x (420 - line.p2.y)) line.depth
+        reflectPointX =
+            \p -> Point p.x (420 - p.y)
 
-        reflectY =
-            \line -> Line (Point (420 - line.p1.x) line.p1.y) (Point (420 - line.p2.x) line.p2.y) line.depth
+        reflectPointY =
+            \p -> Point (420 - p.x) p.y
 
-        myLinesReflectedX =
-            List.map reflectX myLines
+        transformLine =
+            \f1 f2 line -> Line (f1 line.p1) (f2 line.p2) line.depth
 
-        myLinesReflectedY =
-            List.map reflectY myLines
+        reflectLineX =
+            transformLine reflectPointX reflectPointX
 
-        myLinesReflectedXY =
-            List.map (reflectY << reflectX) myLines
+        reflectLineY =
+            transformLine reflectPointY reflectPointY
 
-        mySvgs =
-            List.map line2Svg myLines
+        myReflections =
+            [ identity
+            , reflectLineX
+            , reflectLineY
+            , reflectLineX << reflectLineY
+            ]
 
-        mySvgsReflectedX =
-            List.map line2Svg myLinesReflectedX
-
-        mySvgsReflectedXY =
-            List.map line2Svg myLinesReflectedXY
-
-        mySvgsReflectedY =
-            List.map line2Svg myLinesReflectedY
+        myLineSets =
+            List.map (\fun -> List.map fun myLines) myReflections
     in
-    List.concat [ mySvgs, mySvgsReflectedX, mySvgsReflectedY, mySvgsReflectedXY ]
+    List.map line2Svg <| List.concat myLineSets
 
 
 drawTreeOnPoints :
@@ -226,30 +219,18 @@ drawTreeOnPoints points angle0 depth =
                 process =
                     \x -> draw2LinesOnPointReturning2Points x angle0 depth
 
-                points2LinesAndPoints :
-                    List Point
-                    -> List ( List Line, List Point )
-                points2LinesAndPoints =
-                    List.map process
-
                 linesAndPoints : List ( List Line, List Point )
                 linesAndPoints =
-                    points2LinesAndPoints points
+                    List.map process points
 
-                linesOnly : List Line
                 linesOnly =
-                    List.concat <|
-                        List.map (\x -> Tuple.first x) linesAndPoints
+                    List.concat <| List.map Tuple.first linesAndPoints
 
-                pointsOnly : List Point
                 pointsOnly =
-                    List.concat <|
-                        List.map (\x -> Tuple.second x) linesAndPoints
-
-                z =
-                    drawTreeOnPoints pointsOnly (angle0 * 0.7) (thisDepth - 1)
+                    List.concat <| List.map Tuple.second linesAndPoints
             in
-            linesOnly ++ z
+            linesOnly
+                ++ drawTreeOnPoints pointsOnly (angle0 * 0.7) (thisDepth - 1)
 
 
 draw2LinesOnPointReturning2Points : Point -> Float -> Int -> ( List Line, List Point )

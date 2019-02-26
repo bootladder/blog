@@ -34,9 +34,16 @@ pagination:
     <div id="elm-place">    placeholdez   </div>
     <script src="assets/elmapp.js"></script>
     <script>
+     var activeUsers = "99"
      var app = Elm.Main.init({
-       node: document.getElementById('elm-place')
+       node: document.getElementById('elm-place'),
+       flags: activeUsers
      });
+      app.ports.activeUsers.send(activeUsers);
+
+     function sendToElm(a){
+       app.ports.activeUsers.send(a)
+     }
     </script>
 
     <div class="post-list-heading">
@@ -46,7 +53,7 @@ pagination:
     <ul class="post-list">
       <!-- This loops through the pzginated posts -->
       {% for post in paginator.posts %}
-        <li>
+      <li onmouseover=sendToElm("{{forloop.index | times: 10}}")>
           <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
           <h2>
             <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
