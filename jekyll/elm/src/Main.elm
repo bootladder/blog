@@ -118,7 +118,10 @@ svgTree =
 
 
 type alias Point =
-    ( Int, Int )
+    {
+        x : Int
+       ,y : Int
+    }
 
 
 type alias Line =
@@ -129,10 +132,10 @@ type alias Line =
 
 line2Svg : Line -> Svg msg
 line2Svg line =
-    drawLine (Tuple.first line.p1)
-             (Tuple.second line.p1)
-             (Tuple.first line.p2)
-             (Tuple.second line.p2)
+    drawLine (line.p1.x)
+             (line.p1.y)
+             (line.p2.x)
+             (line.p2.y)
                  line.depth
 
 
@@ -140,7 +143,7 @@ drawTreeThing : List (Svg msg)
 drawTreeThing =
     let
         myPoints =
-            List.map (\x -> ( 0, 20 * x )) <| List.range 1 10
+            List.map (\x -> Point 0 (20 * x) ) <| List.range 1 10
         myLines = drawTreeOnPoints myPoints pi 10
     in
         List.map line2Svg myLines
@@ -184,28 +187,28 @@ drawTreeOnPoints points angle0 depth =
             linesOnly ++ z
 
 
-draw2LinesOnPointReturning2Points : Point -> Float -> Int -> ( List Line, List ( Int, Int ) )
-draw2LinesOnPointReturning2Points ( x0, y0 ) angle depth =
+draw2LinesOnPointReturning2Points : Point -> Float -> Int -> ( List Line, List Point )
+draw2LinesOnPointReturning2Points point angle depth =
     let
         r =
             round (toFloat (2 ^ depth) / 20)
 
         newX0 =
-            x0 + round (cos angle * toFloat (-1 * 2 * r))
+            point.x + round (cos angle * toFloat (-1 * 2 * r))
 
         newY0 =
-            y0 + (2 * r)
+            point.y + (2 * r)
 
         newX1 =
-            x0 + (2 * r)
+            point.x + (2 * r)
 
         newY1 =
-            y0 + (2 * r)
+            point.y + (2 * r)
     in
-    ( [ Line (x0,y0) (newX0,newY0) depth
-      , Line (x0,y0) (newX1,newY1) depth
+    ( [ Line point (Point newX0 newY0) depth
+      , Line point (Point newX1 newY1) depth
       ]
-    , [ ( newX0, newY0 ), ( newX1, newY1 ) ]
+    , [ Point newX0 newY0 , Point newX1 newY1  ]
     )
 
 
