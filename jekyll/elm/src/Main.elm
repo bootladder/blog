@@ -1,3 +1,4 @@
+module Main exposing (Line, Model, Msg(..), Point, attribute, draw2LinesOnPointReturning2Points, drawLine, drawTreeOnPoints, drawTreeThing, init, main, path, svgPostsTitle, svgTree, text, update, view)
 
 import Browser
 import Dice exposing (..)
@@ -5,9 +6,9 @@ import Html exposing (Html, button, div, text)
 import Html.Attributes
 import Html.Events exposing (onClick)
 import LogicGates exposing (..)
-import XThing exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import XThing exposing (..)
 
 
 main =
@@ -116,22 +117,39 @@ svgTree =
         )
 
 
-
 type alias Point =
     ( Int, Int )
 
 
+type alias Line =
+    { p1 : Point
+    , p2 : Point
+    , depth : Int
+    }
+
+line2Svg : Line -> Svg msg
+line2Svg line =
+    drawLine (Tuple.first line.p1)
+             (Tuple.second line.p1)
+             (Tuple.first line.p2)
+             (Tuple.second line.p2)
+                 line.depth
+
+
+drawTreeThing : List (Svg msg)
 drawTreeThing =
     let
-        myPoints = List.map (\x -> (0,20*x)) <| List.range 1 10
-        in
-            drawTreeOnPoints myPoints pi 10
+        myPoints =
+            List.map (\x -> ( 0, 20 * x )) <| List.range 1 10
+        myLines = drawTreeOnPoints myPoints pi 10
+    in
+        List.map line2Svg myLines
 
 drawTreeOnPoints :
     List Point
     -> Float
     -> Int
-    -> List (Svg msg)
+    -> List Line
 drawTreeOnPoints points angle0 depth =
     case depth of
         0 ->
@@ -142,15 +160,15 @@ drawTreeOnPoints points angle0 depth =
                 process =
                     \x -> draw2LinesOnPointReturning2Points x angle0 depth
 
-                points2LinesAndPoints : List Point -> List ( List (Svg msg), List Point )
+                points2LinesAndPoints : List Point -> List (List Line, List Point)
                 points2LinesAndPoints =
                     List.map process
 
-                linesAndPoints : List ( List (Svg msg), List Point )
+                linesAndPoints : List ( List Line, List Point )
                 linesAndPoints =
                     points2LinesAndPoints points
 
-                linesOnly : List (Svg msg)
+                linesOnly : List Line
                 linesOnly =
                     List.concat <|
                         List.map (\x -> Tuple.first x) linesAndPoints
@@ -160,17 +178,20 @@ drawTreeOnPoints points angle0 depth =
                     List.concat <|
                         List.map (\x -> Tuple.second x) linesAndPoints
 
-                z = drawTreeOnPoints pointsOnly (angle0*0.7) (thisDepth - 1)
+                z =
+                    drawTreeOnPoints pointsOnly (angle0 * 0.7) (thisDepth - 1)
             in
             linesOnly ++ z
 
 
-draw2LinesOnPointReturning2Points : Point -> Float -> Int -> ( List (Svg msg), List ( Int, Int ) )
+draw2LinesOnPointReturning2Points : Point -> Float -> Int -> ( List Line, List ( Int, Int ) )
 draw2LinesOnPointReturning2Points ( x0, y0 ) angle depth =
     let
-        r = round (toFloat (2^depth) / 20)
+        r =
+            round (toFloat (2 ^ depth) / 20)
+
         newX0 =
-            x0 + round ((cos angle) * toFloat (-1 * 2 * r))
+            x0 + round (cos angle * toFloat (-1 * 2 * r))
 
         newY0 =
             y0 + (2 * r)
@@ -181,18 +202,20 @@ draw2LinesOnPointReturning2Points ( x0, y0 ) angle depth =
         newY1 =
             y0 + (2 * r)
     in
-    ( [ drawLine x0 y0 newX0 newY0 depth
-      , drawLine x0 y0 newX1 newY1 depth
+    ( [ Line (x0,y0) (newX0,newY0) depth
+      , Line (x0,y0) (newX1,newY1) depth
       ]
     , [ ( newX0, newY0 ), ( newX1, newY1 ) ]
     )
 
 
-
 drawLine : Int -> Int -> Int -> Int -> Int -> Svg msg
 drawLine a b c d depth =
-    let width = 0.1 + (toFloat (2^depth) / 200)
-    in line
+    let
+        width =
+            0.1 + (toFloat (2 ^ depth) / 200)
+    in
+    line
         [ x1 <| String.fromInt a
         , y1 <| String.fromInt b
         , x2 <| String.fromInt c
