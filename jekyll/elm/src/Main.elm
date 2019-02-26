@@ -1,4 +1,3 @@
-module Main exposing (Model, Msg(..), attribute, draw2branches, draw2branches2, drawBranchesOnPoint, drawBranchesOnPoint2, drawBranchesOnPoints, drawBranchesOnPointsForReal, drawBranchesOnPointsForReal2, drawLine, generatePointsFromLambda, init, main, path, svgFractal, svgPostsTitle, text, update, view)
 
 import Browser
 import Dice exposing (..)
@@ -6,6 +5,7 @@ import Html exposing (Html, button, div, text)
 import Html.Attributes
 import Html.Events exposing (onClick)
 import LogicGates exposing (..)
+import XThing exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
@@ -56,7 +56,8 @@ view model =
         [ div [ class "dice" ]
             [ svgDie 5
             , svgPostsTitle
-            , svgFractal
+            , svgXThing
+            , svgTree
             ]
         , div [ class "logicgates" ]
             [ svgLogicGates
@@ -89,12 +90,12 @@ svgPostsTitle =
         ]
 
 
-svgFractal : Html Msg
-svgFractal =
+svgTree : Html Msg
+svgTree =
     svg
-        [ width "120"
-        , height "120"
-        , viewBox "0 0 120 120"
+        [ width "420"
+        , height "420"
+        , viewBox "0 0 420 420"
         , fill "white"
         , stroke "black"
         , strokeWidth "3"
@@ -110,122 +111,93 @@ svgFractal =
                     ]
                     []
               ]
-            , drawBranchesOnPoints
+            , drawTreeThing
             ]
         )
 
 
-generatePointsFromLambda : (Int -> ( Int, Int )) -> List ( Int, Int )
-generatePointsFromLambda f =
-    List.map f (List.range 1 12)
+
+type alias Point =
+    ( Int, Int )
 
 
-drawBranchesOnPoints : List (Svg msg)
-drawBranchesOnPoints =
+drawTreeThing =
     let
-        myPoints1 =
-            generatePointsFromLambda (\x -> ( 10 * x, 10 * x ))
+        myPoints = List.map (\x -> (0,20*x)) <| List.range 1 10
+        in
+            drawTreeOnPoints myPoints pi 10
 
-        myPoints2 =
-            generatePointsFromLambda (\x -> ( 120 - 10 * x, 10 * x ))
+drawTreeOnPoints :
+    List Point
+    -> Float
+    -> Int
+    -> List (Svg msg)
+drawTreeOnPoints points angle0 depth =
+    case depth of
+        0 ->
+            []
 
-        myPoints3 =
-            generatePointsFromLambda (\x -> ( 120 - 10 * x, 60 ))
+        thisDepth ->
+            let
+                process =
+                    \x -> draw2LinesOnPointReturning2Points x angle0 depth
 
-        myPoints4 =
-            generatePointsFromLambda (\x -> ( 60, 120 - 10 * x ))
+                points2LinesAndPoints : List Point -> List ( List (Svg msg), List Point )
+                points2LinesAndPoints =
+                    List.map process
 
-        myPoints5 =
-            generatePointsFromLambda (\x -> ( 10 * x, 10 * x ))
+                linesAndPoints : List ( List (Svg msg), List Point )
+                linesAndPoints =
+                    points2LinesAndPoints points
 
-        myPoints6 =
-            generatePointsFromLambda (\x -> ( 120 - 10 * x, 10 * x ))
+                linesOnly : List (Svg msg)
+                linesOnly =
+                    List.concat <|
+                        List.map (\x -> Tuple.first x) linesAndPoints
 
-        myPoints7 =
-            generatePointsFromLambda (\x -> ( 120 - 10 * x, 60 ))
+                pointsOnly : List Point
+                pointsOnly =
+                    List.concat <|
+                        List.map (\x -> Tuple.second x) linesAndPoints
 
-        myPoints8 =
-            generatePointsFromLambda (\x -> ( 60, 120 - 10 * x ))
+                z = drawTreeOnPoints pointsOnly (angle0*0.7) (thisDepth - 1)
+            in
+            linesOnly ++ z
 
-        dir1Branches : List (Svg msg)
-        dir1Branches =
-            drawBranchesOnPointsForReal myPoints1
 
-        dir2Branches =
-            drawBranchesOnPointsForReal myPoints2
+draw2LinesOnPointReturning2Points : Point -> Float -> Int -> ( List (Svg msg), List ( Int, Int ) )
+draw2LinesOnPointReturning2Points ( x0, y0 ) angle depth =
+    let
+        r = round (toFloat (2^depth) / 20)
+        newX0 =
+            x0 + round ((cos angle) * toFloat (-1 * 2 * r))
 
-        dir3Branches =
-            drawBranchesOnPointsForReal myPoints3
+        newY0 =
+            y0 + (2 * r)
 
-        dir4Branches =
-            drawBranchesOnPointsForReal myPoints4
+        newX1 =
+            x0 + (2 * r)
 
-        dir5Branches =
-            drawBranchesOnPointsForReal2 myPoints5
-
-        dir6Branches =
-            drawBranchesOnPointsForReal2 myPoints6
-
-        dir7Branches =
-            drawBranchesOnPointsForReal2 myPoints7
-
-        dir8Branches =
-            drawBranchesOnPointsForReal2 myPoints8
+        newY1 =
+            y0 + (2 * r)
     in
-    List.concat
-        [ dir1Branches
-        , dir2Branches
-        , dir3Branches
-        , dir4Branches
-        , dir5Branches
-        , dir6Branches
-        , dir7Branches
-        , dir8Branches
-        ]
+    ( [ drawLine x0 y0 newX0 newY0 depth
+      , drawLine x0 y0 newX1 newY1 depth
+      ]
+    , [ ( newX0, newY0 ), ( newX1, newY1 ) ]
+    )
 
 
-drawBranchesOnPointsForReal : List ( Int, Int ) -> List (Svg msg)
-drawBranchesOnPointsForReal points =
-    List.concat <| List.map drawBranchesOnPoint points
 
-
-drawBranchesOnPointsForReal2 : List ( Int, Int ) -> List (Svg msg)
-drawBranchesOnPointsForReal2 points =
-    List.concat <| List.map drawBranchesOnPoint2 points
-
-
-drawBranchesOnPoint : ( Int, Int ) -> List (Svg msg)
-drawBranchesOnPoint ( x, y ) =
-    draw2branches x y 1 5
-
-
-drawBranchesOnPoint2 : ( Int, Int ) -> List (Svg msg)
-drawBranchesOnPoint2 ( x, y ) =
-    draw2branches2 x y 1 5
-
-
-draw2branches : Int -> Int -> Int -> Int -> List (Svg msg)
-draw2branches x0 y0 angle r =
-    [ drawLine x0 y0 (x0 + (-1 * 2 * r)) (y0 + (2 * r))
-    , drawLine x0 y0 (x0 + (2 * r)) (y0 + (2 * r))
-    ]
-
-
-draw2branches2 : Int -> Int -> Int -> Int -> List (Svg msg)
-draw2branches2 x0 y0 angle r =
-    [ drawLine x0 y0 (x0 + (-1 * 2 * r)) (y0 - (2 * r))
-    , drawLine x0 y0 (x0 + (2 * r)) (y0 - (2 * r))
-    ]
-
-
-drawLine : Int -> Int -> Int -> Int -> Svg msg
-drawLine a b c d =
-    line
+drawLine : Int -> Int -> Int -> Int -> Int -> Svg msg
+drawLine a b c d depth =
+    let width = 0.1 + (toFloat (2^depth) / 200)
+    in line
         [ x1 <| String.fromInt a
         , y1 <| String.fromInt b
         , x2 <| String.fromInt c
         , y2 <| String.fromInt d
-        , stroke "black"
-        , strokeWidth "3"
+        , stroke "green"
+        , strokeWidth <| String.fromFloat width
         ]
         []
