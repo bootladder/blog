@@ -41,8 +41,20 @@ pagination:
      });
       app.ports.activeUsers.send(activeUsers);
 
-     function sendToElm(a){
-       app.ports.activeUsers.send(a)
+     function sendToElm(button,index){
+       //console.log(button)
+       rect = button.getBoundingClientRect()
+       height = button.getBoundingClientRect().height
+       console.log(button.getBoundingClientRect())
+       console.log(rect.x,rect.y)
+
+       payload = {
+         index: index,
+         x: rect.x,
+         y: (rect.y + (height/2))
+       }
+       console.log(payload)
+       app.ports.activeUsers.send(payload)
      }
     </script>
 
@@ -53,7 +65,7 @@ pagination:
     <ul class="post-list">
       <!-- This loops through the pzginated posts -->
       {% for post in paginator.posts %}
-      <li onmouseover=sendToElm("{{forloop.index | times: 10}}")>
+      <li onmouseover=sendToElm(this,{{forloop.index | times: 10}})>
           <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
           <h2>
             <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>

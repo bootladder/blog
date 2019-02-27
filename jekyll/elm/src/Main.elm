@@ -5,6 +5,8 @@ import Dice exposing (..)
 import Html exposing (Attribute, Html, button, div, input, text)
 import Html.Attributes
 import Html.Events exposing (onClick, onInput)
+import Json.Decode as Decode
+import Json.Encode exposing (Value)
 import LogicGates exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -12,7 +14,7 @@ import XThing exposing (..)
 
 
 main =
-    Browser.element { init = init, update = update, view = view , subscriptions = subscriptions}
+    Browser.element { init = init, update = update, view = view, subscriptions = subscriptions }
 
 
 
@@ -23,9 +25,9 @@ type alias Model =
     Int
 
 
-init : () -> (Model, Cmd Msg)
+init : () -> ( Model, Cmd Msg )
 init _ =
-    (50, Cmd.none)
+    ( 50, Cmd.none )
 
 
 
@@ -37,32 +39,79 @@ type Msg
     | Decrement
     | Slider String
     | Noop
+    | Hover Int Int Int
 
 
-update : Msg -> Model -> (Model,Cmd Msg)
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Noop ->
-            (model, Cmd.none)
+            ( model, Cmd.none )
 
         Increment ->
-            (model + 1, Cmd.none)
+            ( model + 1, Cmd.none )
 
         Decrement ->
-            (model - 1, Cmd.none)
+            ( model - 1, Cmd.none )
 
         Slider s ->
             case String.toInt s of
                 Nothing ->
-                  (1, Cmd.none)
+                    ( 1, Cmd.none )
 
                 Just i ->
-                  (i, Cmd.none)
+                    ( i, Cmd.none )
 
-port activeUsers : (String -> msg) -> Sub msg
+        Hover index x y ->
+            ( model, Cmd.none )
+
+
+port activeUsers : (Value -> msg) -> Sub msg
+
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    activeUsers Slider
+    activeUsers decodeValue
+
+
+
+--activeUsers Slider
+
+
+decodeValue : Value -> Msg
+decodeValue x =
+    let
+        ( index, error ) =
+            case Decode.decodeValue (Decode.field "index" Decode.int) x of
+                Ok i ->
+                    ( i, False )
+
+                Err _ ->
+                    ( 0, True )
+
+        ( decodedX, error1 ) =
+            case Decode.decodeValue (Decode.field "x" Decode.int) x of
+                Ok i ->
+                    ( i, False )
+
+                Err _ ->
+                    ( 0, True )
+
+        ( decodedY, error2 ) =
+            case Decode.decodeValue (Decode.field "y" Decode.int) x of
+                Ok i ->
+                    ( i, False )
+
+                Err _ ->
+                    ( 0, True )
+    in
+    if (error || error1 || error2) then
+        Slider <| String.fromInt index
+
+    else
+        --Hover index decodedX decodedY
+        Slider <| String.fromInt decodedY
+
 
 
 -- VIEW
