@@ -108,7 +108,7 @@ decodeValue x =
                 Err _ ->
                     ( 0, True )
     in
-    if (error || error1 || error2) then
+    if error || error1 || error2 then
         Hover 99 (toFloat index) 80.0
 
     else
@@ -148,18 +148,39 @@ svgSelectorVisual percent =
                     ]
                     []
               ]
-            , [ line
-                    [ x1 <| String.fromInt 10
-                    , y1 <| String.fromInt 10
-                    , x2 <| String.fromInt 10
-                    , y2 <| String.fromFloat percent ++ "%"
-                    , stroke "green"
-                    , strokeWidth <| String.fromFloat 5.0
-                    ]
-                    []
+            , [ verticalLineByPercent percent
+              , horizontalLineByPercent percent
               ]
             ]
         )
+
+
+verticalLineByPercent percent =
+    line
+        [ x1 <| String.fromInt 10
+        , y1 <| String.fromInt 10
+        , x2 <| String.fromInt 10
+        , y2 <| String.fromFloat percent ++ "%"
+        , stroke "green"
+        , strokeWidth <| String.fromFloat 5.0
+        ]
+        []
+
+
+horizontalLineByPercent percent =
+    let
+        percentString =
+            String.fromFloat percent ++ "%"
+    in
+    line
+        [ x1 <| String.fromInt 10
+        , y1 percentString
+        , x2 "100%"
+        , y2 percentString
+        , stroke "green"
+        , strokeWidth <| String.fromFloat 5.0
+        ]
+        []
 
 
 attribute =
