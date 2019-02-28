@@ -39,7 +39,7 @@ type Msg
     | Decrement
     | Slider String
     | Noop
-    | Hover Int Int Int
+    | Hover Int Float Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -63,19 +63,15 @@ update msg model =
                     ( i, Cmd.none )
 
         Hover index x y ->
-            ( model, Cmd.none )
+            ( index, Cmd.none )
 
 
-port activeUsers : (Value -> msg) -> Sub msg
+port selectedIndex : (Value -> msg) -> Sub msg
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    activeUsers decodeValue
-
-
-
---activeUsers Slider
+    selectedIndex decodeValue
 
 
 decodeValue : Value -> Msg
@@ -89,8 +85,8 @@ decodeValue x =
                 Err _ ->
                     ( 0, True )
 
-        ( decodedX, error1 ) =
-            case Decode.decodeValue (Decode.field "x" Decode.int) x of
+        ( decodedPercent, error1 ) =
+            case Decode.decodeValue (Decode.field "xPercent" Decode.float) x of
                 Ok i ->
                     ( i, False )
 
@@ -109,8 +105,7 @@ decodeValue x =
         Slider <| String.fromInt index
 
     else
-        --Hover index decodedX decodedY
-        Slider <| String.fromInt decodedY
+        Hover index decodedPercent decodedY
 
 
 

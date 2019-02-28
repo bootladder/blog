@@ -56,7 +56,16 @@ svg {
   display: flex;
 }
 
+.post-list-container {
+  display: table;
+}
+
+.post-list-selector-visual {
+  display: table-cell;
+}
+
 .post-list {
+  display: table-cell;
   list-style: none;
 
   margin: 0;

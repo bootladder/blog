@@ -29,17 +29,17 @@ pagination:
     </div>
   </div>
 
+  <script src="assets/elmapp.js"></script>
   <div class="home-posts">
 
     <div id="elm-place">    placeholdez   </div>
-    <script src="assets/elmapp.js"></script>
     <script>
-     var activeUsers = "99"
+     var selectedIndex = "99"
      var app = Elm.Main.init({
        node: document.getElementById('elm-place'),
-       flags: activeUsers
+       flags: selectedIndex 
      });
-      app.ports.activeUsers.send(activeUsers);
+     app.ports.selectedIndex.send(selectedIndex);
 
      function sendToElm(button,index){
        //console.log(button)
@@ -54,54 +54,66 @@ pagination:
          y: (rect.y + (height/2))
        }
        console.log(payload)
-       app.ports.activeUsers.send(payload)
+       app.ports.selectedIndex.send(payload)
+
      }
     </script>
 
-    <div class="post-list-heading">
+    <div class="post-list-container">
+      <div class="post-list-selector-visual"
+        id="elm-post-list-selector-visual">
+      </div>
+      <script>
+       var percentX = "99.0"
+       var app2 = Elm.SelectorVisual.init({
+         node: document.getElementById('elm-post-list-selector-visual'),
+         flags: percentX
+       });
+       app2.ports.percentXPort.send(percentX);
+      </script>
+
+      <ul class="post-list">
+                <!-- This loops through the pzginated posts -->
+                {% for post in paginator.posts %}
+                <li onmouseover=sendToElm(this,{{forloop.index | times: 10}})>
+                    <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+                    <h2>
+                      <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+                    </h2>
+                  </li>
+                {% endfor %}
+
+              <!-- pagination -->
+              {% if paginator.total_pages > 1 %}
+              <div class="pagination">
+                {% if paginator.previous_page %}
+                  <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo; Prev</a>
+                {% else %}
+                  <span>&laquo; Prev</span>
+                {% endif %}
+
+                {% for page in (1..paginator.total_pages) %}
+                  {% if page == paginator.page %}
+                    <span>{{ page }}</span>
+                  {% elsif page == 1 %}
+                    <a href="/">{{ page }}</a>
+                  {% else %}
+                    <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
+                  {% endif %}
+                {% endfor %}
+
+                {% if paginator.next_page %}
+                  <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Next &raquo;</a>
+                {% else %}
+                  <span>Next &raquo;</span>
+                {% endif %}
+              </div>
+              {% endif %}
+      </ul>
+      </div>
+
+      <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
+
     </div>
-
-
-    <ul class="post-list">
-      <!-- This loops through the pzginated posts -->
-      {% for post in paginator.posts %}
-      <li onmouseover=sendToElm(this,{{forloop.index | times: 10}})>
-          <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-          <h2>
-            <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-          </h2>
-        </li>
-      {% endfor %}
-
-    <!-- pagination -->
-    {% if paginator.total_pages > 1 %}
-    <div class="pagination">
-      {% if paginator.previous_page %}
-        <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo; Prev</a>
-      {% else %}
-        <span>&laquo; Prev</span>
-      {% endif %}
-
-      {% for page in (1..paginator.total_pages) %}
-        {% if page == paginator.page %}
-          <span>{{ page }}</span>
-        {% elsif page == 1 %}
-          <a href="/">{{ page }}</a>
-        {% else %}
-          <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
-        {% endif %}
-      {% endfor %}
-
-      {% if paginator.next_page %}
-        <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Next &raquo;</a>
-      {% else %}
-        <span>Next &raquo;</span>
-      {% endif %}
-    </div>
-    {% endif %}
-    </ul>
-
-    <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
-
   </div>
 </div>
