@@ -57,11 +57,17 @@ svg {
 }
 
 .post-list-container {
-  display: table;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .post-list-selector-visual {
-  display: table-cell;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .post-list {

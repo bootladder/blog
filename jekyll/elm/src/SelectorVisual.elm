@@ -22,12 +22,14 @@ main =
 
 
 type alias Model =
-    Int
+    { index : Int
+    , percent : Float
+    }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( 50, Cmd.none )
+    ( { index = 50, percent = 90.0 }, Cmd.none )
 
 
 
@@ -39,7 +41,7 @@ type Msg
     | Decrement
     | Slider String
     | Noop
-    | Hover Int Float Int
+    | Hover Int Float Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -49,21 +51,26 @@ update msg model =
             ( model, Cmd.none )
 
         Increment ->
-            ( model + 1, Cmd.none )
+            ( { model | index = model.index + 1 }, Cmd.none )
 
         Decrement ->
-            ( model - 1, Cmd.none )
+            ( { model | index = model.index - 1 }, Cmd.none )
 
         Slider s ->
             case String.toInt s of
                 Nothing ->
-                    ( 1, Cmd.none )
+                    ( { model | index = 1 }, Cmd.none )
 
                 Just i ->
-                    ( i, Cmd.none )
+                    ( { model | index = i }, Cmd.none )
 
-        Hover index x y ->
-            ( index, Cmd.none )
+        Hover i x y ->
+            ( { model
+                | index = i
+                , percent = x
+              }
+            , Cmd.none
+            )
 
 
 port percentXPort : (Value -> msg) -> Sub msg
@@ -86,7 +93,7 @@ decodeValue x =
                     ( 0, True )
 
         ( decodedPercent, error1 ) =
-            case Decode.decodeValue (Decode.field "xPercent" Decode.float) x of
+            case Decode.decodeValue (Decode.field "x" Decode.float) x of
                 Ok i ->
                     ( i, False )
 
@@ -94,15 +101,15 @@ decodeValue x =
                     ( 0, True )
 
         ( decodedY, error2 ) =
-            case Decode.decodeValue (Decode.field "y" Decode.int) x of
+            case Decode.decodeValue (Decode.field "y" Decode.float) x of
                 Ok i ->
                     ( i, False )
 
                 Err _ ->
                     ( 0, True )
     in
-    if error || error1 || error2 then
-        Slider <| String.fromInt index
+    if (error || error1 || error2) then
+        Hover 99 (toFloat index) 80.0
 
     else
         Hover index decodedPercent decodedY
@@ -115,12 +122,7 @@ decodeValue x =
 view : Model -> Html Msg
 view model =
     div []
-        [ div []
-            [ button [ onClick Decrement ] [ text "-" ]
-            , div [] [ text (String.fromInt model) ]
-            , button [ onClick Increment ] [ text "+" ]
-            , svgSelectorVisual 75.0
-            ]
+        [ svgSelectorVisual model.percent
         ]
 
 
@@ -129,7 +131,8 @@ svgSelectorVisual percent =
     svg
         [ width "120"
         , height "100%"
-        , viewBox "0 0 420 420"
+
+        --, viewBox "0 0 420 420"
         , fill "white"
         , stroke "black"
         , strokeWidth "3"
@@ -138,15 +141,23 @@ svgSelectorVisual percent =
             [ [ rect
                     [ x "0"
                     , y "0"
-                    , width "420"
+                    , width "100%"
                     , height "100%"
                     , rx "15"
                     , ry "15"
                     ]
                     []
               ]
-
-            --, drawTreeThing scale
+            , [ line
+                    [ x1 <| String.fromInt 10
+                    , y1 <| String.fromInt 10
+                    , x2 <| String.fromInt 10
+                    , y2 <| String.fromFloat percent ++ "%"
+                    , stroke "green"
+                    , strokeWidth <| String.fromFloat 5.0
+                    ]
+                    []
+              ]
             ]
         )
 

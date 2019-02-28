@@ -43,26 +43,33 @@ pagination:
 
      function sendToElm(button,index){
        //console.log(button)
+       postListTop = document.getElementById("post-list").
+                              getBoundingClientRect().y
+       postListHeight = document.getElementById("post-list").
+                              getBoundingClientRect().height
+       console.log(postListTop)
        rect = button.getBoundingClientRect()
        height = button.getBoundingClientRect().height
-       console.log(button.getBoundingClientRect())
-       console.log(rect.x,rect.y)
+       midpoint = rect.y + (height/2)
+       //console.log(button.getBoundingClientRect())
+       //console.log(rect.x,rect.y)
 
        payload = {
          index: index,
-         x: rect.x,
+         x: 100 * (midpoint - postListTop) / postListHeight,
          y: (rect.y + (height/2))
        }
        console.log(payload)
        app.ports.selectedIndex.send(payload)
+       app2.ports.percentXPort.send(payload)
 
      }
     </script>
 
     <div class="post-list-container">
-      <div class="post-list-selector-visual"
-        id="elm-post-list-selector-visual">
+      <div id="elm-post-list-selector-visual">
       </div>
+
       <script>
        var percentX = "99.0"
        var app2 = Elm.SelectorVisual.init({
@@ -72,7 +79,7 @@ pagination:
        app2.ports.percentXPort.send(percentX);
       </script>
 
-      <ul class="post-list">
+      <ul class="post-list" id="post-list" >
                 <!-- This loops through the pzginated posts -->
                 {% for post in paginator.posts %}
                 <li onmouseover=sendToElm(this,{{forloop.index | times: 10}})>

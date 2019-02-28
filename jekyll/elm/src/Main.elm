@@ -39,7 +39,7 @@ type Msg
     | Decrement
     | Slider String
     | Noop
-    | Hover Int Float Int
+    | Hover Int Float Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -86,7 +86,7 @@ decodeValue x =
                     ( 0, True )
 
         ( decodedPercent, error1 ) =
-            case Decode.decodeValue (Decode.field "xPercent" Decode.float) x of
+            case Decode.decodeValue (Decode.field "x" Decode.float) x of
                 Ok i ->
                     ( i, False )
 
@@ -94,7 +94,7 @@ decodeValue x =
                     ( 0, True )
 
         ( decodedY, error2 ) =
-            case Decode.decodeValue (Decode.field "y" Decode.int) x of
+            case Decode.decodeValue (Decode.field "y" Decode.float) x of
                 Ok i ->
                     ( i, False )
 
@@ -102,7 +102,7 @@ decodeValue x =
                     ( 0, True )
     in
     if (error || error1 || error2) then
-        Slider <| String.fromInt index
+        Slider <| String.fromInt 99
 
     else
         Hover index decodedPercent decodedY
