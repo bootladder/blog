@@ -1,5 +1,14 @@
 #!/bin/bash
 
+cd /tmp
+wget https://github.com/elm/compiler/releases/download/0.19.0/binaries-for-linux.tar.gz
+tar zvxf binaries-for-linux.tar.gz
+cd -
+cd jekyll/elm
+/tmp/elm make src/Main.elm src/SelectorVisual.elm --output elmapp.js && mv elmapp.js ../assets/
+cd -
+rm elm
+
 echo cd jekyll
 cd jekyll
 
