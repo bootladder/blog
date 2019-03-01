@@ -166,7 +166,6 @@ verticalLineByPercent percent =
         ]
         []
 
-
 horizontalLineByPercent percent =
     let
         percentString =
