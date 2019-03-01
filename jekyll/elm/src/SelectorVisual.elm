@@ -122,14 +122,14 @@ decodeValue x =
 view : Model -> Html Msg
 view model =
     div []
-        [ svgSelectorVisual model.percent
+        [ svgSelectorVisual model.index model.percent
         ]
 
 
-svgSelectorVisual : Float -> Html msg
-svgSelectorVisual percent =
+svgSelectorVisual : Int -> Float -> Html msg
+svgSelectorVisual index percent =
     svg
-        [ width "120"
+        [ width "30"
         , height "100%"
 
         --, viewBox "0 0 420 420"
@@ -148,38 +148,62 @@ svgSelectorVisual percent =
                     ]
                     []
               ]
-            , [ verticalLineByPercent percent
-              , horizontalLineByPercent percent
+            , grayedLines index
+            , [ verticalLineByPercent index percent True
+              , horizontalLine index percent True
               ]
             ]
         )
 
 
-verticalLineByPercent : Float -> Svg msg
-verticalLineByPercent percent =
+grayedLines index =
+    let
+        intsOneTen = List.range 1 index
+        --vLine = (\index -> verticalLineByPercent index (toFloat index*10) False)
+        vLine = (\i -> verticalLineByPercent i 100.0 False)
+    in
+    List.map vLine intsOneTen
+
+
+verticalLineByPercent : Int -> Float -> Bool -> Svg msg
+verticalLineByPercent index percent active =
+    let
+        xPercentString =
+            String.fromInt (index*10) ++ "%"
+        yPercentString =
+            String.fromFloat percent ++ "%"
+    in
     line
-        [ x1 <| String.fromInt 10
+        [ x1 xPercentString
         , y1 <| String.fromInt 10
-        , x2 <| String.fromInt 10
-        , y2 <| String.fromFloat percent ++ "%"
-        , stroke "green"
-        , strokeWidth <| String.fromFloat 5.0
+        , x2 xPercentString
+        , y2 yPercentString
+        , stroke <|
+            if active then
+                "green"
+
+            else
+                "gray"
+        , strokeWidth <| String.fromFloat 2.0
         ]
         []
 
 
-horizontalLineByPercent percent =
+horizontalLine : Int -> Float -> Bool -> Svg msg
+horizontalLine index percent active =
     let
-        percentString =
+        xPercentString =
+            String.fromInt (index*10) ++ "%"
+        yPercentString =
             String.fromFloat percent ++ "%"
     in
     line
-        [ x1 <| String.fromInt 10
-        , y1 percentString
+        [ x1 xPercentString
+        , y1 yPercentString
         , x2 "100%"
-        , y2 percentString
+        , y2 yPercentString
         , stroke "green"
-        , strokeWidth <| String.fromFloat 5.0
+        , strokeWidth <| String.fromFloat 2.0
         ]
         []
 

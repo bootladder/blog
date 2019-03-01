@@ -63,7 +63,7 @@ update msg model =
                     ( i, Cmd.none )
 
         Hover index x y ->
-            ( index, Cmd.none )
+            ( index * 5, Cmd.none )
 
 
 port selectedIndex : (Value -> msg) -> Sub msg

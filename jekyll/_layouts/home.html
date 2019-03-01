@@ -82,7 +82,7 @@ pagination:
       <ul class="post-list" id="post-list" >
                 <!-- This loops through the pzginated posts -->
                 {% for post in paginator.posts %}
-                <li onmouseover=sendToElm(this,{{forloop.index | times: 10}})>
+                <li onmouseover=sendToElm(this,{{forloop.index}})>
                     <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
                     <h2>
                       <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
