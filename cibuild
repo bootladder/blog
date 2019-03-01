@@ -6,8 +6,9 @@ tar zvxf binaries-for-linux.tar.gz
 cd -
 cd jekyll/elm
 /tmp/elm make src/Main.elm src/SelectorVisual.elm --output elmapp.js && mv elmapp.js ../assets/
+ls ../assets
 cd -
-rm elm
+rm /tmp/elm
 
 echo cd jekyll
 cd jekyll
@@ -16,6 +17,8 @@ echo zipping the site
 zip -r sitesource.zip *
 mv sitesource.zip /tmp/
 ls
+echo assets: 
+ls assets
 
 echo curling the site
 curl -F 'file=@/tmp/sitesource.zip' https://freejekyllbuilder.com/upload/bootladder-blog
