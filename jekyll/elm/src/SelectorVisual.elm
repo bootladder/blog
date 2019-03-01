@@ -155,6 +155,7 @@ svgSelectorVisual percent =
         )
 
 
+verticalLineByPercent : Float -> Svg msg
 verticalLineByPercent percent =
     line
         [ x1 <| String.fromInt 10
@@ -165,6 +166,7 @@ verticalLineByPercent percent =
         , strokeWidth <| String.fromFloat 5.0
         ]
         []
+
 
 horizontalLineByPercent percent =
     let
