@@ -235,3 +235,18 @@
     }
   }
 }
+
+/* HOME PAGFE STUFF */
+.home {
+  display: flex;
+
+  flex-direction: row;
+  @include media-query($on-laptop) {
+    flex-direction: column;
+  }
+
+
+}
+.about-me {
+  background-color: gray;
+}
