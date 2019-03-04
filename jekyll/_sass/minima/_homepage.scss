@@ -8,6 +8,11 @@
   justify-content: space-between;
   background-color: $background-color;
   padding: 5px;
+
+  @include media-query($on-laptop) {
+    flex-direction: column;
+    background-color: red;
+  }
 }
 
 .home-sidebar {
@@ -71,7 +76,8 @@ svg {
 }
 
 .post-list {
-  display: table-cell;
+  display: flex;
+  flex-direction: column;
   list-style: none;
 
   margin: 0;
