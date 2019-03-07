@@ -1,31 +1,11 @@
-
-/**
- * Home page
- */
-.home-container {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: space-between;
-  background-color: $background-color;
-  padding: 5px;
-
-  @include media-query($on-laptop) {
-    flex-direction: column;
-    background-color: red;
-  }
-}
-
-.home-sidebar {
-  padding: 5px;
-  background-color: #80f0C0;
-}
-
+---
+---
 .home-posts{
   padding-right: 5px;
 }
 
 .post-list-heading {
-  background-color: blue;
+  background-color: yellow;
   padding: 0;
   margin: 0;
   font-size: 20px;
@@ -33,7 +13,7 @@
   height: auto;
 
   > svg {
-    background-color: purple;
+    background-color: green;
     padding: 0;
     margin: 0;
     display:block;
@@ -64,28 +44,31 @@ svg {
 .post-list-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
 }
 
 .post-list-selector-visual {
   height: 100%;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+}
+zlm-post-list-selector-visual{
+  
 }
 
+.post-list-div {
+
+}
 .post-list {
   display: flex;
   flex-direction: column;
   list-style: none;
 
+  padding: 5px;
   margin: 0;
 
-  > li {
+  > div {
     //margin-bottom: $spacing-unit;
     margin: 0;
-    background-color: chartreuse;
+    background-color: blue;
     padding: 5px;
     margin-top: 5px;
     border-radius: 15px;
