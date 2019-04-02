@@ -13,7 +13,13 @@ RUN cabal update
 RUN cabal install happy
 RUN cabal install stylish-haskell
 ```
-Now I have a stylish-haskell binary in the container.  Let's bring it out:  `sudo docker run --rm -it -v /tmp/:/opt/src haskell-dev-env /bin/bash`  and then `cp root/.cabal/bin/stylish-haskell /opt/src` , then exit the container and the binary is in /tmp.  For some reason this works, whereas just trying to do `cabal install stylish-haskell` on my host failed to build.  
+Now I have a stylish-haskell binary in the container.  Let's bring it out:  
+```
+sudo docker run --rm -it -v /tmp/:/opt/src haskell-dev-env /bin/bash
+```
+and then `cp root/.cabal/bin/stylish-haskell /opt/src` ,  
+then exit the container and the binary is in /tmp.  
+For some reason this works, whereas just trying to do `cabal install stylish-haskell` on my host failed to build.  
   
 Aha, see here, I like this:  
 ```
@@ -28,4 +34,26 @@ steve@McBain:~ $$$ ldd /usr/bin/stylish-haskell
 	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f15f9110000)
 	/lib64/ld-linux-x86-64.so.2 (0x00007f15fa28f000)
 ```
-Somehow there's a messy web of dependencies when compiling but the resulting binary is clean.  Don't get it, but works for me!
+Somehow there's a messy web of dependencies when compiling but the resulting binary is clean, linkabilitywise.  Don't get it, but works for me!
+
+&nbsp;
+### How to run Haskell in the container
+Cool I figured something, it's a bash function:  
+```
+runhaskelldocker() {
+  sudo docker run --rm -v $(pwd):/opt/app -w /opt/app haskell-1 runhaskell $@
+}
+
+```
+&nbsp;
+If your current directory looks like this:  
+```
+steve@McBain:~/prog/haskell/nginx-log-analysis $$$ ls
+access.log  input.txt  main.hs  practice.hs  scrap.hs
+```
+Then you can run this  
+```
+runhaskelldocker practice.hs input.txt
+```
+&nbsp;  
+And you can use your Dockerfile to do your stack and cabal

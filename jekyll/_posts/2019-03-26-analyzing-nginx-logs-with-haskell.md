@@ -83,3 +83,8 @@ pHostname = do
 Parsing the log files into a record was a straight forward and good exercise but then when doing any processing or analysis I'm getting this obvious thought:  **Duh, use SQL!**  
 &nbsp;  
 ### So the poor man's database now becomes SQLite
+  
+**And yet again, I forgot I've already done this before!**  
+**I forgot there's an obvious layered architecture for logging**  
+&nbsp;  
+So let's get this out of the way and finalize the data collection.
