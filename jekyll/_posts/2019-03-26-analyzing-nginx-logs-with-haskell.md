@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Analyzing Nginx Reverse Proxy Logs with Haskell
+title: Parsing and Storing Nginx Reverse Proxy Logs with Haskell
 date: 2019-03-26 15:46 -0400
 ---
 ### Counting page hits and attacks.  
