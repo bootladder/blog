@@ -21,7 +21,7 @@ echo assets:
 ls assets
 
 echo curling the site
-curl -F 'file=@/tmp/sitesource.zip' https://freejekyllbuilder.com/upload/bootladder-blog
+curl -F 'file=@/tmp/sitesource.zip' http://freejekyllbuilder.com/upload/bootladder-blog
 sleep 2
 
 echo triggering prod webhook
