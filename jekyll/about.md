@@ -30,7 +30,7 @@ comments: true
 
     I need a mentor, some good teammates and a good project 
     to take me to the next level.
-    I'd say I have about 3 solid years of experience in the embedded industry.
+    I'd say I have about 3 solid years of experience in the embedded industry, plus another couple years in web apps.
   
   
 My goal is to acquire more experience in the following direction:  
@@ -43,7 +43,7 @@ My goal is to acquire more experience in the following direction:
 * **Version Control , Continuous Integration**  
  Test what you ship, ship what you test.  
  The system is entirely integrated in a cloud-based test environment without a production environment even existing.  
- You can always go back to an exact build and throw it on the hardware test bed.  Though if the hardware test bed ever changes that's a tough one.
+ You can always go back to an exact build and throw it on the hardware test bed.  
 
   
 * **Really Good Modularity and Portability**  
