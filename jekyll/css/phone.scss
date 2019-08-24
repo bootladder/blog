@@ -1,0 +1,139 @@
+---
+---
+.home-posts{
+  padding-right: 5px;
+}
+
+.post-list-heading {
+  background-color: yellow;
+  padding: 0;
+  margin: 0;
+  font-size: 20px;
+  display:block;
+  height: auto;
+
+  > svg {
+    background-color: green;
+    padding: 0;
+    margin: 0;
+    display:block;
+  }
+} 
+svg {
+    padding: 0;
+}
+.elm-svg {
+  padding: 0;
+}
+
+.logicgates{
+  padding: 0;
+  background-color: #26522e;
+}
+.dice {
+  background-color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+}
+.fractals {
+  display: flex;
+}
+
+.post-list-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.post-list-selector-visual {
+  height: 100%;
+  padding: 0;
+}
+zlm-post-list-selector-visual{
+  
+}
+
+.post-list-div {
+
+}
+.post-list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+
+  padding: 5px;
+  margin: 0;
+
+  > div {
+    //margin-bottom: $spacing-unit;
+    margin: 0;
+    background-color: blue;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 15px;
+  }
+
+  > h2 {
+    margin: 0;
+  }
+}
+
+.pagination {
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+.pagination a,
+.pagination span {
+
+  font-size: 30px;
+  padding: 5px;
+  color: azure;
+  background-color: rgb(25, 53, 0);
+  border: 2px solid rgb(75, 41, 2);
+}
+
+/////////////////////////////////////
+
+.home-sidebar div ,
+.home-sidebar p {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  margin: 5px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.about-me-link {
+  background-color: orange;
+  border-radius: 25px;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+}
+
+.home-sidebar h1 {
+  font-size: 24px;
+}
+.sidebar-about-me {
+  padding: 5px;
+  border-radius: 25px;
+  background-color: #AAAAAA;
+}
+
+
+.sidebar-by-category-links {
+  padding: 5px;
+  border-radius: 25px;
+  background-color: #AAAAAA;
+}
+
+.sidebar-more-links {
+  padding: 5px;
+  border-radius: 25px;
+  background-color: #AAAAAA;
+}

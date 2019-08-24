@@ -1,0 +1,133 @@
+---
+layout: clean_default
+pagination:
+  enabled: true
+---
+
+<link rel="stylesheet"
+      media="screen and (max-width: 767px)"
+      href="css/phone.css" />
+<link rel="stylesheet"
+      media="screen and (min-width: 768px)"
+      href="css/desktop.css" />
+
+<div class="home-container" >
+
+  <div class="home-sidebar" >
+    <div class="sidebar-about-me">
+      <p>Just an un-edited documentation of technical tips.</p>
+      <h1 class="about-me-link"><a href="about/"> About Me </a></h1>
+    </div>
+    <div class="sidebar-by-category-links">
+      <h1>By Category</h1>
+      <ul>
+        <li><a href="#"> Embedded</a></li>
+        <li><a href="#"> Web</a></li>
+        <li><a href="#"> Desktop</a></li>
+        <li><a href="#"> Meta</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-more-links">
+      <h1>More Links</h1>
+      <ul>
+        <li><a href="https://github.com/bootladder">  GitHub  </a></li>
+        <li><a href="https://bitbucket.org/bootladder">Bitbucket </a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="assets/elmapp.js"></script>
+  <div class="home-posts">
+
+    <div id="elm-place">    placeholdez blabal   </div>
+    <script>
+     var selectedIndex = "99"
+     var app = Elm.Main.init({
+       node: document.getElementById('elm-place'),
+       flags: selectedIndex 
+     });
+     app.ports.selectedIndex.send(selectedIndex);
+
+     function sendToElm(button,index){
+       //console.log(button)
+       postListTop = document.getElementById("post-list").
+                              getBoundingClientRect().y
+       postListHeight = document.getElementById("post-list").
+                              getBoundingClientRect().height
+       console.log(postListTop)
+       rect = button.getBoundingClientRect()
+       height = button.getBoundingClientRect().height
+       midpoint = rect.y + (height/2)
+       //console.log(button.getBoundingClientRect())
+       //console.log(rect.x,rect.y)
+
+       payload = {
+         index: index,
+         x: 100 * (midpoint - postListTop) / postListHeight,
+         y: (rect.y + (height/2))
+       }
+       console.log(payload)
+       app.ports.selectedIndex.send(payload)
+       app2.ports.percentXPort.send(payload)
+
+     }
+    </script>
+
+    <div class="post-list-container">
+      <div id="elm-post-list-selector-visual">
+      </div>
+
+      <script>
+       var percentX = "99.0"
+       var app2 = Elm.SelectorVisual.init({
+         node: document.getElementById('elm-post-list-selector-visual'),
+         flags: percentX
+       });
+       app2.ports.percentXPort.send(percentX);
+      </script>
+
+      <ul class="post-list" id="post-list" >
+                <!-- This loops through the pzginated posts -->
+                {% for post in paginator.posts %}
+                <li onmouseover=sendToElm(this,{{forloop.index}})>
+                    <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+                    <h2>
+                      <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+                    </h2>
+                  </li>
+                {% endfor %}
+
+              <!-- pagination -->
+              {% if paginator.total_pages > 1 %}
+              <div class="pagination">
+                {% if paginator.previous_page %}
+                  <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo; Prev</a>
+                {% else %}
+                  <span>&laquo; Prev</span>
+                {% endif %}
+
+                {% for page in (1..paginator.total_pages) %}
+                  {% if page == paginator.page %}
+                    <span>{{ page }}</span>
+                  {% elsif page == 1 %}
+                    <a href="/">{{ page }}</a>
+                  {% else %}
+                    <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
+                  {% endif %}
+                {% endfor %}
+
+                {% if paginator.next_page %}
+                  <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Next &raquo;</a>
+                {% else %}
+                  <span>Next &raquo;</span>
+                {% endif %}
+              </div>
+              {% endif %}
+      </ul>
+      </div>
+
+      <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
+
+    </div>
+  </div>
+</div>

@@ -6,6 +6,7 @@ Travis builds the blog, by zipping and sending to freejekyllbuilder.com
 
 Travis sends a request to https://ccram.org:5000/bootladder-blog
 
+(need to create a repo for the deployer server
 Check the deployer server on the same machine.
 There's a script in there that finds the latest
 github release, downloads it, unzips, copies into
