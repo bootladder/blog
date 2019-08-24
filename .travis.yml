@@ -5,5 +5,7 @@ script: "./cibuild"
 branches:
   only:
   - master
+  - someoldplace
+  - test
 sudo: false
 
