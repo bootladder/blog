@@ -53,3 +53,5 @@ Now I will deploy the https-deployer.  Neat!
 ** Lessons Learned: **
 1. Always execute application code, inside containers so you can't accidentally `rm -rf` the host.  Especially when debugging!
 1. Do not keep backups on the same machine as applications.
+  
+Thanks!
