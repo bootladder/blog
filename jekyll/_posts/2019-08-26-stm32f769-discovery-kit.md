@@ -323,4 +323,106 @@ The 88 byte text section should be screaming, and of course above it is the hint
   
 Well that was finally a step with no problems.  I just added in the `.s` file.  Didn't specify any flags, hope that doesn't matter.  And yes, the glorious pile of undefined references dumps on the screen.  Ideally, if we resolve them we might be done!  
   
+# Listing all the Source Files to Build
   
+As I mentioned there are 163 source files to compile.  Thankfully there aren't many directories
+that they all live in.  For example there's about 60 sources files in `STM32F7xx_HAL_Drivers/`.  
+So I hopefully I can just list a reasonable number of directories and glob everything under them.  
+  
+There's something very fishy about the directory named `Drivers/STM32F7xx_HAL_Driver`.
+The `objects.list` has object files under eg.  `Drivers/STM32F7xx_HAL_Drivers/stm32f7xx_hal.o`.
+Notice the trailing `s` as in `Drivers`.  This has to be a booby trap, as doing a grep for
+Drivers with an `s` only shows `.project` files.  Not cool!  
+  
+So adding all of the source files under that `Driver` directory, I get... you guessed it, multiple definitions!  Yet another needle in the haystack to pick out.  Well, after globbing all the files 
+in that directory, I don't even know if I can remove single files.  
+  
+Alright, change of plans then, in the interest of moving this forward.  I will do some VIM-foo to
+process `objects.list`, correcting the paths.
+  
+Wow, there's a spelling error in `objects.list`:  `Application/User/Gui/audio_recoder/audio_recorder_win.o`.  Recoder?  Either it's a French person mispelling it, which does happen, or it's yet another obfuscation.  I'll give them the benefit of the doubt here.  
+Actually I take that back, I see some case switching, eg.  `Audio_recorder` to `audio_recorder`.  
+`Audio_recorder` doesn't make any sense as a capitalization convention.  
+  
+Yet more... `Drivers/BSP/Component` to `Drivers/BSP/Components`  
+Oh man this one was REALLY hard to find: `Drivers/BSP/STM32769I-Discovery/stm32f769i_discovery.c` from `Drivers/BSP/STM32F769I-Discovery/stm32f769i_discovery.c`.  Can you see the difference?  
+It's the `F`.  Why would they remove the `F` besides deliberately obfuscating the build?  Now I'm pretty convinced, I have to say.  
+  
+This is.... WAAAAAY worse than Atmel ASF, atleast from a structure standpoint.  I haven't looked inside the source code yet.  (Note, ASF source code is crap IMO).
+  
+Yet more... some of the original codebase has `Src/` , others `src/`.  bah.  
+  
+# Done specifying source files.  Almost done.
+Now that I've compiled all the source files I need, I get to the linker step, which of course
+is failing.  I get a bunch of undefined references, and it seems that they are all references
+to the static libraries for `STemWin`.  But I don't see why they'd be undefined references because
+I did link in the static library.  
+Another issue which I will handle first is a multiple definition error:  `CMakeFiles/steve-stm32f769-discovery.dir/startup_stm32f769xx.s.o:(.isr_vector+0x0): multiple definition of `g_pfnVectors'
+/home/steve/prog/embedded/STM32F769-Discovery/STM32Cube_FW_F7_V1.15.0/Projects/STM32F769I-Discovery/Demonstrations/STemWin/Gui/STemWin_Addons/STemWin_Addons_CM7_wc32.a(startup_stm32h743xx.o):(.isr_vector+0x0): first defined here
+CMakeFiles/steve-stm32f769-discovery.dir/startup_stm32f769xx.s.o: In function `MDIOS_IRQHandler':
+(.text.Default_Handler+0x0): multiple definition of `Default_Handler'
+/home/steve/prog/embedded/STM32F769-Discovery/STM32Cube_FW_F7_V1.15.0/Projects/STM32F769I-Discovery/Demonstrations/STemWin/Gui/STemWin_Addons/STemWin_Addons_CM7_wc32.a(startup_stm32h743xx.o):C:\Users\bennacef\Desktop\SVN\STM32_emWin_Library_SVN\Branches\ST_Addons_binary_Generator\Firmware\Project\ST_Addons_20150406\SW4STM32\ST_Addons\Debug/..\../startup_stm32h743xx.s:127: first defined here`  
+  
+OK this error message is screaming fishy.  First of all, why does the static library for STemWin, a graphics library, define the vector table and Default_Handler?  
+Moreover 100 times, why the hell is the definition inside `startup_stm32h743xx` ?  Why is that startup code inside the library at all?  Why only for 1 variant of microcontroller?!  
+`bennacef` , I'm sure you're a fine individual but this work smells like fish.  
+
+But now I'm confused.  I thought if there was a multiple definition in a static library, it would be ignored instead of tripping the multiple def error?
+Hmm, maybe if I put the `-lmylib` switches at the end of the linker invocation?  
+Ah, that was it.  I put the `-l` switches at the end, and then corrected for yet another naming convention error.  
+Static libraries like X.a don't work well with CMake.  CMake wants it like `libX.a`.  
+Great!  Now I only have like 10 undefined references. 
+  
+# LOL, coupling app into kernel.  A joke?
+This is hilarious, see this error `CMakeFiles/steve-stm32f769-discovery.dir/Core/Src/k_bsp.c.o: In function `k_TouchUpdate':
+/home/steve/prog/embedded/STM32F769-Discovery/STM32Cube_FW_F7_V1.15.0/Projects/STM32F769I-Discovery/Demonstrations/STemWin/Core/Src/k_bsp.c:155: undefined reference to `SelLayer'`.  
+Hmm, what is SelLayer?  
+`steve@McBain:~/prog/embedded/STM32F769-Discovery/STM32Cube_FW_F7_V1.15.0 $$$ grep -r SelLayer  
+  
+  Projects/STM32F769I-Discovery/Demonstrations/STemWin/Gui/Core/home_alarme/home_alarm_win.c:extern uint8_t   SelLayer;
+Projects/STM32F769I-Discovery/Demonstrations/STemWin/Core/Src/k_bsp.c:extern uint8_t SelLayer;
+Projects/STM32F769I-Discovery/Demonstrations/STemWin/Core/Src/k_bsp.c:    TS_State.Layer = SelLayer;
+Projects/STM32F769I_EVAL/Demonstrations/STemWin/Gui/Core/videoplayer/video_player_win.c:uint8_t                          SelLayer = 0;
+
+  `
+So basically if I decide I don't want to build the `video_player` app, the kernel BSP won't compile.  That's just hilarious!  
+
+  
+# #include C files for the purposes of obfuscation.  Nice try!
+Looking at this error message:  `/home/steve/prog/embedded/STM32F769-Discovery/STM32Cube_FW_F7_V1.15.0/Projects/STM32F769I-Discovery/Demonstrations/STemWin/Core/Src/k_menu.c:140: undefined reference to `bmF7Logo'`,  
+I did a grep for `bmF7Logo`, expecting to find a source file to add to the build.  
+
+`steve@McBain:~/prog/embedded/STM32F769-Discovery/STM32Cube_FW_F7_V1.15.0 $$$ grep -ir bmf7logo`  
+`Projects/STM32F769I-Discovery/Demonstrations/STemWin/Gui/Core/settings/settings_res.c:GUI_CONST_STORAGE GUI_BITMAP bmF7Logo = {
+Projects/STM32F769I-Discovery/Demonstrations/STemWin/Core/Src/k_menu.c:extern GUI_CONST_STORAGE GUI_BITMAP bmF7Logo;`
+  
+OK so there's a file called `settings_res.c`.  I could go and add that to the build, but now
+that I know how the `.project` level obfuscation works, I'll look inside the `.project` file.  
+Searching for `settings` strings, I see this:  
+`
+<link>
+      <name>Application/User/Gui/settings/settings_win.c</name>
+      <type>1</type>
+      <location>PARENT-2-PROJECT_LOC/Gui/Core/settings/settings_win.c</location>
+    </link>
+`  
+Oh no, I only see `settings_win.c`, where is `settings_res.c` ???  
+I was stumped until I looked inside `settings_win.c`.  What do we see at the top ?  
+
+`/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+#include "settings_res.c"
+`  
+Hah, nice try!
+  
+# Last little trick
+The file named stm32f769i_discovery_audio.c appears in both the top level codebase and also inside
+the project directory.  Only one of them is built.  
+  
+# Yay, I get a build!
+  
+I'm feeling lucky, let's just flash it.  Let's use GDB to flash the ELF file,
+so we don't have to worry about generating .bin binaries.
+  
+# Closing remarks
+?
