@@ -5,6 +5,7 @@ script: "./cibuild"
 branches:
   only:
   - master
+  - test
   - someoldplace
 sudo: false
 notifications:

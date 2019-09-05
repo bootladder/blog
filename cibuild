@@ -21,9 +21,9 @@ echo assets:
 ls assets
 
 echo curling the site
-curl -F 'file=@/tmp/sitesource.zip' http://freejekyllbuilder.com/upload/bootladder-blog
+curl -F 'file=@/tmp/sitesource.zip' $(echo $TRAVIS_FREEJEKYLLBUILDER_URL)/upload/bootladder-blog
 sleep 2
 
 echo triggering prod webhook
-curl https://ccram.org:5000/bootladder-blog
+curl $(echo $TRAVIS_DEPLOYER_URL)/bootladder-blog
 
