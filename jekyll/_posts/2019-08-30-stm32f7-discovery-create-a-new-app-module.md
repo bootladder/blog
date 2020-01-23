@@ -128,3 +128,9 @@ the entirety of stm32f7xx_hal_def.h will be included before any of stm32f7xx_hal
   
 Nice!  That resulted in a good tip:  **Include stm32f7xx_hal.h** to get the whole HAL.
 Don't include individual HAL files.  We'll fix that issue later.  One level at a time haha!
+ 
+ 
+# Isolating the Pieces of a Module: Window Manager, RTOS, HAL/BSP
+In trying to figure out how the architecture works, I'll split out a new C file from `steve_win.c`,
+which will have only Window Manager stuff.  Hopefully the #include list will be small and the external
+references will increase understanding.
